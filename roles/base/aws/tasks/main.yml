@@ -1,0 +1,6 @@
+---
+- include: awscli.yml
+  tags: [aws, awscli]
+
+- include: s3cmd.yml
+  tags: [aws, s3cmd]

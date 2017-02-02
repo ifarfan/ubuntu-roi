@@ -1,0 +1,31 @@
+---
+- block:
+  - name: Set DNS for vagrant only
+    template:
+      src=etc/resolvconf/resolv.conf.d/base.j2
+      dest=/etc/resolvconf/resolv.conf.d/base
+      owner=root
+      group=root
+      mode=0644
+    register: resolvconf
+
+  - name: Set Google DNS for vagrant only
+    lineinfile:
+      dest=/etc/network/interfaces
+      regexp="^dns-nameservers"
+      line="dns-nameservers 8.8.8.8 8.8.4.4"
+      insertafter="^gateway"
+    register: interfaces
+
+  when: vm_type == "vagrant"
+
+- block:
+  - name: Rebuild resolvconf for DNS resolution
+    command: >
+      resolvconf -u
+
+  - name: Restart networking
+    command: >
+      service network-interface restart INTERFACE=eth0
+
+  when: resolvconf|changed or interfaces|changed

@@ -1,0 +1,9 @@
+---
+- include: rsyslog.yml
+  tags: [rsyslog]
+
+- include: rsyslog_configs.yml
+  tags: [rsyslog, rsyslog-configs]
+
+- include: logrotate.yml
+  tags: [rsyslog, rsyslog-logrotate, logrotate]

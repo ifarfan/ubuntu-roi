@@ -1,0 +1,25 @@
+---
+#===============================================================================
+#
+#  This is a "meta" role; it linearly calls other roles listed under
+#  "dependencies" in meta/main.yml.
+#
+#  After installation, it runs last-minute clean up tasks
+#
+#===============================================================================
+- block:
+  - name: Flush cached-memory
+    command: "/etc/{{ company_name }}/flush_cache_memory.sh"
+    ignore_errors: yes
+    async: 15
+    poll: 0
+
+  - name: Run updatedb
+    command: updatedb
+    async: 15
+    poll: 0
+
+  - debug:
+      var=role_names
+
+  tags: [common, post-steps]

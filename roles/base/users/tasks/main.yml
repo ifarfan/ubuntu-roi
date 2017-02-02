@@ -1,0 +1,12 @@
+---
+- include: admins.yml
+  tags: [users, admin-users]
+
+- include: devs.yml
+  tags: [users, dev-users]
+
+- include: consultants.yml
+  tags: [users, consultant-users]
+
+- include: disabled.yml
+  tags: [users, disabled-users]

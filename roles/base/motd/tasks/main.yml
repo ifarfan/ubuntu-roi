@@ -1,0 +1,9 @@
+---
+- include: motd.yml
+  tags: [motd]
+
+- include: motd-configs.yml
+  tags: [motd, motd-configs]
+
+- include: logrotate.yml
+  tags: [motd, motd-logrotate, logrotate]

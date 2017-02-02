@@ -1,0 +1,40 @@
+#-----------------------------------------------------------------------
+#
+#  S 3 _ B A C K U P . T X T
+#
+#  List of folders to backup to S3 on each server
+#
+#  NOTE:
+#  - Server name determined by "hostname -s"
+#  - Server name followed by ":"
+#  - One server per line
+#  - Single space as delimiter between folder names
+#
+#-----------------------------------------------------------------------
+#  IF:2013-04-11 -- Created
+#-----------------------------------------------------------------------
+frn01:	/etc /usr/lib/nagios/plugins
+frn02:	/etc /usr/lib/nagios/plugins
+frn03:	/etc /usr/lib/nagios/plugins
+frn04:	/etc /usr/lib/nagios/plugins
+back01:	/etc /usr/lib/nagios/plugins /var/lib/tomcat7 /usr/share/tomcat7
+back02:	/etc /usr/lib/nagios/plugins /var/lib/tomcat7 /usr/share/tomcat7
+back03:	/etc /usr/lib/nagios/plugins /var/lib/tomcat7 /usr/share/tomcat7
+back04:	/etc /usr/lib/nagios/plugins /var/lib/tomcat7 /usr/share/tomcat7
+log01:	/etc /usr/lib/nagios/plugins /apps/kibana /apps/logstash/configs
+log02:	/etc /usr/lib/nagios/plugins /apps/kibana /apps/logstash/configs
+mgr01:	/etc /usr/lib/nagios/plugins
+mon:	/etc /apps/collectd /apps/icinga /apps/icingatv /apps/nagios /apps/pnp4nagios /apps/graphios
+mon01:	/etc /apps/collectd /apps/icinga /apps/icingatv /apps/nagios /apps/pnp4nagios /apps/graphios
+mon02:	/etc /apps/collectd /apps/icinga /apps/icingatv /apps/nagios /apps/pnp4nagios /apps/graphios
+rpt:	/etc /usr/lib/nagios/plugins /apps/gdash /opt/graphite/conf /apps/statsd /usr/share/collectd /apps/cloudwatch2graphite
+rpt01:	/etc /usr/lib/nagios/plugins /apps/gdash /opt/graphite/conf /apps/statsd /usr/share/collectd /apps/cloudwatch2graphite
+rpt02:	/etc /usr/lib/nagios/plugins /apps/gdash /opt/graphite/conf /apps/statsd /usr/share/collectd /apps/cloudwatch2graphite
+sen:	/etc /usr/lib/nagios/plugins /apps/sentry
+sen01:	/etc /usr/lib/nagios/plugins /apps/sentry
+sen02:	/etc /usr/lib/nagios/plugins /apps/sentry
+vpn:	/etc /usr/lib/nagios/plugins
+vpn01:	/etc /usr/lib/nagios/plugins
+vpn02:	/etc /usr/lib/nagios/plugins
+#-----------------------------------------------------------------------
+

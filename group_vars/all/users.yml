@@ -1,0 +1,88 @@
+---
+
+#===============================================================================
+#
+#  U S E R S . Y M L
+#
+#===============================================================================
+#  IF:2015-03-15 -- Created
+#===============================================================================
+
+
+
+#============================================
+#
+#  A D M I N   U S E R S
+#
+#============================================
+admin_users_list:
+-
+  username:  ifarfan
+  fullname:  'Israel Farfan'
+  firstname: 'Israel'
+  lastname:  'Farfan'
+  userkey1:  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDStnjk8Rbd+kEthC1bfZRw3OXUH3qCswqPTmXjewZjWjz7+mcf2MRBDBD0Noi9lritXxYDsbUYjcbOMta8GO57Rz/l4kFXwmo9Y12sM3efdEwdlEmf02+A+CwpHEW6OMiAgvLZN0URWI8ZGS3pAKWwjEss1noerB0MJNv5RUHFtY3fT2RfOXliWcBv2h3ye8LMwkyOaMGxcUzz/896JS+BOfqqUSbwLLAZBMMF/LAPPIqpTS8p4nuhWWzV6B0T8eqxCFUTOCu+UnmgzqENoFO1pQm2ByGiChlYrhGkjBEFIt0umkPrghuD3JElmoXLBmu+wg3oIvVhAaI3alaZvfED ifarfan@gmx.com'
+  userkey2:  ''
+  userkey3:  ''
+  htpasswd:  '$apr1$5B9KZx8c$ISUwqqYBvdrj44nxPnptJ0'
+  bcrypt:    '$2a$12$2qnpX1/qwEZpulWHjY7CWOiFiz9CwYKPxizEIu3aMHzYVzk6Gf2ie'
+  email:     'ifarfan@ixf.com'
+  tags:      ['alerts']
+
+
+
+#============================================
+#
+#  R O O T   K E Y S
+#
+#============================================
+root_keys_list:
+-
+  username: root
+  description: 'Primary root key'
+  userkey:  ''
+-
+  username: root
+  description: 'Used by jenkins server'
+  userkey:  ''
+
+
+
+#============================================
+#
+#  D E V   U S E R S
+#
+#============================================
+dev_users_list:
+-
+  username:  abc123
+  fullname:  'John Hancock'
+  firstname: 'John'
+  lastname:  'Hancock'
+  email:     'john.hancock@ixf.com'
+  userkey1:  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDabQvZS/nmwfrU4J/QadkA0e6JOSbL/Js1OPcs4gMnOVVFm3NVeSnKDic8Kt9WGfEM0Flqe8erXx3orrJ2Zi50InqCLnPvAK1I8mocH26rI4gRAfQ2ZVYJMFpSXcit6CCe9uzYH4IvoWB4JsPKBUj2mdQW/AP9iGjgRtjfL3frF0XWrh+g45o03nek+rDn1Am0Vlok3vQEI3lkYpbyZgFD1qCncKXudnGXyZdG0eAjxDQLykCOzgbPdRI52+esTj1EbRug+QfUV4O36Ht03lTuGLeV6if8RSDeUjUm8ScEQqMG9Ee86wnh84yqO003ygylDCKsmZPLgiuzh7/PACEL john.hancock@ixf.com'
+  userkey2:  ''
+  htpasswd:  '$apr1$Km1pNult$3bE6coLR7rAJFmDIhoIh9.'
+  bcrypt:    ''
+
+
+
+#============================================
+#
+#  D E L E T E D   U S E R S  +  K E Y S
+#
+#============================================
+
+# Users to delete and/or that have been deleted
+deleted_users_list:
+- xzy
+- abc
+
+# SSH Keys to delete and/or that have been deleted
+deleted_keys_list:
+-
+  username:  ifarfan
+  userkey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDInnk0E7I9Vt+Iz3cUH+soltYaklRedWEsLxScAmUFo9aH58Ou6SYd8sjPtsThRRcyTIGrJgs32VSHx60aJ/f6XfW/qIse6oi89W6nPf5O9fNj1hYmPIQkPecy80q5my3Ox4D02op1w6bxzaTn/UvrZJcfK3z/OGwcRKJS0zPsFXL7HkVnhPCFT0YPpfn/2b9htQCcloqfke3jJYnG+sqfHYEnM0RhgFISE3BftRHZ+2fIHGXL9j+FOvwkph3F8QOp8HMVgoU5WgSp5JcwPDvjZj13iWsQ2pNGAyPvLCJLe9W1QGT0paQ6rXmzqRhbXvzjBJAmW/LdZVaTlX17AmG/ israel.farfan@refinery29.com'
+-
+  username:  abc
+  userkey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCigqxe9HI/IG1jupngdm40KFLj6E5lg4YVKxACZqIDPK1oSCmy2AwnhjvUD6EejD0qmCNN+CC4yO3K8XJmfhSXvxE2ZZJOUVdTfSXo8KI4rfMagly5iP3YoAnHKCrTSk8sj1+Ge4K//ASergLiOT1pALqSTayftK3D7ssrF8O4jv7bcDqENBP8+mQT1d2F/6T4+339MC3TEmHYUaz+j0plVTW8ov04Ea6c/NR1PcOUkz6EsQf6bvsSxmsw8QcTQ8VpAil4MQgddG7FSRJLALk57Lm0jA6vneUS64mnFip5HZmIImQhbTkDPPqUTHftFkVK4dFq9nS+9vZ8lWMHJtyH adidiego@adidiego-Studio-1558'

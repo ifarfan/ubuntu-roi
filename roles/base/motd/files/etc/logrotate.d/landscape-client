@@ -1,0 +1,31 @@
+#===============================================================================
+#
+#  L A N D S C A P E - C L I E N T
+#
+#===============================================================================
+/var/log/landscape/watchdog.log
+/var/log/landscape/monitor.log
+/var/log/landscape/broker.log
+/var/log/landscape/manager.log {
+    daily
+    rotate 7
+    compress
+    missingok
+    notifempty
+    nocreate
+    postrotate
+        [ -f /var/run/landscape/landscape-client.pid ] && kill -s USR1 `cat /var/run/landscape/landscape-client.pid` > /dev/null 2>&1 || :
+    endscript
+}
+
+/var/log/landscape/package-changer.log
+/var/log/landscape/package-reporter.log
+/var/log/landscape/sysinfo.log
+/var/log/landscape/release-upgrader.log {
+    daily
+    rotate 7
+    compress
+    missingok
+    notifempty
+    nocreate
+}

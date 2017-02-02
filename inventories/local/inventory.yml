@@ -1,0 +1,37 @@
+#=======================================================================
+#
+#  L O C A L
+#
+#=======================================================================
+
+[vagrant]
+# Israel's local vagrant
+ifarfan.local ansible_connection=ssh ansible_ssh_port=2222 ansible_ssh_host=localhost ansible_ssh_user=root ansible_ssh_private_key_file=~/.ssh/ifarfan_rsa host_nick=ifarfan
+
+[elk]
+ifarfan.local
+
+[icinga]
+ifarfan.local
+
+[sentry]
+ifarfan.local
+
+[graphite]
+ifarfan.local
+
+[database]
+ifarfan.local
+
+[rsyslog]
+ifarfan.local
+
+# Global aliases
+[local:children]
+vagrant
+
+[icinga:children]
+vagrant
+
+# [local:children]
+# vagrant

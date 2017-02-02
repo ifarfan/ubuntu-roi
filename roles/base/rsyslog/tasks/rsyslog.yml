@@ -1,0 +1,7 @@
+---
+- name: Install Rsyslog
+  apt:
+    pkg=rsyslog
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}

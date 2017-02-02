@@ -1,0 +1,30 @@
+---
+- name: Create company folder
+  file:
+    path=/opt/{{ company_name }}
+    state=directory
+    owner=root
+    group=root
+
+- name: List of files on company folder
+  local_action: command ls -1 {{ role_path }}/files/opt/{{ company_name }}/
+  become: no
+  changed_when: False
+  register: script_files
+
+- name: Copy files to company folder
+  copy:
+    src=opt/{{ company_name }}/{{ item }}
+    dest=/opt/{{ company_name }}/
+    owner=root
+    group=root
+  with_items: script_files.stdout_lines
+
+- name: Set scripts to be executable
+  shell: >
+    chmod 0755 /opt/{{ company_name }}/*.{{ item }}
+  changed_when: False
+  with_items:
+  - py
+  - sh
+  ignore_errors: yes

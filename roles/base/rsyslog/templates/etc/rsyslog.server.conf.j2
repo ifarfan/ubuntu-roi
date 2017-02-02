@@ -1,0 +1,79 @@
+#===============================================================================
+#
+#  R S Y S L O G . C O N F
+#
+#===============================================================================
+
+# Modules
+$ModLoad imuxsock # provides support for local system logging
+$ModLoad imklog   # provides kernel logging support (previously done by rklogd)
+
+# UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+# TCP syslog reception
+$ModLoad imtcp
+$InputTCPServerRun 514
+
+# Use traditional timestamp format.
+# To enable high precision timestamps, comment out the following line.
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+# Set the default permissions for all log files.
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+#$PreserveFQDN on
+# Don't drop privs because we need to bind to a restricted port
+#$PrivDropToUser syslog
+#$PrivDropToGroup syslog
+
+# Where to place spool files
+$WorkDirectory /var/spool/rsyslog
+
+# Store logs in /opt/logs with the client hostname
+$template PerHostAuth,"/opt/logs/%HOSTNAME%/auth.log"
+$template PerHostCron,"/opt/logs/%HOSTNAME%/cron.log"
+$template PerHostSyslog,"/opt/logs/%HOSTNAME%/syslog"
+$template PerHostDaemon,"/opt/logs/%HOSTNAME%/daemon.log"
+$template PerHostKern,"/opt/logs/%HOSTNAME%/kern.log"
+$template PerHostLpr,"/opt/logs/%HOSTNAME%/lpr.log"
+$template PerHostUser,"/opt/logs/%HOSTNAME%/user.log"
+$template PerHostMail,"/opt/logs/%HOSTNAME%/mail.log"
+$template PerHostMailInfo,"/opt/logs/%HOSTNAME%/mail.info"
+$template PerHostMailWarn,"/opt/logs/%HOSTNAME%/mail.warn"
+$template PerHostMailErr,"/opt/logs/%HOSTNAME%/mail.err"
+$template PerHostNewsCrit,"/opt/logs/%HOSTNAME%/news.crit"
+$template PerHostNewsErr,"/opt/logs/%HOSTNAME%/news.err"
+$template PerHostNewsNotice,"/opt/logs/%HOSTNAME%/news.notice"
+$template PerHostDebug,"/opt/logs/%HOSTNAME%/debug"
+$template PerHostMessages,"/opt/logs/%HOSTNAME%/messages"
+
+auth,authpriv.*         ?PerHostAuth
+# *.*;auth,authpriv.none  -?PerHostSyslog
+*.*                     -?PerHostSyslog
+# cron.*                  ?PerHostCron
+# daemon.*                -?PerHostDaemon
+kern.*                  -?PerHostKern
+# lpr.*                   -?PerHostLpr
+# user.*                  -?PerHostUser
+# mail.info               -?PerHostMailInfo
+# mail.warn               ?PerHostMailWarn
+mail.err                ?PerHostMailErr
+mail.*                  -?PerHostMail
+# news.crit               ?PerHostNewsCrit
+# news.err                ?PerHostNewsErr
+# news.notice             -?PerHostNewsNotice
+*.=debug;\
+   auth,authpriv.none;\
+   news.none;mail.none   -?PerHostDebug
+*.=info;*.=notice;*.=warn;\
+      auth,authpriv.none;\
+      cron,daemon.none;\
+      mail,news.none        -?PerHostMessages

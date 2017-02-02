@@ -1,0 +1,20 @@
+---
+- name: Add s3cmd apt key
+  apt_key:
+    url=http://s3tools.org/repo/deb-all/stable/s3tools.key
+    state=present
+
+# - name: Copy s3tools list
+#   copy:
+#     src=etc/apt/sources.list.d/s3tools.list
+#     dest=/etc/apt/sources.list.d/
+#     owner=root
+#     group=root
+#     mode=0644
+
+- name: Install s3cmd
+  apt:
+    pkg=s3cmd
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}

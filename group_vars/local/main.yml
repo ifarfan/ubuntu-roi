@@ -1,0 +1,12 @@
+---
+#===============================================================================
+#
+#  M A I N . Y M L
+#
+#  Global environment variables
+#
+#===============================================================================
+environment_name: local
+subdomain_name: lcl
+
+apt_install_optional: True

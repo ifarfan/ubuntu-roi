@@ -1,0 +1,37 @@
+---
+- name: Copy default .bashrc files
+  copy:
+    src=etc/skel/_bashrc
+    dest={{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - /etc/skel/.bashrc
+  - /root/.bashrc
+
+- name: Check for /home/ubuntu
+  stat: path=/home/ubuntu
+  register: ubuntu_home
+
+- name: Copy default bashrc file for ubuntu
+  copy:
+    src=etc/skel/_bashrc
+    dest=/home/ubuntu/.bashrc
+    owner=ubuntu
+    group=ubuntu
+    mode=0644
+  when: ubuntu_home.stat.exists
+
+- name: Check for /home/vagrant
+  stat: path=/home/vagrant
+  register: vagrant_home
+
+- name: Copy default bashrc file for vagrant
+  copy:
+    src=etc/skel/_bashrc
+    dest=/home/vagrant/.bashrc
+    owner=vagrant
+    group=vagrant
+    mode=0644
+  when: vagrant_home.stat.exists

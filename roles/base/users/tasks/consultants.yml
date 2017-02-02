@@ -1,0 +1,26 @@
+---
+#
+#  C O N S U L T A N T S
+#
+#  Consultants are only enabled on 'dev'
+#  and 'local' and get 1 ssh key
+#
+- block:
+  - name: Adding Consultant Accounts
+    action: user name={{ item.username }} shell='/bin/bash' comment='{{ item.fullname }}'
+
+  - name: Adding Consultant Key
+    action: authorized_key user={{ item.username }} key='{{ item.userkey }}'
+    with_items: consultant_users_list
+
+  with_items: consultant_users_list
+  when: environment_name in ['local', 'dev'] and item.userkey != ''
+
+- name: Sudoers file for Consultant Users
+  template:
+    src={{ files_dir }}/etc/sudoers.d/25-consultants.j2
+    dest=/etc/sudoers.d/25-consultants
+    owner=root
+    group=root
+    mode=0440
+  when: environment_name in ['local', 'dev'] and 'mgm' not in group_names

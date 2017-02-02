@@ -1,0 +1,43 @@
+---
+- name: Append sys email to aliases file
+  lineinfile: "dest=/etc/aliases regexp='^root' line='root: {{ sys_email }}'"
+  notify: rebuild aliases.db
+
+- name: Copy canonical file
+  template:
+    src=etc/postfix/canonical.j2
+    dest=/etc/postfix/canonical
+    owner=root
+    group=root
+    mode=0644
+  notify: rebuild canonical.db
+
+- name: Copy sasl_passwd file
+  template:
+    src=etc/postfix/sasl_passwd.j2
+    dest=/etc/postfix/sasl_passwd
+    owner=root
+    group=root
+    mode=0644
+  notify: rebuild sasl_passwd.db
+
+- name: Copy new mailname file
+  template:
+    src=etc/mailname.j2
+    dest=/etc/mailname
+    owner=root
+    group=root
+    mode=0644
+  notify: reload postfix
+
+- name: Copy postfix config files
+  template:
+    src=etc/postfix/{{ item }}.j2
+    dest=/etc/postfix/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - main.cf
+  - master.cf
+  notify: reload postfix

@@ -1,0 +1,12 @@
+---
+- include: postfix.yml
+  tags: [postfix]
+
+- include: postfix-configs.yml
+  tags: [postfix, postfix-configs]
+
+- include: postfix-utils.yml
+  tags: [postfix, postfix-utils]
+
+- include: rsyslog.yml
+  tags: [postfix, postfix-rsyslog, rsyslog]

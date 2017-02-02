@@ -1,0 +1,8 @@
+---
+- name: Copy rsyslog logrotate config
+  copy:
+    src=etc/logrotate.d/rsyslog
+    dest=/etc/logrotate.d/
+    owner=root
+    group=root
+    mode=0644

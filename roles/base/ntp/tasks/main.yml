@@ -1,0 +1,18 @@
+---
+- block:
+  - name: Install ntpd
+    apt:
+      pkg=ntp
+      state=present
+      update_cache=yes
+      cache_valid_time={{ apt_cache_time }}
+
+  - name: Copy ntp config
+    copy:
+      src=etc/ntp.conf
+      dest=/etc/
+      owner=root
+      group=root
+      mode=0644
+
+  tags: [ntp]

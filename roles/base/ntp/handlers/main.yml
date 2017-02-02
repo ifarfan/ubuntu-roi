@@ -1,0 +1,6 @@
+---
+- name: reload ntp
+  service:
+    name=ntp
+    state=restarted
+    enabled=yes

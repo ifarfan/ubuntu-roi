@@ -1,0 +1,10 @@
+---
+- name: Install SendEmail (SMTP cmd-line utility)
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+  - libio-socket-ssl-perl
+  - libnet-ssleay-perl
+  - sendemail
+  tags: sendemail

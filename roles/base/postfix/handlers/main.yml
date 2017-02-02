@@ -1,0 +1,19 @@
+---
+- name: reload postfix
+  service:
+    name=postfix
+    state=restarted
+    enabled=yes
+  notify: reload monit
+
+- name: rebuild aliases.db
+  command: newaliases
+  notify: reload postfix
+
+- name: rebuild canonical.db
+  command: postmap /etc/postfix/canonical
+  notify: reload postfix
+
+- name: rebuild sasl_passwd.db
+  command: postmap /etc/postfix/sasl_passwd
+  notify: reload postfix

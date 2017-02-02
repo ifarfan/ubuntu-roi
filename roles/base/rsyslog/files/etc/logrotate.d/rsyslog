@@ -1,0 +1,40 @@
+#===============================================================================
+#
+#  R S Y S L O G
+#
+#===============================================================================
+/var/log/syslog {
+	daily
+	rotate 7
+	compress
+	delaycompress
+	missingok
+	notifempty
+	postrotate
+		reload rsyslog >/dev/null 2>&1 || true
+	endscript
+}
+
+/var/log/mail.info
+/var/log/mail.warn
+/var/log/mail.err
+/var/log/mail.log
+/var/log/daemon.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/lpr.log
+/var/log/cron.log
+/var/log/debug
+/var/log/messages {
+	daily
+	rotate 7
+	compress
+	delaycompress
+	missingok
+	notifempty
+	sharedscripts
+	postrotate
+		reload rsyslog >/dev/null 2>&1 || true
+	endscript
+}

@@ -1,0 +1,16 @@
+---
+- name: Set /etc/hosts
+  template:
+    src=etc/hosts.j2
+    dest=/etc/hosts
+    owner=root
+    group=root
+    mode=0644
+
+- name: Set hostname
+  hostname: name={{ inventory_hostname.split('.', 1)|first() }}
+  register: hostname_update
+
+- name: Refresh fact-gathering to get new hostname values
+  action: setup
+  when: hostname_update|changed

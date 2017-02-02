@@ -1,0 +1,41 @@
+---
+#
+#  Vagrant
+#
+- name: Check if server is running virtualbox
+  shell: >
+    dmidecode -s system-product-name | grep -q -i 'virtualbox'
+  register: vagrant_vm
+  failed_when: False
+  changed_when: False
+
+- name: Set global virtualbox facts
+  set_fact:
+    is_vm=true
+    vm_type="vagrant"
+  when: vagrant_vm|success
+
+#
+#  AWS
+#
+- name: Check if server is an ec2 instance
+  shell: >
+    [ -f /sys/hypervisor/uuid ] && [ `head -c 3 /sys/hypervisor/uuid` == "ec2" ]
+  register: aws_vm
+  failed_when: False
+  changed_when: False
+
+- name: Set global ec2 vm facts
+  set_fact:
+    is_vm=true
+    vm_type="aws"
+  when: aws_vm|success
+
+#
+#  Bare metal
+#
+- name: Set bare metal facts
+  set_fact:
+    is_vm=false
+    vm_type="none"
+  when: aws_vm|failed and vagrant_vm|failed

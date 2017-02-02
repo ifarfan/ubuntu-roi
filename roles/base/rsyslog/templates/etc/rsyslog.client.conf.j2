@@ -1,0 +1,49 @@
+#===============================================================================
+#
+#  R S Y S L O G . C O N F
+#
+#===============================================================================
+
+# Modules
+$ModLoad imuxsock # provides support for local system logging
+$ModLoad imklog   # provides kernel logging support (previously done by rklogd)
+
+# Use traditional timestamp format.
+# To enable high precision timestamps, comment out the following line.
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+# Set the default permissions for all log files.
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+$PrivDropToUser syslog
+$PrivDropToGroup syslog
+
+# Where to place spool files
+$WorkDirectory /var/spool/rsyslog
+
+# Create an additional socket in postfix's chroot in order not to break
+# mail logging when rsyslog is restarted.  If the directory is missing,
+# rsyslog will silently skip creating the socket.
+$AddUnixListenSocket /var/spool/postfix/dev/log
+
+# Do not include configs in /etc/rsyslog.d/
+#$IncludeConfig /etc/rsyslog.d/*.conf
+
+# Drop messages that look like this ("~" is deprecated, using "stop" instead)
+if $programname == 'nrpe' and ( $msg contains 'Could not complete SSL handshake') then stop
+if $programname == 'postfix' and ( $msg contains 'connect from localhost') then stop
+if $programname == 'postfix' and ( $msg contains 'disconnect from localhost') then stop
+if $programname == 'postfix/smtpd' and ( $msg contains 'connect from localhost') then stop
+if $programname == 'postfix/smtpd' and ( $msg contains 'disconnect from localhost') then stop
+
+# Emergencies are sent to everybody logged in.
+*.emerg                 :omusrmsg:*
+
+# Send everything else to the central server
+*.* @@rsyslog
