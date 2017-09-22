@@ -1,0 +1,9 @@
+---
+- name: Set sysctl flags for redis
+  copy:
+    src=etc/sysctl.d/90-redis.conf
+    dest=/etc/sysctl.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: run sysctl

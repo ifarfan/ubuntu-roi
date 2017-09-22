@@ -1,0 +1,27 @@
+---
+- name: Check for existing Solr install
+  stat: path=/var/lib/solr
+  register: solr_install
+
+- name: Download Solr
+  get_url:
+    url={{ solr_url }}/{{ solr_file }}
+    dest=/tmp/{{ solr_file }}
+  register: solr_download
+  when: not solr_install.stat.exists
+
+- name: Install Solr
+  script: >
+    scripts/install_solr_service.sh
+    /tmp/{{ solr_file }}
+    -d /var/lib/solr
+    -s solr
+    -u solr
+    creates=/opt/solr
+  when: not solr_install.stat.exists and solr_download.changed
+  notify: reload solr
+
+- name: Remove Solr Install files
+  file:
+    path=/tmp/{{ solr_file }}
+    state=absent

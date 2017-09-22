@@ -1,0 +1,23 @@
+---
+- name: Copy Graphite-carbon configs
+  copy:
+    src=etc/{{ item }}
+    dest=/etc/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - carbon/carbon.conf
+  - carbon/storage-aggregation.conf
+  - carbon/storage-schemas.conf
+  - default/graphite-carbon
+  notify: reload carbon-cache
+
+- name: Copy Graphite-web config
+  template:
+    src=etc/graphite/local_settings.py.j2
+    dest=/etc/graphite/local_settings.py
+    owner=root
+    group=root
+    mode=0644
+  notify: reload carbon-cache

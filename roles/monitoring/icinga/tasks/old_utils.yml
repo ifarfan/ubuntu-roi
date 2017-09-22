@@ -1,0 +1,77 @@
+---
+# Install IcingaTV
+- name: Copy IcingaTV folder
+  copy: src={{ files_dir }}/etc/icingatv dest=/etc/ owner=root group=root
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - icingatv
+
+- name: MySQL create collectd user and grant usage rights
+  shell: "mysql -e \"GRANT SELECT ON icinga.* TO 'icingatv'@'localhost' IDENTIFIED BY 'SRdbJpkAw3Ch'\""
+  ignore_errors: yes
+  tags:
+     - icinga
+     - icingatv
+
+- name: IcingaTV Apache conf
+  file: src=/etc/icingatv/apache2.conf dest=/etc/apache2/conf.d/icingatv.conf owner=root group=root state=link
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - icingatv
+
+
+# Install jNag
+- name: Copy jNag folder
+  copy: src={{ files_dir }}/usr/share/icinga/htdocs/jnag dest=/usr/share/icinga/htdocs/ owner=root group=root
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - jnag
+
+
+# Install NagDash
+- name: Copy Nagios Dashboard folder
+  copy: src={{ files_dir }}/opt/nagdash dest=/opt/
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - nagdash
+
+- name: Nagios Dashboard Apache conf
+  file: src=/opt/nagdash/apache2.conf dest=/etc/apache2/conf.d/nagdash.conf owner=root group=root state=link
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - nagdash
+
+
+# Install Icinga Dashboard
+- name: Copy Icinga Dashboard folder
+  copy: src={{ files_dir }}/opt/icinga-dashboard dest=/opt/
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - icinga-dashboard
+
+- name: Icinga Dashboard Apache conf
+  file: src=/opt/icinga-dashboard/apache2.conf dest=/etc/apache2/conf.d/icinga-dashboard.conf owner=root group=root state=link
+  notify:
+     - reload apache
+     - run updatedb
+  tags:
+     - icinga
+     - icinga-dashboard

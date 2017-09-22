@@ -4,45 +4,7 @@
 #  S E R V E R S - V A G R A N T . Y M L
 #
 #===============================================================================
-# - hosts: all
-#   gather_facts: true
-#   roles:
-#   - _init
-
 - hosts: vagrant
   gather_facts: true
   roles:
   - role: base/init
-
-# - hosts: icinga
-#   gather_facts: true
-#   roles:
-#   - role: _init
-#   - role: databases/mysql-percona
-#   - role: web/apache
-#   - role: monitoring/icinga
-
-# - hosts: elk
-#   gather_facts: true
-#   roles:
-  # - role: _init
-  # - role: web/apache
-  # - role: databases/elasticsearch
-  # - role: tools/logstash
-  # - role: tools/kibana
-
-# - hosts: sentry
-#   gather_facts: true
-#   roles:
-  # - role: _init
-  # - role: web/apache
-  # - role: databases/redis
-  # - role: databases/mysql-percona
-  # - role: monitoring/sentry
-
-# - hosts: graphite
-#   gather_facts: true
-#   roles:
-#   - role: _init
-#   - role: web/apache
-#   - role: tools/graphite

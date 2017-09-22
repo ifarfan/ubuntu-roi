@@ -1,0 +1,62 @@
+#=======================================================================
+#
+#  N G I N X . C O N F
+#
+#=======================================================================
+user                      www-data;
+worker_processes          {{ ansible_processor_vcpus }};
+pid                       /run/nginx.pid;
+worker_rlimit_nofile      20000;
+
+events {
+    worker_connections    4096;
+    multi_accept          on;
+    use                   epoll;
+}
+
+http {
+    #  Basic Settings
+    sendfile              on;
+    tcp_nopush            on;
+    tcp_nodelay           on;
+    types_hash_max_size   2048;
+    server_tokens         off;                       # Hide version
+    more_clear_headers    'Server';                  # Hide webserver
+    more_clear_headers    'X-Powered-By';            # Hide webserver
+    default_type          application/octet-stream;
+
+    #  Timeouts
+    client_body_timeout   10;
+    client_header_timeout 10;
+    keepalive_timeout     15;
+    keepalive_requests    5;
+    send_timeout          10;
+
+    #  SSL Settings
+    ssl_protocols              TLSv1 TLSv1.1 TLSv1.2;   # Dropping SSLv3, ref: POODLE
+    ssl_prefer_server_ciphers  on;
+    ssl_ciphers                "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
+
+    #  Logging Settings
+    access_log            off;
+    log_not_found         off;
+    error_log             syslog:server=localhost warn;
+    # error_log           /var/log/nginx/error.log warn;
+
+    #  Set proxy cache path
+    proxy_cache_path      /var/cache/nginx keys_zone=one:10m;
+    # proxy_cache_path      /var/www-cache/  levels=1:2 keys_zone=image-cache:10m inactive=30d;
+    proxy_store_access    user:rw  group:rw  all:r;
+    proxy_next_upstream   error;
+
+    #  Control buffer overflows
+    client_header_buffer_size    1k;
+    large_client_header_buffers  2 1k;
+    client_max_body_size         18M;
+    client_body_buffer_size      18M;
+
+    #  Virtual Host Configs
+    include /etc/nginx/mime.types;
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
+}

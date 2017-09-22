@@ -1,0 +1,78 @@
+#===============================================================================
+#
+#  O T H E R . C F G
+#
+#===============================================================================
+
+
+#=============================================
+#  NULL server groups
+#=============================================
+define hostgroup{
+    hostgroup_name              null
+    alias                       Null Servers
+}
+define hostgroup{
+    hostgroup_name              r29sites
+    alias                       R29 Site
+}
+define hostgroup{
+    hostgroup_name              othersites
+    alias                       Other Sites
+}
+define hostgroup{
+    hostgroup_name              edgecast
+    alias                       Edgecast Server
+}
+define hostgroup{
+    hostgroup_name              clusters
+    alias                       Cluster Servers
+}
+
+
+    #=============================================
+    #  Edgecast Server
+    #=============================================
+    define host{
+        host_name               edgecast.rf29.net
+        display_name            XXX: Edgecast
+        address                 127.0.0.1
+        hostgroups              null, edgecast
+        use                     default-host-nocheck
+    }
+
+
+    #=============================================
+    #  R29 Sites
+    #=============================================
+    define host{
+        host_name               null.rf29.net
+        display_name            XXX: R29 Sites
+        address                 127.0.0.1
+        hostgroups              null, r29sites
+        use                     default-host-nocheck
+    }
+
+
+    #=============================================
+    #  Other Sites
+    #=============================================
+    define host{
+        host_name               other.rf29.net
+        display_name            XXX: Other Sites
+        address                 127.0.0.1
+        hostgroups              null, othersites
+        use                     default-host-nocheck
+    }
+
+
+    #=============================================
+    #  Cluster Servers
+    #=============================================
+    define host{
+        host_name               clusters.rf29.net
+        display_name            XXX: Cluster Servers
+        address                 127.0.0.1
+        hostgroups              null, clusters
+        use                     default-host-nocheck
+    }

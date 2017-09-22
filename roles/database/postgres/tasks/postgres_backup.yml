@@ -1,0 +1,26 @@
+---
+- name: Create backup folders
+  file:
+    path={{ postgres_backup_folder }}
+    state=directory
+    owner=postgres
+    group=postgres
+
+- name: Postgres backup script
+  template:
+    src=usr/local/bin/autopgsqlbackup.sh.j2
+    dest=/usr/local/bin/autopgsqlbackup.sh
+    owner=root
+    group=root
+    mode=0755
+
+- name: Enable backup thru global /etc/cron.d
+  cron:
+    name="postgres backup"
+    cron_file=postgres_backup
+    state=present
+    user="root"
+    hour="5"
+    minute="{{ 55 | random(step=5) }}"
+    job="/usr/local/bin/autopgsqlbackup.sh 2>&1 | /usr/bin/logger -t postgres_backup"
+  changed_when: False

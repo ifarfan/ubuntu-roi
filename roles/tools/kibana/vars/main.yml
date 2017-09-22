@@ -1,0 +1,5 @@
+---
+kibana_version: '4.1.2'
+kibana_url: 'https://download.elastic.co/kibana/kibana'
+kibana_file: 'kibana-{{ kibana_version }}-linux-x64.tar.gz'
+kibana_folder:  'kibana-{{ kibana_version }}-linux-x64'

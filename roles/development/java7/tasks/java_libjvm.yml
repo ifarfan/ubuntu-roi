@@ -1,0 +1,15 @@
+---
+- name: Set path to libjvm, needed for Java use on collectd
+  copy:
+    content="{{ libjvm_path|default(False) }}"
+    dest=/etc/ld.so.conf.d/libjvm.conf
+    owner=root
+    group=root
+    mode=0644
+  register: libjvm_set
+
+- name: Refresh dynamic linker paths to activate libjvm
+  command: >
+    ldconfig
+  changed_when: False
+  when: libjvm_set|changed

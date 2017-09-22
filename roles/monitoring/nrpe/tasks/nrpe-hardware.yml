@@ -1,0 +1,65 @@
+---
+- name: Install NRPE hardware packages
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+  - hddtemp
+  - lm-sensors
+  - smartmontools
+
+- name: Copy NRPE hardware plugins
+  copy:
+    src=usr/lib/nagios/plugins/{{ item }}
+    dest=/usr/lib/nagios/plugins/
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+  - check_linux_bonding.pl
+
+- name: Check for arcconf on "/usr/Adaptec_Event_Monitor"
+  stat: path=/usr/Adaptec_Event_Monitor/arcconf
+  register: adaptec_file
+
+- name: Symlink to arcconf
+  file:
+    src=/usr/Adaptec_Event_Monitor/arcconf
+    dest=/usr/bin/arcconf
+    owner=root
+    group=root
+    state=link
+  when: adaptec_file.stat.exists
+
+- name: Check for arcconf on "/usr/StorMan"
+  stat: path=/usr/StorMan/arcconf
+  register: storman_file
+
+- name: Symlink to arcconf
+  file:
+    src=/usr/StorMan/arcconf
+    dest=/usr/bin/arcconf
+    owner=root
+    group=root
+    state=link
+  when: storman_file.stat.exists
+
+- name: Install RAID support packages
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+  - sg3-utils
+  when: adaptec_file.stat.exists or storman_file.stat.exists
+
+- name: Copy RAID plugins
+  copy:
+    src=usr/lib/nagios/plugins/{{ item }}
+    dest=/usr/lib/nagios/plugins/
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+  - check_aacraid.py
+  - check_adaptec_raid.pl
+  when: adaptec_file.stat.exists or storman_file.stat.exists

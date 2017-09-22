@@ -1,0 +1,9 @@
+---
+- name: Enable gearman monit check
+  copy:
+    src=etc/monit/conf.d/gearman.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit

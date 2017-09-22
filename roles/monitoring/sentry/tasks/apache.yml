@@ -1,0 +1,22 @@
+---
+- name: Install mod-wsgi
+  apt:
+    pkg=libapache2-mod-wsgi
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Copy Sentry Apache conf
+  copy:
+    src=etc/apache2/sites-available/sentry.conf
+    dest=/etc/apache2/sites-available/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload apache
+
+- name: Enable Sentry site
+  command: >
+    a2ensite sentry.conf
+    creates=/etc/apache2/sites-enabled/sentry.conf
+  notify: reload apache

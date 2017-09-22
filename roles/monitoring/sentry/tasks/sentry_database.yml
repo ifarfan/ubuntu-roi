@@ -1,0 +1,14 @@
+---
+- name: Create Sentry database
+  mysql_db:
+    name={{ sentry_sql_db }}
+    encoding=latin1
+    collation=latin1_swedish_ci
+    state=present
+
+- name: Create Sentry user
+  mysql_user:
+    name={{ sentry_sql_usr }}
+    password={{ sentry_sql_pwd }}
+    priv={{ sentry_sql_db }}.*:ALL
+    state=present

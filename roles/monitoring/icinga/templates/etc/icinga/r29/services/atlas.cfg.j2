@@ -1,0 +1,54 @@
+#===============================================================================
+#
+#  A T L A S . C F G
+#
+#===============================================================================
+
+
+#=============================================
+#  Service:  Atlas API call
+#=============================================
+define service {
+        service_description      URL: Atlas API Check
+        servicegroups            url-checks
+        hostgroup_name           atlas                                  ; Checking atlas server
+        check_command            check_url_atlas_api
+        check_interval           2                                      ; Check more often
+        _graphiteprefix          icinga.url_checks
+        _graphitepostfix         url_atlas_api
+        notes                    Check Atlas API call and look for "fuzzy_text_tags" in content to consider the page succesfully rendered
+        use                      default-service-with-graph
+}
+define command {
+        command_name             check_url_atlas_api
+        command_line             $USER1$/check_http -I '$HOSTADDRESS$' -H 'api.atlas.dev.rf29.net' -p 80 -u '/search/entry?offset=52500&limit=5&sort=published%20asc' -s 'fuzzy_text_tags' -w 5 -c 10 -t 30
+}
+
+
+#=============================================
+#  Service:  Atlas Dump Files
+#=============================================
+define service {
+        service_description      Atlas Dump at 00 hours
+        servicegroups            os-checks
+        hostgroup_name           atlas                                  ; Checking atlas server
+        check_command            check_nrpe!check_file_exists_atlasdump!'00'
+        check_interval           30                                     ; Check less often
+        check_period             atlas-dump-00-hours
+        _graphiteprefix          icinga.general
+        _graphitepostfix         atlasdump_file_00
+        notes                    Check Atlas dump output file on /tmp directory
+        use                      default-service-with-graph
+}
+define service {
+        service_description      Atlas Dump at 06 hours
+        servicegroups            os-checks
+        hostgroup_name           atlas                                  ; Checking atlas server
+        check_command            check_nrpe!check_file_exists_atlasdump!'06'
+        check_interval           30                                     ; Check less often
+        check_period             atlas-dump-06-hours
+        _graphiteprefix          icinga.general
+        _graphitepostfix         atlasdump_file_06
+        notes                    Check Atlas dump output file on /tmp directory
+        use                      default-service-with-graph
+}

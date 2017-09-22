@@ -1,0 +1,90 @@
+#===============================================================================
+#
+#  M O N G O D B . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       mongodb-daemon-checks
+    alias                   MONGODB Daemon Checks
+}
+
+
+    #=============================================
+    #  Service: MONGODB
+    #=============================================
+    define service {
+        service_description     Daemon: MONGODB
+        servicegroups           daemon-checks, mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A connect -P 27017 -W 5 -C 10 -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb
+        notes                   Checking connection to local MONGODB daemon with flags "-H localhost -A connect -P 27017 -W 5 -C 10 -D"
+        use                     default-service-with-graph
+    }
+
+
+    define service {
+        service_description     Daemon: MONGODB Open Conns
+        servicegroups           mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A connections -P 27017 -W 70 -C 80 -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb_open_conns
+        notes                   Checking percentage of open connections to MONGODB with flags "-H localhost -A connections -P 27017 -W 70 -C 80 -D"
+        use                     default-service-with-graph
+    }
+
+
+    define service {
+        service_description     Daemon: MONGODB Memory Usage
+        servicegroups           mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A memory -P 27017 -W 1 -C 2 -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb_memory_usage
+        notes                   Checking memory usage in GBs to MONGODB with flags "-H localhost -A memory -P 27017 -W 1 -C 2 -D"
+        use                     default-service-with-graph
+    }
+
+
+    define service {
+        service_description     Daemon: MONGODB Lock Time
+        servicegroups           mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A lock -P 27017 -W 5 -C 10 -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb_lock_time
+        notes                   Checking lock time percentage to MONGODB with flags "-H localhost -A lock -P 27017 -W 5 -C 10 -D"
+        use                     default-service-with-graph
+    }
+
+
+    define service {
+        service_description     Daemon: MONGODB Average Flush
+        servicegroups           mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A flushing -P 27017 -W 250 -C 450 -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb_avg_flush
+        notes                   Checking average flush time in millisecs to MONGODB with flags "-H localhost -A flushing -P 27017 -W 250 -C 450 -D"
+        use                     default-service-with-graph
+    }
+
+
+    define service {
+        service_description     Daemon: MONGODB Queries Per Sec
+        servicegroups           mongodb-daemon-checks
+        hostgroup_name          mgm                                             ; All mgm servers
+        check_command           check_nrpe!check_mongodb!'-H localhost -A queries_per_second -P 27017 -W 150 -C 200 -q update -D'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.mongodb
+        _graphitepostfix        mongodb_queries_sec
+        notes                   Checking queries per second on MONGODB with flags "-H localhost -A flushing -P 27017 -W 100 -C 200 -q update -D"
+        use                     default-service-with-graph
+    }

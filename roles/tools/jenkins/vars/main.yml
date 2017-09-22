@@ -1,0 +1,41 @@
+---
+#===============================================================================
+#
+#  V A R S / M A I N . Y M L
+#
+#===============================================================================
+jenkins_plugins:
+- greenballs
+- timestamper
+- tmpcleaner
+- email-ext
+- persona
+- chucknorris
+- ansicolor
+- github
+- custom-view-tabs
+- google-login
+- google-oauth-plugin
+- groovy
+- hipchat
+- copyartifact
+- s3
+- statusmonitor
+- disk-usage
+- job-dsl
+- view-job-filters
+- rvm
+- credentials
+- jobConfigHistory
+- role-strategy
+# Workflow Plugins
+- workflow-aggregator
+- workflow-api
+- workflow-basic-steps
+- workflow-cps
+- workflow-cps-global-lib
+- workflow-durable-task-step
+- workflow-job
+- workflow-scm-step
+- workflow-step-api
+- workflow-support

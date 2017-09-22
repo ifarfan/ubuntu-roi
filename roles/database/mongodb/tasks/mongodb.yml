@@ -1,0 +1,24 @@
+---
+- name: Add MongoDB repo key
+  apt_key:
+    id=7F0CEB10
+    keyserver=hkp://keyserver.ubuntu.com:80
+    state=present
+
+- name: Add MongoDB repo
+  apt_repository:
+    repo='deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen'
+    state=present
+
+- name: Install MongoDB
+  apt:
+    pkg=mongodb-org
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Install the latest pymongo package
+  pip:
+    name=pymongo
+    state=latest
+    use_mirrors=no

@@ -1,0 +1,127 @@
+#===============================================================================
+#
+#  H A R D W A R E _ O T H E R . C F G
+#
+#===============================================================================
+
+
+#=============================================
+#  Service: IO Stats
+#=============================================
+define service {
+    service_description     HW: IO Stats / [Small]
+    servicegroups           hw-checks
+    hostgroup_name          *, !null, !api, !app, !queue, !web, !mgm, !nfs, !sql
+    check_command           check_nrpe!check_iostat!'-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100'
+    _graphiteprefix         icinga.general
+    _graphitepostfix        io
+    _jnag_image             images/io.png
+    notes                   Checking IO Stats on / with flags "-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100"
+    use                     default-service-with-graph
+}
+define service {
+    service_description     HW: IO Stats / [Medium]
+    servicegroups           hw-checks
+    hostgroup_name          api, app, web
+    check_command           check_nrpe!check_iostat!'-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100'
+    _graphiteprefix         icinga.general
+    _graphitepostfix        io
+    _jnag_image             images/io.png
+    notes                   Checking IO Stats on / with flags "-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100"
+    use                     default-service-with-graph
+}
+define service {
+    service_description     HW: IO Stats / [Large]
+    servicegroups           hw-checks
+    hostgroup_name          mgm, queue, sql
+    check_command           check_nrpe!check_iostat!'-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100'
+    _graphiteprefix         icinga.general
+    _graphitepostfix        io
+    _jnag_image             images/io.png
+    notes                   Checking IO Stats on / with flags "-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100"
+    use                     default-service-with-graph
+}
+define service {
+    service_description     HW: IO Stats / [Xtra-Large]
+    servicegroups           hw-checks
+    hostgroup_name          nfs
+    check_command           check_nrpe!check_iostat!'-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100'
+    _graphiteprefix         icinga.general
+    _graphitepostfix        io
+    _jnag_image             images/io.png
+    notes                   Checking IO Stats on / with flags "-d sda6 -w 10,3000,5000,60 -c 20,4000,6000,100"
+    use                     default-service-with-graph
+}
+
+
+#=============================================
+#  Service: Server Load  (Graph)
+#=============================================
+define service {
+    service_description     HW: Load 8-core
+    servicegroups           hw-checks
+    hostgroup_name          *, !null, !sql
+    check_command           check_nrpe!check_load2!'-w12,10,8 -c20,18,16'
+    check_interval          3                                               ; Check more often
+    _graphiteprefix         icinga.general
+    _graphitepostfix        load
+    _jnag_image             images/load.png
+    notes                   Checking Load with flags "-w12,10,8 -c20,18,16"
+    use                     default-service-with-graph
+}
+define service {
+    service_description     HW: Load 32-core
+    servicegroups           hw-checks
+    hostgroup_name          sql
+    check_command           check_nrpe!check_load2!'-w36,34,32 -c68,66,64'
+    check_interval          3                                               ; Check more often
+    _graphiteprefix         icinga.general
+    _graphitepostfix        load
+    _jnag_image             images/load.png
+    notes                   Checking Load with flags "-w36,34,32 -c68,66,64"
+    use                     default-service-with-graph
+}
+
+
+#=============================================
+#  Service: NIC Bonding
+#=============================================
+define service {
+    service_description     HW: NIC Bonding
+    servicegroups           hw-checks
+    hostgroup_name          *, !null
+    check_command           check_nrpe!check_linux_bonding!'-s --no-bonding=warning --ignore-num-ad'
+    check_interval          3                                               ; Check more often
+    _graphiteprefix         icinga.general
+    _graphitepostfix        nic_bonding
+    _jnag_image             images/network.png
+    notes                   Checking Network card Bonding with flags "-s --no-bonding=warning --ignore-num-ad"
+    use                     default-service
+}
+
+
+#=============================================
+#  Service: RAID
+#=============================================
+define service {
+    service_description     HW: RAID
+    servicegroups           hw-checks
+    hostgroup_name          *, !null, !api, !atlas, !nfs
+    host_name               !web07.prod.rf29.net
+    check_command           check_nrpe_30!check_aacraid!''
+    _graphiteprefix         icinga.general
+    _graphitepostfix        raid
+    notes                   Checking RAID controllers
+    use                     default-service-with-graph
+}
+define service {
+    service_description     HW: RAID
+    servicegroups           hw-checks
+    hostgroup_name          nfs
+    check_period            nfs-raid-check-hours
+    check_command           check_nrpe_30!check_aacraid!''
+    _graphiteprefix         icinga.general
+    _graphitepostfix        raid
+    notes                   Checking RAID controllers
+    use                     default-service-with-graph
+}

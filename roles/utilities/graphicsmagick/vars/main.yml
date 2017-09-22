@@ -1,0 +1,22 @@
+---
+#===============================================================================
+#
+#  V A R S / M A I N . Y M L
+#
+#===============================================================================
+compiler_packages:
+- gcc
+- make
+
+libpng_version: 1.6.18
+libpng_url: http://downloads.sourceforge.net/project/libpng/libpng16/{{ libpng_version }}/libpng-{{ libpng_version }}.tar.gz
+libpng_location: /opt/libpng
+
+libjpeg_version: 1.4.1
+libjpeg_deb: libjpeg-turbo-official_{{ libjpeg_version }}_amd64.deb
+libjpeg_url: http://downloads.sourceforge.net/project/libjpeg-turbo/{{ libjpeg_version }}/{{ libjpeg_deb }}
+libjpeg_location: /opt/libjpeg-turbo
+
+graphicsmagick_version: 1.3.21
+graphicsmagick_url: http://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/{{ graphicsmagick_version }}/GraphicsMagick-{{ graphicsmagick_version }}.tar.gz
+graphicsmagick_location: /opt/graphicsmagick

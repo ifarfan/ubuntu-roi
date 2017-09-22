@@ -1,0 +1,5 @@
+---
+environment_name: local
+subdomain_name: lcl
+
+apt_install_optional: true

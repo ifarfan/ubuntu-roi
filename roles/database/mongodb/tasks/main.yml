@@ -1,0 +1,25 @@
+---
+- include: mongodb.yml
+  tags: [mongodb]
+
+- include: mongodb_configs.yml
+  tags: [mongodb, mongodb-configs]
+
+# Move mongodb location to /opt
+- name: Check for new mongodb directory
+  stat: path={{ mongodb_folder }}
+  register: new_mongodb_dir
+  tags: [mongodb]
+
+- include: mongodb_folder_migration.yml
+  when: not new_mongodb_dir.stat.exists
+  tags: [mongodb]
+
+- include: mongodb_backup.yml
+  tags: [mongodb, mongodb-backup]
+
+- include: logrotate.yml
+  tags: [mongodb, mongodb-logrotate, logrotate]
+
+- include: rsyslog.yml
+  tags: [mongodb, mongodb-rsyslog, rsyslog]

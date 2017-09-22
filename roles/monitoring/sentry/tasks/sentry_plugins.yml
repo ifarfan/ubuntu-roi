@@ -1,0 +1,10 @@
+---
+- name: Install Sentry Plugins
+  pip:
+    name={{ item }}
+    state=present
+    virtualenv=/opt/sentry
+  with_items: sentry_pip_plugins
+  notify:
+  - reload sentry http
+  - reload sentry udp

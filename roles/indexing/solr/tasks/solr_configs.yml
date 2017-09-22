@@ -1,0 +1,36 @@
+---
+- name: Copy Solr config
+  copy:
+    src=var/lib/solr/solr.in.sh
+    dest=/var/lib/solr/
+    owner=solr
+    group=solr
+    mode=0755
+  notify: reload solr
+
+- name: Copy init.d config
+  copy:
+    src=etc/init.d/solr
+    dest=/etc/init.d/
+    owner=root
+    group=root
+    mode=0755
+  notify: reload solr
+
+- name: Copy log4j config
+  copy:
+    src=var/lib/solr/log4j.properties
+    dest=/var/lib/solr/
+    owner=solr
+    group=solr
+    mode=0644
+  notify: reload solr
+
+- name: Copy limits.d config
+  copy:
+    src=etc/security/limits.d/10-solr.conf
+    dest=/etc/security/limits.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload solr

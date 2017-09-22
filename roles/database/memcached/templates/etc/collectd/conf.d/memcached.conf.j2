@@ -1,0 +1,12 @@
+#===============================================================================
+#
+#  M E M C A C H E D . C O N F
+#
+#===============================================================================
+LoadPlugin memcached
+<Plugin memcached>
+	<Instance "localhost">
+		Host "{{ inventory_hostname }}"
+		Port "11211"
+	</Instance>
+</Plugin>

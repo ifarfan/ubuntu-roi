@@ -1,0 +1,9 @@
+---
+- name: Enable jenkins monit check
+  copy:
+    src=etc/monit/conf.d/jenkins.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit

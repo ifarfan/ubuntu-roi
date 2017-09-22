@@ -18,13 +18,3 @@
     mode=0644
   notify: run sysctl
   tags: [sysctl]
-
-# - name: Default sysctl values
-#   copy:
-#     src=etc/sysctl.d/60-default.conf
-#     dest=/etc/sysctl.d/
-#     owner=root
-#     group=root
-#     mode=0644
-#   notify: run sysctl
-#   tags: [sysctl]

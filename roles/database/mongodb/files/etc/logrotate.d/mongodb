@@ -1,0 +1,15 @@
+#===============================================================================
+#
+#  M O N G O D B
+#
+#===============================================================================
+/var/log/mongodb/*.log {
+	daily
+	rotate 5
+	compress
+	dateext
+	delaycompress
+	copytruncate
+	missingok
+	notifempty
+}

@@ -1,0 +1,23 @@
+#===============================================================================
+#
+#  M O N I T R C
+#
+#  Default monitrc
+#
+#===============================================================================
+set daemon 120
+    with start delay 60
+set logfile syslog
+    facility log_daemon
+set idfile /var/lib/monit/id
+set statefile /var/lib/monit/state
+set mailserver localhost
+set eventqueue
+    basedir /var/lib/monit/events
+    slots 100
+set mail-format { from: monit-{{ inventory_hostname }}@{{ domain_name }} }
+set alert {{ sys_email }} only on { timeout }
+set httpd port 2812 and
+    allow {{ monit_usr }}:{{ monit_pwd }}
+
+include /etc/monit/conf.d/*

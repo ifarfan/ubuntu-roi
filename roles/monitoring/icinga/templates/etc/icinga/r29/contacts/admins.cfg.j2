@@ -1,0 +1,49 @@
+#===============================================================================
+#
+#  A D M I N S . C F G
+#
+#  NOTE: Admin users ONLY get to login to icinga-web.
+#
+#  Emails are now ONLY sent to the global Google devops email, this
+#  is done to prevent icinga from mass-mailing everyone, their mom &
+#  their pets when an outage happens and to expedite email delivery to
+#  all devops recipients. The devops user DOES NOT get to login to the
+#  icinga-web
+#
+#===============================================================================
+
+define contactgroup{
+    contactgroup_name   admins
+    alias               Administrator
+}
+
+
+        #=============================================
+        #  EMAIL-ONLY DEVOPS CONTACT
+        #=============================================
+        define contact{
+            contactgroups           admins
+            contact_name            Devops
+            alias                   Devops
+            email                   {{ devops_email }}
+            use                     default-contact
+        }
+
+
+        #=============================================
+        #  CONTACTS
+        #=============================================
+{% for item in administrators %}
+        define contact{
+            contactgroups           admins
+            contact_name            {{ item.name }}
+            alias                   {{ item.fullname }}
+{% if 'graph-alerts' in item.tags %}
+            email                   {{ item.email }}
+            use                     default-contact-graph
+{% else %}
+            email                   /dev/null
+            use                     default-contact
+{% endif %}
+        }
+{% endfor %}

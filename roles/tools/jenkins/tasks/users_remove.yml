@@ -1,0 +1,7 @@
+---
+- name: Remove user folders, that's enough
+  file:
+    path=/var/lib/jenkins/users/{{ item }}
+    state=absent
+  with_items: deleted_users_list
+  notify: reload jenkins

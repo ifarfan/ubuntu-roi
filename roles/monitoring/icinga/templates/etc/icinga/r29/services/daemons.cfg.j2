@@ -1,0 +1,124 @@
+#===============================================================================
+#
+#  D A E M O N S . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name           daemon-checks
+    alias                       Daemon Checks
+}
+
+
+    #=============================================
+    #  Service: COLLECTD  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: COLLECTD
+        servicegroups           daemon-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_procs_perf!'-c 1: -C collectdmon -a collectd.conf'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        collectd
+        _jnag_image             images/procs.png
+        notes                   Checking local COLLECTD running proc "collectdmon" with flag "-c 1: -C collectdmon -a collectd.conf"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: FAIL2BAN  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: FAIL2BAN
+        servicegroups           daemon-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_fail2ban!'-w 5 -c 10 -j ssh'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        fail2ban
+        _jnag_image             images/proc.png
+        notes                   Checking local FAIL2BAN daemon
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: MONIT  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: MONIT
+        servicegroups           daemon-checks
+        hostgroup_name          *, !null
+        check_command           check_monit
+        _graphiteprefix         icinga.general
+        _graphitepostfix        monit
+        _jnag_image             images/monit.png
+        notes                   Checking local MONIT daemon on port TCP/2812 and the services kept alive by Monit currently ignoring ntp info
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_monit
+        command_line            env PYTHON_EGG_CACHE=/tmp $USER1$/check_monit.py -H '$HOSTADDRESS$' -u {{ monit_usr }} -P {{ monit_pwd }} -v -C -e 'ntp'
+    }
+
+
+    #=============================================
+    #  Service: NTP  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: NTP
+        servicegroups           daemon-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_ntp_time!'-H localhost -w 14 -c 18'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        ntp
+        _jnag_image             images/ntp.png
+        notes                   Checking local NTP daemon on port UDP/123
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: NEWRELIC  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: NEWRELIC
+        servicegroups           daemon-checks
+        hostgroup_name          api, web, queue
+        check_command           check_nrpe!check_procs_perf!'-w 2: -c 1: -C nrsysmond'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        newrelic
+        _jnag_image             images/newrelic.png
+        notes                   Checking local NEWRELIC daemon via running procs "nrsysmond"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: SSH
+    #=============================================
+    define service {
+        service_description     Daemon: SSH
+        servicegroups           daemon-checks
+        hostgroup_name          *, !null
+        check_command           check_ssh
+        _jnag_image             images/ssh.png
+        notes                   Checking remote SSH daemon on port TCP/22
+        use                     default-service
+    }
+
+
+    #=============================================
+    #  Service: SUPERVISORD  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: SUPERVISORD
+        servicegroups           daemon-checks
+        hostgroup_name          api
+        check_command           check_nrpe!check_procs_perf!'-c 0: -C supervisord'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        supervisord
+        _jnag_image             images/procs.png
+        notes                   Checking local SUPERVISORD running proc "supervisord" with flag "-c 0: -C supervisord"
+        use                     default-service-with-graph
+    }

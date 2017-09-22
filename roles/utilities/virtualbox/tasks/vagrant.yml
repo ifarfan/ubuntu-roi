@@ -1,0 +1,24 @@
+---
+- name: Check if Vagrant is installed
+  command: >
+    dpkg-query -l vagrant
+  register: vagrant_status
+  failed_when: vagrant_status.rc > 1
+  changed_when: False
+
+- name: Download Vagrant
+  get_url:
+    url={{ vagrant_url }}/{{ vagrant_file }}
+    dest=/tmp/{{ vagrant_file }}
+  register: vagrant_download
+  when: vagrant_status.rc == 1
+
+- name: Install Vagrant
+  apt:
+    deb=/tmp/{{ vagrant_file }}
+  when: vagrant_status.rc == 1 and vagrant_download|success
+
+- name: Remove Vagrant deb file
+  file:
+    path=/tmp/{{ vagrant_file }}
+    state=absent

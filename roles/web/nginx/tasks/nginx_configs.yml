@@ -1,0 +1,36 @@
+---
+- name: Copy main nginx.conf
+  template:
+    src=etc/nginx/nginx.conf.j2
+    dest=/etc/nginx/nginx.conf
+    owner=root
+    group=root
+    mode=0644
+  notify: reload nginx
+
+- name: Copy other nginx configs
+  copy:
+    src=etc/nginx/{{ item }}
+    dest=/etc/nginx/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - mime.types
+  - fastcgi_params
+  notify: reload nginx
+
+- name: Copy nginx conf.d folder
+  copy:
+    src=etc/nginx/conf.d/
+    dest=/etc/nginx/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload nginx
+
+- name: Disable default site
+  file:
+    path=/etc/nginx/sites-enabled/default
+    state=absent
+  notify: reload nginx

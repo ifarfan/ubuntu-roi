@@ -1,0 +1,6 @@
+---
+- include: php-fpm.yml
+  tags: php-fpm
+
+- include: hiredis.yml
+  tags: [php-fpm, phpiredis]

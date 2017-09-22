@@ -1,0 +1,32 @@
+---
+- name: Create Sentry folder
+  file:
+    path=/opt/sentry
+    state=directory
+    owner=root
+    group=root
+
+- name: Install pre-requisites packages
+  apt:
+    pkg={{ item }}
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+  with_items: sentry_apt_requirements
+
+- name: Install Sentry
+  pip:
+    name=sentry[mysql]
+    state=present
+    virtualenv=/opt/sentry
+  notify:
+  - reload sentry http
+  - reload sentry udp
+
+- name: Symlink for admin site
+  file:
+    src=/opt/sentry/lib/python2.7/site-packages/django/contrib/admin/static/admin
+    dest=/opt/sentry/lib/python2.7/site-packages/sentry/static/admin
+    owner=root
+    group=root
+    state=link

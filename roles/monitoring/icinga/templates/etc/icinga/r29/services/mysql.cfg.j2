@@ -1,0 +1,172 @@
+#===============================================================================
+#
+#  M Y S Q L . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       mysql-daemon-checks
+    alias                   MYSQL Daemon Checks
+}
+
+
+    #=============================================
+    #  Service: MYSQL
+    #=============================================
+    define service {
+        service_description     Daemon: MYSQL
+        servicegroups           daemon-checks, mysql-daemon-checks
+        hostgroup_name          mgm, sql-master                                ; SQL MASTERS
+        check_command           check_nrpe!check_mysql!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }}'
+        check_interval          1                                               ; Check more often
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql
+        _jnag_image             images/mysql.png
+        contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+        notes                   Checking local MYSQL Master daemon
+        use                     default-service
+    }
+    define service {
+        service_description     Daemon: MYSQL
+        servicegroups           daemon-checks, mysql-daemon-checks
+        hostgroup_name          sql-slave                                      ; SQL SLAVES
+        check_command           check_nrpe!check_mysql!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }}'
+        check_interval          1                                               ; Check more often
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql
+        _jnag_image             images/mysql.png
+        contacts                pagerduty-service-waking-critical
+        notes                   Checking local MYSQL Slave daemon
+        use                     default-service
+    }
+
+
+    #=============================================
+    #  Service: MYSQL  (Cluster)
+    #=============================================
+    define service {
+        service_description     Daemons: MYSQL [Cluster]
+        servicegroups           daemon-checks, mysql-daemon-checks, cluster-checks
+        hostgroup_name          clusters
+        check_command           check_cluster_service!"MYSQL Daemons"!0!1!{% for item in prod_servers_list if item.type=="sql" %}$SERVICESTATEID:{{ item.fqdn }}:Daemon: MYSQL$,{% endfor %}
+
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_cluster
+        _jnag_image             images/cluster.png
+        notes                   Checking "Daemons: MYSQL" services on ALL "MYSQL" servers
+        use                     default-service
+    }
+    define service {
+        service_description     Hosts: MYSQL [Cluster]
+        servicegroups           daemon-checks, mysql-daemon-checks, cluster-checks
+        hostgroup_name          clusters
+        check_command           check_cluster_host!"MYSQL Hosts"!0!1!{% for item in prod_servers_list if item.type=="sql" %}$HOSTSTATEID:{{ item.fqdn }}$,{% endfor %}
+
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_cluster
+        _jnag_image             images/cluster.png
+        notes                   Checking that ALL "MYSQL" servers are alive
+        use                     default-service
+    }
+
+
+    #=============================================
+    #  Service: MySQL Stats  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: MYSQL Stats
+        servicegroups           mysql-daemon-checks
+        hostgroup_name          mgm, sql
+        check_command           check_nrpe!check_mysqld!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }} -f -a uptime,threads_connected,questions,slow_queries,open_tables -w \',,,,\' -c \',,,,\' '
+        check_interval          2                                              ; Check more often
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_stats
+        _jnag_image             images/mysql.png
+        notes                   Checking local MYSQL Stats
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: MySQL Connections  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: MYSQL Connections
+        servicegroups           mysql-daemon-checks
+        hostgroup_name          mgm, sql
+        check_command           check_nrpe!check_mysql_processlist!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }}' -w 300 -c 500
+        check_interval          1                                              ; Check more often
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_connections
+        contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+        notes                   Checking local MYSQL number of connections with warning at 300 conns and critical at 500 conns
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: MySQL Queries  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: MYSQL Queries
+        servicegroups           mysql-daemon-checks
+        hostgroup_name          mgm, sql
+        check_command           check_nrpe!check_mysql_processlist!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }} -q'
+        check_interval          1                                              ; Check more often
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_queries
+        notes                   Checking local MYSQL queries
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: MySQL Replication
+    #=============================================
+    define service {
+        service_description     Daemon: MySQL Slave
+        servicegroups           daemon-checks, mysql-daemon-checks
+        hostgroup_name          sql-slave
+        check_command           check_nrpe!check_mysql!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }} -S'
+        check_interval          3
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_slave
+        notes                   Checking local MYSQL Slave
+        use                     default-service
+    }
+    define service {
+        service_description     Daemon: MySQL Replication
+        servicegroups           mysql-daemon-checks
+        hostgroup_name          sql-slave
+        check_command           check_nrpe!check_mysql_replication!'-H localhost -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }} -w 600 -c 900'
+        check_interval          3
+        _graphiteprefix         icinga.mysql
+        _graphitepostfix        mysql_replication_delay
+        contacts                pagerduty-service-waking-critical
+        notes                   Checking local MYSQL Slave Replication Delay with warning at 600 secs behind and critical at 900 secs behind
+        use                     default-service-with-graph
+    }
+
+
+    # #=============================================
+    # #  Service: MySQL Counters  (Graph)
+    # #=============================================
+    # define service {
+    #     service_description     Daemon: MYSQL Counters
+    #     servicegroups           mysql-daemon-checks
+    #     hostgroup_name          mgm
+    #     check_command           check_nrpe!check_mysql_counters_p55!'-H localhost -P 3306 -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }}'
+    #     check_interval          2                                            ; Check more often
+    #     _graphiteprefix         icinga.mysql
+    #     _graphitepostfix        mysql_counters
+    #     use                     default-service-with-graph
+    # }
+    # define service {
+    #     service_description     Daemon: MYSQL Counters
+    #     servicegroups           mysql-daemon-checks
+    #     hostgroup_name          sql
+    #     check_command           check_nrpe!check_mysql_counters_p56!'-H localhost -P 3306 -u {{ icinga_sql_usr }} -p {{ icinga_sql_pwd }}'
+    #     check_interval          2                                            ; Check more often
+    #     _graphiteprefix         icinga.mysql
+    #     _graphitepostfix        mysql_counters
+    #     use                     default-service-with-graph
+    # }

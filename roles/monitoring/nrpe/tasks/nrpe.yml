@@ -1,0 +1,17 @@
+---
+- name: Install NRPE packages
+  apt:
+    pkg={{ item }}
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+  with_items: nrpe_packages
+
+- name: Copy NRPE default plugins
+  copy:
+    src=usr/lib/nagios/plugins/{{ item }}
+    dest=/usr/lib/nagios/plugins/
+    owner=root
+    group=root
+    mode=0755
+  with_items: nrpe_default_plugins

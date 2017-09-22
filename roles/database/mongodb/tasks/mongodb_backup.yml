@@ -1,0 +1,26 @@
+---
+- name: Create backup folder
+  file:
+    path=/opt/backups/mongodb
+    state=directory
+    owner=mongodb
+    group=mongodb
+
+- name: Copy automongobackup
+  copy:
+    src=usr/local/bin/automongobackup.sh
+    dest=/usr/local/bin/
+    owner=root
+    group=root
+    mode=0755
+
+- name: Enable backup thru global /etc/cron.d
+  cron:
+    name="mongodb backup"
+    cron_file=mongodb_backup
+    state=present
+    user="root"
+    hour="5"
+    minute="{{ 50 | random(step=10) }}"
+    job="/usr/local/bin/automongobackup.sh 2>&1 | /usr/bin/logger -t backup_mongodb"
+  changed_when: False

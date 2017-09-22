@@ -37,6 +37,6 @@
     file:
       path=/etc/{{ item }}
       state=absent
-    with_items: cron_job_to_remove
+    with_items: "{{ cron_job_to_remove }}"
 
   tags: [cron, cron-configs]

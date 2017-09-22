@@ -1,0 +1,20 @@
+#!/bin/bash
+# Reload a varnish config
+# Author: Kristian Lyngstol
+
+FILE="/etc/varnish/default.vcl"
+SECRET="/etc/varnish/secret"
+
+# Hostname and management port
+# (defined in /etc/default/varnish or on startup)
+HOSTPORT="localhost:6082"
+NOW=`date +%Y%m%d%H%M`
+
+error()
+{
+    echo 1>&2 "Failed to reload $FILE."
+    exit 1
+}
+
+varnishadm -T $HOSTPORT -S $SECRET vcl.load reload$NOW $FILE || error
+varnishadm -T $HOSTPORT -S $SECRET vcl.use reload$NOW || error

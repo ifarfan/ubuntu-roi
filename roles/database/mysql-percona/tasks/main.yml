@@ -1,0 +1,18 @@
+---
+- include: mysql.yml
+  tags: [mysql]
+
+- include: mysql_configs.yml
+  tags: [mysql, mysql-configs]
+
+- include: mysql_users.yml
+  tags: [mysql, mysql-users]
+
+- include: mysql_backup.yml
+  tags: [mysql, mysql-backup]
+
+- include: collectd.yml
+  tags: [mysql, mysql-collectd, collectd]
+
+- include: nrpe.yml
+  tags: [mysql, mysql-nrpe, nrpe]

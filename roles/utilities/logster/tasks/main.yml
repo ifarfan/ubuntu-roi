@@ -1,0 +1,18 @@
+---
+#===============================================================================
+#
+#  T A S K S / M A I N . Y M L
+#
+#===============================================================================
+- include: logster.yml
+  tags: [logster]
+
+- include: logster_parser.yml
+  tags: [logster, logster-parser]
+
+- include: logrotate.yml
+  tags: [logster, logster-logrotate, logrotate]
+
+- include: nginx.yml
+  when: "'nginx' in role_names"
+  tags: [logster, logster-nginx, nginx]

@@ -1,0 +1,11 @@
+---
+mysql_apt_packages:
+- python-pycurl
+- python-mysqldb
+- percona-server-server-5.6
+- percona-toolkit
+- percona-nagios-plugins
+
+mysql_users: []
+
+utf8_enabled: False

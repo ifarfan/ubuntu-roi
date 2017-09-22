@@ -1,50 +1,39 @@
 ---
-#===============================================================================
 #
-#  S E R V E R S - A L L . Y M L
+#  Start up
 #
-#===============================================================================
-# - hosts: all
-#   gather_facts: true
-#   roles:
-#   - _init
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: Install python 2, if not present
+      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+      register: output
+      changed_when: output.stdout not in ["", "\r\n"]
+      # - output.stdout != ""
+      # - output.stdout != "\r\n"
 
-- hosts: vagrant
+- hosts: gunbot
   gather_facts: true
+  become: true
+  roles:
+  - role: base/init
+  - role: development/vim
+  - role: development/nodejs
+
+- hosts: gecko
+  gather_facts: true
+  become: true
+  roles:
+  - role: base/init
+  - role: miscellaneous/gecko
+
+- hosts: testboxes
+  gather_facts: true
+  become: true
   roles:
   # - role: base/init
-  - role: database/memcached
-  - role: monitoring/init
-
-# - hosts: icinga
-#   gather_facts: true
-#   roles:
-#   - role: _init
-#   - role: databases/mysql-percona
-#   - role: web/apache
-#   - role: monitoring/icinga
-
-# - hosts: elk
-#   gather_facts: true
-#   roles:
-  # - role: _init
-  # - role: web/apache
-  # - role: databases/elasticsearch
-  # - role: tools/logstash
-  # - role: tools/kibana
-
-# - hosts: sentry
-#   gather_facts: true
-#   roles:
-  # - role: _init
-  # - role: web/apache
-  # - role: databases/redis
-  # - role: databases/mysql-percona
-  # - role: monitoring/sentry
-
-# - hosts: graphite
-#   gather_facts: true
-#   roles:
-#   - role: _init
-#   - role: web/apache
-#   - role: tools/graphite
+  # - role: development/nodejs
+  # - role: development/vim
+  # - role: development/ruby
+  # - role: database/memcached
+  - role: database/redis

@@ -1,0 +1,143 @@
+---
+- name: Install monit
+  include: monit_install.yml
+
+- name: Configure monit
+  include: monit_configs.yml
+
+- name: Logrotate for monit
+  include: logrotate.yml
+
+
+# BASE
+- name: Monit for Cron
+  include: cron.yml
+  when: "'base/cron' in role_names"
+
+- name: Monit for NTP
+  include: ntp.yml
+  when: "'base/ntp' in role_names"
+
+- name: Monit for Postfix
+  include: postfix.yml
+  when: "'base/postfix' in role_names"
+
+- name: Monit for RSyslog
+  include: rsyslog.yml
+  when: "'base/rsyslog' in role_names"
+
+- name: Monit for SSH
+  include: ssh.yml
+  when: "'base/ssh' in role_names"
+
+
+# DATABASE
+- name: Monit for Memcached
+  include: memcached.yml
+  when: "'database/memcached' in role_names"
+
+- name: Monit for Mongodb
+  include: mongodb.yml
+  when: "'database/mongodb' in role_names"
+
+- name: Monit for MySQL-Percona
+  include: mysql-percona.yml
+  when: "'database/mysql-percona' in role_names"
+
+- name: Monit for Postgres
+  include: postgres.yml
+  when: "'database/postgres' in role_names"
+
+- name: Monit for Redis
+  include: redis.yml
+  when: "'database/redis' in role_names"
+
+
+# INDEXING
+- name: Monit for Elasticsearch
+  include: elasticsearch.yml
+  when: "'indexing/elasticsearch' in role_names"
+
+- name: Monit for Solr
+  include: solr.yml
+  when: "'indexing/solr' in role_names"
+
+
+# MONITORING
+- name: Monit for Collectd
+  include: collectd.yml
+  when: "'monitoring/collectd' in role_names"
+
+- name: Monit for Graphite
+  include: graphite.yml
+  when: "'monitoring/graphite' in role_names"
+
+- name: Monit for NRPE
+  include: nrpe.yml
+  when: "'monitoring/nrpe' in role_names"
+
+- name: Monit for Sentry
+  include: sentry.yml
+  when: "'monitoring/sentry' in role_names"
+
+
+# SYSTEM
+- name: Monit for NFS Server
+  include: nfs-server.yml
+  when: "'system/nfs-server' in role_names"
+
+- name: Monit for RabbitMQ
+  include: rabbitmq.yml
+  when: "'system/rabbitmq' in role_names"
+
+
+# TOOLS
+- name: Monit for Filebeat
+  include: filebeat.yml
+  when: "'tools/filebeat' in role_names"
+
+- name: Monit for Gearman
+  include: gearman.yml
+  when: "'tools/gearman' in role_names"
+
+- name: Monit for Jenkins
+  include: jenkins.yml
+  when: "'tools/jenkins' in role_names"
+
+- name: Monit for Kibana
+  include: kibana.yml
+  when: "'tools/kibana' in role_names"
+
+- name: Monit for Logstash
+  include: logstash.yml
+  when: "'tools/logstash' in role_names"
+
+- name: Monit for New Relic
+  include: newrelic.yml
+  when: "'tools/newrelic' in role_names"
+
+
+# WEB
+- name: Monit for Apache
+  include: apache.yml
+  when: "'web/apache' in role_names"
+
+- name: Monit for HAProxy
+  include: haproxy.yml
+  when: "'web/haproxy' in role_names"
+
+- name: Monit for NGINX
+  include: nginx.yml
+  when: "'web/nginx' in role_names"
+
+- name: Monit for PHP-FPM
+  include: php-fpm.yml
+  when: "'web/php-fpm' in role_names"
+
+- name: Monit for Tomcat
+  include: tomcat.yml
+  when: "'web/tomcat' in role_names"
+
+- name: Monit for Varnish
+  include: varnish.yml
+  when: "'web/varnish' in role_names"

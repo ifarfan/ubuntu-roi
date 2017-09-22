@@ -1,0 +1,24 @@
+---
+- block:
+  - name: Install Vim packages
+    apt:
+      pkg={{ item }}
+      state=present
+    with_items:
+    - vim
+    - vim-common
+    - vim-runtime
+
+  - name: Download spf13-vim script
+    get_url:
+      url=https://j.mp/spf13-vim3
+      dest=~/spf13-vim.sh
+      mode=0440
+
+  - name: Install spf13-vim
+    shell: >
+      sh spf13-vim.sh
+      chdir=~/
+      creates=~/.spf13-vim-3
+
+  tags: [vim]

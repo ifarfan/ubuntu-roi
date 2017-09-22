@@ -1,0 +1,152 @@
+#===============================================================================
+#
+#  P A G E R D U T Y . C F G
+#
+#===============================================================================
+define contactgroup{
+    contactgroup_name   pagerduty
+    alias               PagerDuty Alerts
+}
+
+
+        #=============================================
+        #  CONTACTS - HOST ALERT ONLY (DAY + NIGHT)
+        #=============================================
+        define contact{
+            contact_name                    pagerduty-host-waking
+            contactgroups                   pagerduty
+            alias                           PagerDuty Day Host Alerts
+
+            # HOST CHECKING ONLY
+            host_notification_period        pagerduty-waking-hours
+            host_notification_options       d,u                                 ; Notify Only On: D=Down & U=Unreachable
+            host_notification_commands      notify-host-by-pagerduty
+
+            # NO SERVICE CHECKS
+            service_notification_period     never
+            service_notification_options    n
+            service_notification_commands   return-ok
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+        define contact{
+            contact_name                    pagerduty-host-sleeping
+            contactgroups                   pagerduty
+            alias                           PagerDuty Night Host Alerts
+
+            # HOST CHECKING ONLY
+            host_notification_period        pagerduty-sleeping-hours
+            host_notification_options       d,u                                 ; Notify Only On: D=Down & U=Unreachable
+            host_notification_commands      notify-host-by-pagerduty
+
+            # NO SERVICE CHECKS
+            service_notification_period     never
+            service_notification_options    n
+            service_notification_commands   return-ok
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+
+
+        #=============================================
+        #  CONTACTS - SERVICE ALERTS (WAKING HOURS)
+        #=============================================
+        define contact{
+            contact_name                    pagerduty-service-waking-warning-critical
+            contactgroups                   pagerduty
+            alias                           PagerDuty Day Service Alerts (Warning and Critical)
+
+            # NO HOST CHECKS
+            host_notification_period        never
+            host_notification_options       n
+            host_notification_commands      return-ok
+
+            # SERVICE CHECKS ONLY
+            service_notification_period     pagerduty-waking-hours
+            service_notification_options    u,c,w                               ; Notify Only On: U=Unknown & C=Critical & W=WARNING
+            service_notification_commands   notify-service-by-pagerduty
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+        define contact{
+            contact_name                    pagerduty-service-waking-critical
+            contactgroups                   pagerduty
+            alias                           PagerDuty Day Service Alerts (Critical Only)
+
+            # NO HOST CHECKS
+            host_notification_period        never
+            host_notification_options       n
+            host_notification_commands      return-ok
+
+            # SERVICE CHECKS ONLY
+            service_notification_period     pagerduty-waking-hours
+            service_notification_options    u,c                                 ; Notify Only On: U=Unknown & C=Critical
+            service_notification_commands   notify-service-by-pagerduty
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+
+
+        #=============================================
+        #  CONTACTS - SERVICE ALERTS (SLEEPING HOURS)
+        #=============================================
+        define contact{
+            contact_name                    pagerduty-service-sleeping-warning-critical
+            contactgroups                   pagerduty
+            alias                           PagerDuty Night Service Alerts (Warning and Critical)
+
+            # NO HOST CHECKS
+            host_notification_period        never
+            host_notification_options       n
+            host_notification_commands      return-ok
+
+            # SERVICE CHECKS ONLY
+            service_notification_period     pagerduty-sleeping-hours
+            service_notification_options    u,c,w                               ; Notify Only On: U=Unknown & C=Critical & W=WARNING
+            service_notification_commands   notify-service-by-pagerduty
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+        define contact{
+            contact_name                    pagerduty-service-sleeping-critical
+            contactgroups                   pagerduty
+            alias                           PagerDuty Night Service Alerts (Critical Only)
+
+            # NO HOST CHECKS
+            host_notification_period        never
+            host_notification_options       n
+            host_notification_commands      return-ok
+
+            # SERVICE CHECKS ONLY
+            service_notification_period     pagerduty-sleeping-hours
+            service_notification_options    u,c                                 ; Notify Only On: U=Unknown & C=Critical
+            service_notification_commands   notify-service-by-pagerduty
+
+            pager                           {{ icinga_pagerduty_api }}
+        }
+
+
+        #=============================================
+        #  COMMANDS -- Used with PagerDuty Agent/Daemon
+        #=============================================
+        define command{
+            command_name                    notify-service-by-pagerduty
+            command_line                    sudo /usr/share/pdagent-integrations/bin/pd-nagios -n service -k {{ icinga_pagerduty_generic_api_key }} -t "$NOTIFICATIONTYPE$" -f SERVICEDESC="$SERVICEDESC$" -f SERVICESTATE="$SERVICESTATE$" -f HOSTNAME="$HOSTNAME$" -f SERVICEOUTPUT="$SERVICEOUTPUT$"
+        }
+        define command{
+            command_name                    notify-host-by-pagerduty
+            command_line                    sudo /usr/share/pdagent-integrations/bin/pd-nagios -n host -k {{ icinga_pagerduty_generic_api_key }} -t "$NOTIFICATIONTYPE$" -f HOSTNAME="$HOSTNAME$" -f HOSTSTATE="$HOSTSTATE$"
+        }
+
+
+        # #=============================================
+        # #  COMMANDS -- Used with PagerDuty perl script
+        # #=============================================
+        # define command{
+        #     command_name                    notify-service-by-pagerduty
+        #     command_line                    sudo /usr/local/bin/pagerduty_icinga.pl enqueue -f pd_nagios_object=service
+        # }
+        # define command{
+        #     command_name                    notify-host-by-pagerduty
+        #     command_line                    sudo /usr/local/bin/pagerduty_icinga.pl enqueue -f pd_nagios_object=host
+        # }

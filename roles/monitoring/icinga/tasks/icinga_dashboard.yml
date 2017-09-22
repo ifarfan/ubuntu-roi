@@ -1,0 +1,25 @@
+---
+- name: Copy Icinga Dashboard
+  unarchive:
+    src=tmp/icinga-dashboard.tar.gz
+    dest=/opt/
+    copy=yes
+  notify: reload apache
+
+- name: Set Icinga Dashboard config
+  template:
+    src=opt/icinga-dashboard/merlin.php.j2
+    dest=/opt/icinga-dashboard/merlin.php
+    owner=root
+    group=root
+    mode=0644
+  notify: reload apache
+
+- name: Symlink Icinga Dashboard Apache conf
+  file:
+    src=/opt/icinga-dashboard/apache2.conf
+    dest=/etc/apache2/sites-enabled/icinga-dashboard.conf
+    owner=root
+    group=root
+    state=link
+  notify: reload apache

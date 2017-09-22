@@ -1,0 +1,12 @@
+---
+- include: solr.yml
+  tags: [solr]
+
+- include: solr_configs.yml
+  tags: [solr, solr-configs]
+
+- include: solr_core.yml
+  tags: [solr, solr-core]
+
+# - include: logrotate.yml
+#   tags: [solr, solr-logrotate, logrotate]

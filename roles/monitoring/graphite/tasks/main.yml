@@ -1,0 +1,12 @@
+---
+- name: Install Graphite
+  include: graphite.yml
+
+- name: Configure Graphite
+  include: graphite_configs.yml
+
+- name: Configure MySQL backed
+  include: mysql.yml
+
+- name: Configure Apache backed
+  include: apache.yml

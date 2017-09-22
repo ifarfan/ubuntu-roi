@@ -1,0 +1,121 @@
+#===============================================================================
+#
+#  S O L R . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       solr-checks
+    alias                   SOLR Checks
+}
+
+
+    #=============================================
+    #  Service: SOLR
+    #=============================================
+    define service {
+        service_description     Daemon: SOLR
+        servicegroups           daemon-checks, solr-checks
+        hostgroup_name          solr-master                                    ; SOLR MASTERS
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080'
+        check_interval          2                                              ; Check more often
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr
+        _jnag_image             images/solr.png
+        contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+        notes                   Checking local SOLR Master daemon on port TCP/8080
+        use                     default-service
+    }
+    define service {
+        service_description     Daemon: SOLR
+        servicegroups           daemon-checks, solr-checks
+        hostgroup_name          solr-slave                                     ; SOLR SLAVES
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080'
+        check_interval          2                                              ; Check more often
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr
+        _jnag_image             images/solr.png
+        contacts                pagerduty-service-waking-critical
+        notes                   Checking local SOLR Slave daemon on port TCP/8080
+        use                     default-service
+    }
+
+
+    #=============================================
+    #  Service: SOLR Global Stats
+    #=============================================
+    define service {
+        service_description     Daemon: SOLR NumDocs
+        servicegroups           solr-checks
+        hostgroup_name          solr
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o numdocs'
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr_numdocs
+        _jnag_image             images/solr.png
+        notes                   Checking SOLR NumDocs
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: SOLR cache
+        servicegroups           solr-checks
+        hostgroup_name          solr
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o cache'
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr_cache
+        _jnag_image             images/solr.png
+        notes                   Checking SOLR Cache
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: SOLR updates
+        servicegroups           solr-checks
+        hostgroup_name          solr
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o updates'
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr_updates
+        _jnag_image             images/solr.png
+        notes                   Checking SOLR Updates
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: SOLR Replication Stats
+    #=============================================
+    define service {
+        service_description     Daemon: SOLR Replication
+        servicegroups           solr-checks
+        hostgroup_name          solr
+        check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o response -n /replication'
+        _graphiteprefix         icinga.solr
+        _graphitepostfix        solr_response_replication
+        _jnag_image             images/solr.png
+        notes                   Checking SOLR Replication
+        use                     default-service-with-graph
+    }
+
+
+    # #=============================================
+    # #  Service: SOLR Response Stats
+    # #=============================================
+    # define service {
+    #     service_description     Daemon: SOLR Response /update
+    #     servicegroups           solr-checks
+    #     hostgroup_name          solr
+    #     check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o response -n /update'
+    #     _graphiteprefix         icinga.solr
+    #     _graphitepostfix        solr_response_update
+    #     _jnag_image             images/solr.png
+    #     notes                   Checking SOLR Response /update
+    #     use                     default-service-with-graph
+    # }
+    # define service {
+    #     service_description     Daemon: SOLR Response /select
+    #     servicegroups           solr-checks
+    #     hostgroup_name          solr
+    #     check_command           check_nrpe!check_solr!'-H localhost -p 8080 -o response -n /select'
+    #     _graphiteprefix         icinga.solr
+    #     _graphitepostfix        solr_response_select
+    #     _jnag_image             images/solr.png
+    #     notes                   Checking SOLR Response /select
+    #     use                     default-service-with-graph
+    # }

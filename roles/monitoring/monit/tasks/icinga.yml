@@ -1,0 +1,36 @@
+---
+- name: Enable icinga monit check
+  copy:
+    src=etc/monit/conf.d/icinga.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit
+
+- name: Enable graphios monit check
+  copy:
+    src=etc/monit/conf.d/graphios.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit
+
+- name: Enable nagios-api monit check
+  copy:
+    src=etc/monit/conf.d/nagios-api.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit
+
+- name: Enable pagerduty-agent monit check
+  copy:
+    src=etc/monit/conf.d/pagerduty-agent.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit

@@ -1,0 +1,14 @@
+---
+#
+#  To test logstash configs:
+#
+#  java -jar logstash.jar agent --configtest --config <yourconfigfile>
+#
+- name: Copy logstash default config
+  copy:
+    src=etc/default/logstash
+    dest=/etc/default/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload logstash

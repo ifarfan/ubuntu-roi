@@ -1,0 +1,20 @@
+---
+icinga_sql_usr:
+icinga_sql_pwd:
+icinga_mysql_users: []
+icinga_alert_email:
+
+# Icinga web-interface user (hash obtained via htpasswd)
+icinga_http_usr:
+icinga_http_pwd:
+icinga_http_hash:
+
+# PagerDuty
+# This key maps to Icinga service
+icinga_pagerduty_api:
+# This key maps to the Generic API service
+icinga_pagerduty_generic_api_key:
+
+# IcingaTV
+icingatv_usr:
+icingatv_pwd:

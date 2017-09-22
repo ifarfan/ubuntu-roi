@@ -1,0 +1,32 @@
+---
+- block:
+  - name: Install gecko git repo
+    git:
+      repo='git://github.com/askmike/gekko.git'
+      dest={{ gecko_path }}
+      update=no
+
+  - name: Install gecko dependencies
+    npm:
+      path={{ gecko_path }}
+      production=yes
+
+  - name: Set gecko systemd config
+    template:
+      src=gecko.service.j2
+      dest=/lib/systemd/system/gecko.service
+      owner={{ gecko_user }}
+      group={{ gecko_group }}
+      mode=0644
+    notify: reload gecko
+
+  - name: Set gecko UI config
+    template:
+      src=UIconfig.js.j2
+      dest={{ gecko_path }}/web/vue/UIconfig.js
+      owner={{ gecko_user }}
+      group={{ gecko_group }}
+      mode=0644
+    notify: reload gecko
+
+  tags: gecko

@@ -1,0 +1,199 @@
+---
+
+#===============================================================================
+#
+#  M A I N . Y M L
+#
+#===============================================================================
+#  IF:2014-06-10 -- Created
+#  IF:2014-07-22 -- Remove default mysql, if present
+#  IF:2014-08-01 -- Created Icinga monitoring SQL user
+#  IF:2014-08-05 -- Tweaked swappiness for MySQL
+#  IF:2014-08-11 -- Added automysqlbackup
+#  IF:2014-08-25 -- Moved swappiness to common role
+#  IF:2014-08-27 -- Updated collectd@localhost mysql user
+#  IF:2014-10-29 -- Add Analytics users
+#  IF:2014-11-11 -- Added tcp-conns counters on collectd
+#===============================================================================
+
+
+# Uninstall default MySQL
+- name: Uninstall default MySQL
+  apt: pkg={{ item }} state=absent purge=yes
+  with_items:
+     - mysql-common
+     - mysql-server
+     - mysql-server-core-5.5
+     - mysql-client-5.5
+     - mysql-client-core-5.5
+  notify:
+     - flush cached-memory
+     - run updatedb
+  tags: mysql-percona5.5
+
+
+# Pre-requisites
+- name: Install python libs
+  apt: pkg={{ item }} state=present
+  with_items:
+     - python-pycurl
+     - python-mysqldb
+  notify:
+     - flush cached-memory
+     - run updatedb
+  tags: mysql-percona5.5
+
+
+# Add Percona Repo and Signing Key
+- name: Add Percona signing key
+  apt_key: url=http://www.percona.com/downloads/RPM-GPG-KEY-percona state=present
+  tags: mysql-percona5.5
+
+- name: Add Percona repo
+  apt_repository: repo='deb http://repo.percona.com/apt precise main' state=present
+  tags: mysql-percona5.5
+
+
+# Install MySQL unattended
+- name: Install Percona 5.5 Server + Client
+  apt: pkg={{ item }} state=present update_cache=yes cache_valid_time={{ apt_cache_time }}
+  with_items:
+    - percona-server-common-5.5
+    - percona-server-client-5.5
+    - percona-server-server-5.5
+  notify:
+     - flush cached-memory
+     - run updatedb
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  tags: mysql-percona5.5
+
+
+# Enable grc color syntax
+- name: Copy grc.config for color syntax
+  copy: src={{ files_dir }}/etc/mysql/grc.config dest=/etc/mysql/ owner=root group=root mode=0644 backup=no
+  notify:
+     - run updatedb
+  tags: mysql-percona5.5
+
+
+# Custom my.cnf
+- name: Copy my.cnf
+  copy: src={{ files_dir }}/etc/mysql/my.cnf dest=/etc/mysql/ owner=root group=root mode=0644 backup=no
+  notify:
+     - reload mysql
+     - run updatedb
+  tags: mysql-percona5.5
+
+
+# Copy and enable monit check
+- name: Copy and enable monit check
+  copy: src={{ files_dir }}/etc/monit/conf.d/mysql.conf dest=/etc/monit/conf.d/ owner=root group=root mode=0644 backup=no
+  notify:
+     - reload monit
+     - run updatedb
+  tags:
+     - monit
+     - mysql-percona5.5
+
+
+# Create CollectD user
+- name: MySQL create collectd user and grant usage rights
+  shell: "mysql -e \"GRANT USAGE ON *.* TO 'collectd'@'localhost' IDENTIFIED BY 'collectdl0vesU'\""
+  ignore_errors: yes
+  tags:
+     - collectd
+     - mysql-percona5.5
+
+- name: MySQL grant replication rights to collectd user
+  shell: "mysql -e \"GRANT REPLICATION CLIENT ON *.* TO 'collectd'@'localhost'\""
+  ignore_errors: yes
+  tags:
+     - collectd
+     - mysql-percona5.5
+
+
+# Enable collectd plugin
+- name: Enable collectd plugin
+  copy: src={{ files_dir }}/etc/collectd/conf.d/{{ item }} dest=/etc/collectd/conf.d/ owner=root group=root mode=0644 backup=no
+  with_items:
+    - mysql.conf
+    - tcpconns_mysql.conf
+  notify:
+     - reload collectd
+     - run updatedb
+  tags:
+     - collectd
+     - mysql-percona5.5
+
+
+# Create Icinga monitoring user
+- name: MySQL create local icinga MySQL monitoring user and grant minimum rights
+  shell: "mysql -e \"GRANT SELECT, REPLICATION CLIENT, SHOW DATABASES, SUPER, PROCESS ON *.* TO '{{ icinga_sql_usr }}'@'localhost' IDENTIFIED BY '{{ icinga_sql_pwd }}'\""
+  ignore_errors: yes
+  tags:
+     - icinga
+     - mysql-percona5.5
+
+- name: MySQL create remote icinga MySQL monitoring user and grant minimum rights
+  shell: "mysql -e \"GRANT USAGE ON *.* TO '{{ icinga_sql_usr }}'@'%' IDENTIFIED BY '{{ icinga_sql_pwd }}'\""
+  ignore_errors: yes
+  tags:
+    - icinga
+    - mysql-percona5.5
+
+
+# Install MySQL Backup
+- name: Install MySQL Backup
+  apt: pkg=automysqlbackup state=present
+  notify:
+     - flush cached-memory
+     - run updatedb
+  tags:
+    - automysqlbackup
+    - mysql-percona5.5
+
+- name: Create Backup folder
+  file: path=/opt/backups/mysql state=directory owner=mysql group=mysql
+  notify:
+     - run updatedb
+  tags:
+    - automysqlbackup
+    - mysql-percona5.5
+
+- name: Copy default etc config
+  copy: src={{ files_dir }}/etc/default/automysqlbackup dest=/etc/default/ owner=root group=root mode=0644 backup=no
+  notify:
+     - run updatedb
+  tags:
+    - automysqlbackup
+    - mysql-percona5.5
+
+
+# Add Analytics Users
+- name: Add Analytics users to db
+  shell: "mysql -e \"GRANT USAGE ON *.* TO '{{ item.username }}'@'%' IDENTIFIED BY '{{ item.mysqlpwd }}'\""
+  with_items: atlas_users_list
+  when: item.mysqlpwd != ''
+  ignore_errors: yes
+  tags:
+    - atlas-users
+    - mysql-percona5.5
+
+- name: Add Analytics users to R29 db
+  shell: "mysql -e \"GRANT SELECT ON r29.* TO '{{ item.username }}'@'%'\""
+  with_items: atlas_users_list
+  when: item.mysqlpwd != ''
+  ignore_errors: yes
+  tags:
+    - atlas-users
+    - mysql-percona5.5
+
+- name: Add Analytics users to Rocketship db
+  shell: "mysql -e \"GRANT SELECT ON rocketship.* TO '{{ item.username }}'@'%'\""
+  with_items: atlas_users_list
+  when: item.mysqlpwd != ''
+  ignore_errors: yes
+  tags:
+    - atlas-users
+    - mysql-percona5.5

@@ -1,0 +1,10 @@
+---
+- name: Create mysql users
+  mysql_user:
+    name={{ item.name }}
+    host="{{ item.host|default(False) or item.mysql_host }}"
+    password="{{ item.password|default(False) or item.mysql_password }}"
+    priv="{{ item.priv|default(False) or item.mysql_priv }}"
+    state="{{ item.state|default(False) or 'present' }}"
+  register: user
+  with_items: mysql_users

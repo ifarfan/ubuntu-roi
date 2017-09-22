@@ -14,6 +14,5 @@
       owner=root
       group=root
       mode=0444
-
-  notify: reload ssh
+    notify: reload ssh
   tags: [ssh]

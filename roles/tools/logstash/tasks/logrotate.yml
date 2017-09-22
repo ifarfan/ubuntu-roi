@@ -1,0 +1,8 @@
+---
+- name: Copy Logstash logrotate config
+  copy:
+    src=etc/logrotate.d/logstash
+    dest=/etc/logrotate.d/
+    owner=root
+    group=root
+    mode=0644

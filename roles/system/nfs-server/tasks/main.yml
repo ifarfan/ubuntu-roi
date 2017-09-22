@@ -1,0 +1,14 @@
+---
+#===============================================================================
+#
+#  T A S K S / M A I N . Y M L
+#
+#===============================================================================
+- include: nfs-server.yml
+  tags: [nfs-server]
+
+- include: nfs-server_configs.yml
+  tags: [nfs-server, nfs-server-configs]
+
+- include: nrpe.yml
+  tags: [nfs-server, nfs-server-nrpe, nrpe]

@@ -1,0 +1,9 @@
+---
+- include: logstash.yml
+  tags: [logstash]
+
+- include: logstash_configs.yml
+  tags: [logstash, logstash-configs]
+
+- include: logrotate.yml
+  tags: [logstash, logstash-logrotate, logrotate]

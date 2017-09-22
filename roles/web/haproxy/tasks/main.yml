@@ -1,0 +1,9 @@
+---
+- include: haproxy.yml
+  tags: [haproxy]
+
+- include: haproxy_configs.yml
+  tags: [haproxy, haproxy-configs]
+
+- include: logrotate.yml
+  tags: [haproxy, haproxy-logrotate, logrotate]

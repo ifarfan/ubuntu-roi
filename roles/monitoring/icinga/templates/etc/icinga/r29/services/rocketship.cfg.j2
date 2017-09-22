@@ -1,0 +1,75 @@
+#===============================================================================
+#
+#  R O C K E T S H I P . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       rocketship-daemon-checks
+    alias                   Rocketship Checks
+}
+
+
+    #=============================================
+    #  Service: ROCKETSHIP  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: ROCKETSHIP
+        servicegroups           daemon-checks, rocketship-daemon-checks
+        hostgroup_name          api, app
+        check_command           check_nrpe!check_procs_perf!'-w 3: -c 1: -C \'python\' -a \'/etc/rocketship\''
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        rocketship
+        _jnag_image             images/python.png
+        notes                   Checking local ROCKETSHIP running procs with flag "-w 3: -c 1: -C python -a /etc/rocketship"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service:  ROCKETSHIP Children  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: ROCKETSHIP child0
+        servicegroups           url-checks, rocketship-daemon-checks
+        hostgroup_name          api, app
+        check_command           check_nrpe_60!check_http!'-H \'localhost\' -p 9000 -u \'/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G\' -w 10 -c 20 -t 55'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.url_checks
+        _graphitepostfix        rocketship_child0
+        notes                   Checking ROCKETSHIP child0 running on port 9000 and url "/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G"
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: ROCKETSHIP child1
+        servicegroups           url-checks, rocketship-daemon-checks
+        hostgroup_name          api, app
+        check_command           check_nrpe_60!check_http!'-H \'localhost\' -p 9001 -u \'/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G\' -w 10 -c 20 -t 55'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.url_checks
+        _graphitepostfix        rocketship_child1
+        notes                   Checking ROCKETSHIP child1 running on port 9001 and url "/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G"
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: ROCKETSHIP child2
+        servicegroups           url-checks, rocketship-daemon-checks
+        hostgroup_name          api, app
+        check_command           check_nrpe_60!check_http!'-H \'localhost\' -p 9002 -u \'/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G\' -w 10 -c 20 -t 55'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.url_checks
+        _graphitepostfix        rocketship_child2
+        notes                   Checking ROCKETSHIP child2 running on port 9002 and url "/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G"
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: ROCKETSHIP child3
+        servicegroups           url-checks, rocketship-daemon-checks
+        hostgroup_name          api, app
+        check_command           check_nrpe_60!check_http!'-H \'localhost\' -p 9003 -u \'/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G\' -w 10 -c 20 -t 55'
+        check_interval          2                                               ; Check more often
+        _graphiteprefix         icinga.url_checks
+        _graphitepostfix        rocketship_child3
+        notes                   Checking ROCKETSHIP child3 running on port 9003 and url "/shops/api/1/status?api_key=046z0d00sWoUKWkAdgmKVYbxRVFhT39G"
+        use                     default-service-with-graph
+    }

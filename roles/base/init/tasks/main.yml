@@ -19,7 +19,4 @@
     async: 15
     poll: 0
 
-  - debug:
-      var=role_names
-
   tags: [common, post-steps]

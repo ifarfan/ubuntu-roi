@@ -1,0 +1,73 @@
+#===============================================================================
+#
+#  U R L _ A D D T L . C F G
+#
+#===============================================================================
+
+
+#=============================================
+#  Service:  R29 Webpages (External)
+#=============================================
+{% for item in url_www_list %}
+define service {
+        service_description      URL: R29 [{{ item.name }}] [External]
+        servicegroups            url-checks
+        hostgroup_name           r29sites                              ; Checking external site
+        check_command            check_url_r29_{{ loop.index }}_ext
+        check_interval           2                                     ; Check more often
+        _graphiteprefix          icinga.url_checks
+        _graphitepostfix         url_r29_{{ loop.index }}_ext
+        notes                    Check R29 "{{ item.name }}" webpage (www.refinery29.com) and look for "Connect with R29" to consider the page succesfully rendered
+        use                      default-service-with-graph
+}
+define command {
+        command_name             check_url_r29_{{ loop.index }}_ext
+        command_line             $USER1$/check_http -H 'www.refinery29.com' -p 80 -u '{{ item.url }}' -s 'Connect with R29' -w 5 -c 10 -t 30 -f follow
+}
+
+{% endfor %}
+
+
+
+#=============================================
+#  Service:  R29 Webpages (Internal)
+#=============================================
+{% for item in url_www_list %}
+define service {
+        service_description      URL: R29 [{{ item.name }}]
+        servicegroups            url-checks
+        hostgroup_name           web, fw                               ; Checking web servers
+        check_command            check_url_r29_{{ loop.index }}_int
+        check_interval           2                                     ; Check more often
+        _graphiteprefix          icinga.url_checks
+        _graphitepostfix         url_r29_{{ loop.index }}_int
+        notes                    Check R29 "{{ item.name }}" webpage (www.refinery29.com{{ item.url }}) and look for "Connect with R29" in the footer to consider the page succesfully rendered
+        use                      default-service-with-graph
+}
+define command {
+        command_name             check_url_r29_{{ loop.index }}_int
+        command_line             $USER1$/check_http -I '$HOSTADDRESS$' -H 'www.refinery29.com' -p 80 -u '{{ item.url }}' -s 'Connect with R29' -w 15 -c 25 -t 45 -f follow
+}
+
+{% endfor %}
+
+
+
+#=============================================
+#  Service:  http://refinery29.com/
+#=============================================
+define service {
+        service_description      URL: refinery29.com
+        servicegroups            url-checks
+        hostgroup_name           othersites
+        check_command            check_url_root_refinery29_com
+        check_interval           3                                     ; Check more often
+        _graphiteprefix          icinga.url_checks
+        _graphitepostfix         url_r29_{{ loop.index }}_int
+        notes                    Check root homepage (refinery29.com/) and look for "Connect with R29" in the footer to consider the page succesfully rendered
+        use                      default-service-with-graph
+}
+define command {
+        command_name             check_url_root_refinery29_com
+        command_line             $USER1$/check_http -H 'refinery29.com' -p 80 -u '/' -s 'Connect with R29' -w 15 -c 25 -t 45 -f follow
+}

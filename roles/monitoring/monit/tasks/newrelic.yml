@@ -1,0 +1,9 @@
+---
+- name: Enable newrelic monit check
+  copy:
+  src=etc/monit/conf.d/newrelic.conf
+  dest=/etc/monit/conf.d/
+  owner=root
+  group=root
+  mode=0644
+  notify: reload monit

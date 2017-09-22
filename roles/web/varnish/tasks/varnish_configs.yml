@@ -1,0 +1,55 @@
+---
+
+- name: Ensure varnish folders exists
+  file:
+    path=/{{ item }}
+    state=directory
+    owner=root
+    group=root
+  with_items:
+     - etc/varnish
+     - srv/cache
+
+- name: Copy varnish startup config
+  template:
+    src=etc/{{ item }}.j2
+    dest=/etc/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - varnish/maintenance.vcl
+    - default/varnish
+
+- name: Copy our site config
+  template:
+    src=etc/varnish/default.vcl.j2
+    dest=/etc/varnish/default.vcl
+    owner=root
+    group=root
+    mode=0644
+  notify: reload varnish
+  tags: varnish-config
+
+- name: Copy varnish helper scripts
+  copy:
+    src=usr/local/bin/varnishreload
+    dest=/usr/local/bin/varnishreload
+    owner=root
+    group=root
+    mode=0755
+    backup=no
+
+- name: Copy varnish helper configs
+  copy:
+    src=etc/{{ item }}
+    dest=/etc/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+    backup=no
+  with_items:
+     - varnish/secret
+     - default/varnishlog
+     - default/varnishncsa
+

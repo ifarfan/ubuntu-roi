@@ -1,0 +1,25 @@
+---
+#===============================================================================
+#
+#  T A S K S / L O G S T E R . Y M L
+#
+#===============================================================================
+- name: Install logcheck
+  apt:
+    pkg=logcheck
+    state=latest
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Download logster
+  git:
+    repo=https://github.com/etsy/logster.git
+    dest={{ logster_folder }}
+    version=master
+    update=no
+
+- name: Install Logster
+  command: >
+    python setup.py install
+    chdir="{{ logster_folder }}"
+    creates=/usr/local/bin/logster

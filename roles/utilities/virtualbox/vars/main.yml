@@ -1,0 +1,17 @@
+---
+virtualbox_version: '4.3.30'
+virtualbox_user: vboxuser
+virtualbox_group: vboxgroup
+
+extensionpack_file: Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_version }}.vbox-extpack
+extensionpack_url: http://download.virtualbox.org/virtualbox/{{ virtualbox_version }}/
+extensionpack_install_folder: /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+
+vagrant_version: '1.7.4'
+vagrant_file: vagrant_{{ vagrant_version }}_x86_64.deb
+vagrant_url: https://dl.bintray.com/mitchellh/vagrant
+
+packer_version: '0.8.6'
+packer_file: packer_{{ packer_version }}_linux_amd64.zip
+packer_url: https://dl.bintray.com/mitchellh/packer
+packer_folder: '/opt/packer.io'

@@ -1,15 +1,11 @@
 ---
-#===============================================================================
-#
-#  M A I N . Y M L
 #
 #  Global site variables
 #
-#===============================================================================
-timezone: 'Etc/GMT'
-company_name: 'ixf'
-domain_name: '{{ company_name }}.com'
+timezone: 'Etc/UTC'
+company_name: 'cubitus'
+domain_name: '{{ company_name }}.io'
 sys_email: sys@{{ domain_name }}
 
-apt_install_optional: False
+apt_install_optional: false
 apt_cache_time: 1800

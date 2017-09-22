@@ -8,8 +8,8 @@
 
 - name: List of files on company folder
   local_action: command ls -1 {{ role_path }}/files/opt/{{ company_name }}/
-  become: no
-  changed_when: False
+  become: false
+  changed_when: false
   register: script_files
 
 - name: Copy files to company folder
@@ -18,13 +18,31 @@
     dest=/opt/{{ company_name }}/
     owner=root
     group=root
-  with_items: script_files.stdout_lines
+  with_items: "{{ script_files.stdout_lines }}"
 
-- name: Set scripts to be executable
-  shell: >
-    chmod 0755 /opt/{{ company_name }}/*.{{ item }}
-  changed_when: False
-  with_items:
-  - py
-  - sh
-  ignore_errors: yes
+# - name: Create multiple extension string
+#   set_fact:
+#     extensions: "{{ executable_ext | join('\|') }}"
+
+# - name: List of scripts
+#   shell: |
+#       ls -1 *.{%raw%}{{%endraw%}{{ extensions }}{%raw%}}{%endraw%}
+#   args:
+#     chdir: /opt/{{ company_name }}
+#   register: executable_files
+#   changed_when: false
+#   ignore_errors: yes
+
+# - debug:
+#     var: executable_files
+
+# - name: Set scripts to be executable
+#   # shell: >
+#   #   chmod 0755 /opt/{{ company_name }}/*.{{ item }}
+#   # changed_when: false
+#   # with_items: [ py, rb, js, sh ]
+#   # ignore_errors: yes
+#   file:
+#     path: /opt/{{ company_name }}/{{ item }}
+#     mode: "u+x"
+#   with_items: "{{ executable_files.stdout_lines }}"

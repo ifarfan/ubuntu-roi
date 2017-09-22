@@ -1,0 +1,92 @@
+---
+- name: Add Jenkins repo
+  apt_repository:
+    repo='deb http://pkg.jenkins-ci.org/debian binary/'
+    state=present
+
+- name: Add Jenkins signing key
+  apt_key:
+    url=http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+    state=present
+
+- name: Install Jenkins
+  apt:
+    pkg=jenkins
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Install XML + XSLT libraries
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+  - libxml2-dev
+  - libxslt1-dev
+
+- name: Install Python Jenkins API + lxml
+  pip:
+    name={{ item }}
+    state=present
+  with_items:
+  - autojenkins
+  - jenkinsapi
+  - lxml
+
+
+
+# Refresh Jenkins update-center (else plugins won't install)
+- name: Get Jenkins updates via update-center.json
+  get_url:
+    url=http://updates.jenkins-ci.org/update-center.json
+    dest=/var/lib/jenkins/
+    owner=jenkins
+    group=jenkins
+    mode=0440
+  register: jenkins_updates
+  tags: jenkins-update-center
+
+- name: Restart Jenkins if update-center.json is new
+  shell: "service jenkins restart"
+  when: jenkins_updates.changed
+  tags: jenkins-update-center
+
+- name: Wait for Jenkins restart
+  wait_for:
+    host=127.0.0.1
+    port=8080
+    delay=10
+    timeout=60
+    state=started
+  when: jenkins_updates.changed
+  tags: jenkins-update-center
+
+- name: Load update-center to Jenkins
+  shell: >
+    "cat /var/lib/jenkins/update-center.json | /bin/sed '1d;$d' | /usr/bin/curl -X POST -H 'Accept: application/json' -d @- http://localhost:8080/updateCenter/byId/default/postBack"
+  when: jenkins_updates.changed
+  notify: reload jenkins
+  tags: jenkins-update-center
+
+- name: Install Plugins
+  shell: >
+    java -jar /var/cache/jenkins/war/WEB-INF/jenkins-cli.jar -s http://localhost:8080/ install-plugin {{ item }}
+  with_items: jenkins_plugins
+  notify: reload jenkins
+
+# Install default config.xml last, after all installs
+- name: Check for previous config.xml
+  stat: path=/var/lib/jenkins/config.xml
+  register: config_xml
+  tags: jenkins-config
+
+- name: Copy default config.xml
+  template:
+    src=var/lib/jenkins/config.xml.j2
+    dest=/var/lib/jenkins/config.xml
+    owner=jenkins
+    group=jenkins
+    mode=0644
+  when: not config_xml.stat.exists
+  notify: reload jenkins
+  tags: jenkins-config

@@ -1,14 +1,4 @@
 ---
-- name: Set /etc/timezone, tzdata will update /etc/localtime
-  template:
-    src=etc/timezone.j2
-    dest=/etc/timezone
-    owner=root
-    group=root
-    mode=0644
-  register: set_timezone
-
-- name: update tzdata
-  command: >
-    dpkg-reconfigure --frontend noninteractive tzdata
-  when: set_timezone|changed
+- name: Set timezone
+  timezone:
+    name={{ timezone }}

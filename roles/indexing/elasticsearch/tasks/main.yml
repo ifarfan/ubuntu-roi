@@ -1,0 +1,15 @@
+---
+- include: elasticsearch.yml
+  tags: [elasticsearch]
+
+- include: elasticsearch_configs.yml
+  tags: [elasticsearch, elasticsearch-configs]
+
+- include: elasticsearch_plugins.yml
+  tags: [elasticsearch, elasticsearch-plugins]
+
+- include: elasticsearch_utils.yml
+  tags: [elasticsearch, elasticsearch-utils]
+
+- include: logrotate.yml
+  tags: [elasticsearch, elasticsearch-logrotate, logrotate]

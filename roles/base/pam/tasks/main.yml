@@ -2,7 +2,8 @@
 - block:
   - name: List of pam.d configs
     local_action: command ls -1 {{ role_path }}/files/etc/pam.d/
-    changed_when: False
+    changed_when: false
+    become: false
     register: pamd_files
 
   - name: Copy pam.d configs
@@ -12,6 +13,6 @@
       owner=root
       group=root
       mode=0644
-    with_items: pamd_files
+    with_items: "{{ pamd_files.stdout_lines }}"
 
   tags: [pam]

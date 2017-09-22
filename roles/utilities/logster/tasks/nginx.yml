@@ -1,0 +1,23 @@
+---
+#===============================================================================
+#
+#  T A S K S / L O G S T E R _ P A R S E R. Y M L
+#
+#===============================================================================
+- name: Install Custom Parsers
+  copy:
+    src=tmp/{{ item }}
+    dest={{ logster_parser_path }}
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+  - NginxLogster.py
+
+- name: Cron Job to parse nginx logs
+  cron:
+    name='logster nginx'
+    hour='*'
+    minute='*/5+{{ [1,2,3,4] | random }}'
+    job='/usr/local/bin/logster --metric-prefix=logster.{{ inventory_hostname|replace(".", "_") }} --output=graphite --graphite-host=graphite:2003 --graphite-protocol=tcp NginxLogster /var/log/nginx/r29-access.log 2>&1 | /usr/bin/logger -t logster_nginx'
+  changed_when: False

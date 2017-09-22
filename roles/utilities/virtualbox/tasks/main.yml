@@ -1,0 +1,12 @@
+---
+- include: virtualbox.yml
+  tags: [virtualbox]
+
+- include: extension-pack.yml
+  tags: [virtualbox, extension-pack]
+
+- include: vagrant.yml
+  tags: [virtualbox, vagrant]
+
+- include: packer.yml
+  tags: [virtualbox, packer]

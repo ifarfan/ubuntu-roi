@@ -1,0 +1,40 @@
+#===============================================================================
+#
+#  S L A C K . C F G
+#
+#===============================================================================
+define contactgroup{
+    contactgroup_name   slack
+    alias               Slack Alerts
+}
+
+
+        #=============================================
+        #  CONTACTS
+        #=============================================
+        define contact {
+            contactgroups                   slack
+            contact_name                    slack
+            alias                           Slack Room Alerting
+            host_notification_period        24x7
+            host_notification_options       d,r,s                               ; Notify Only On: D=Down & R=Recovery & S=Scheduled Downtime
+            host_notification_commands      notify-host-by-slack
+            service_notification_period     24x7
+            service_notification_options    w,u,c,r,s                           ; Notify Only On: W=WARNING & U=Unknown & C=Critical & R=Recovery & S=Scheduled Downtime
+            service_notification_commands   notify-service-by-slack
+            email                           /dev/null
+        }
+
+
+        #=============================================
+        #  COMMANDS
+        #=============================================
+        define command {
+            command_name     notify-service-by-slack
+            command_line     sudo /usr/local/bin/slack_icinga.pl -field slack_channel=#{{ slack_channel }} -field HOSTALIAS="$HOSTNAME$" -field SERVICEDESC="$SERVICEDESC$" -field SERVICESTATE="$SERVICESTATE$" -field SERVICEOUTPUT="$SERVICEOUTPUT$" -field NOTIFICATIONTYPE="$NOTIFICATIONTYPE$"
+        }
+
+        define command {
+            command_name     notify-host-by-slack
+            command_line     sudo /usr/local/bin/slack_icinga.pl -field slack_channel=#{{ slack_channel }} -field HOSTALIAS="$HOSTNAME$" -field HOSTSTATE="$HOSTSTATE$" -field HOSTOUTPUT="$HOSTOUTPUT$" -field NOTIFICATIONTYPE="$NOTIFICATIONTYPE$"
+        }

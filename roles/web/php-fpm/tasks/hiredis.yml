@@ -1,0 +1,86 @@
+---
+- name: Stat /usr/local/include/hiredis
+  stat: path=/usr/local/include/hiredis
+  register: usr_local_include_hiredis
+
+- name: Stat /usr/local/lib/libhiredis.a
+  stat: path=/usr/local/lib/libhiredis.a
+  register: usr_local_lib_libhiredisa
+
+- name: Get HiRedis from GitHub
+  git:
+    repo=https://github.com/redis/hiredis.git
+    dest=/tmp/hiredis
+    version=master
+  when: &hiredis_installed_test >
+    not (usr_local_include_hiredis.stat.exists
+    and usr_local_lib_libhiredisa.stat.isreg)
+  notify: rmdir /tmp/hiredis
+
+- name: Compile and install HiRedis
+  shell: >
+    make && make install
+    chdir=/tmp/hiredis/
+    executable=/bin/bash
+  when: *hiredis_installed_test
+
+- name: Find PHP extension-dir
+  shell: >
+    /usr/bin/php-config --extension-dir
+    executable=/bin/bash
+  changed_when: False
+  register: phpext_dir
+
+- name: Stat phpiredis.so
+  stat: path="{{ phpext_dir.stdout }}/phpiredis.so"
+  register: phpiredis
+
+- name: Get Phpiredis from GitHub
+  git: >
+    repo=https://github.com/nrk/phpiredis.git
+    dest=/tmp/phpiredis
+    version=master
+  notify: rmdir /tmp/phpiredis
+  when: &phpiredis_present_test not phpiredis.stat.exists
+
+- name: Compile and install Phpiredis
+  shell: >
+    /usr/bin/phpize
+    && ./configure
+    --enable-phpiredis
+    --with-hiredis-dir=/usr/local;
+    /usr/bin/make
+    && /usr/bin/make install
+    chdir=/tmp/phpiredis/
+    executable=/bin/bash
+  register: phpiredis_install
+  ignore_errors: yes
+  when: *phpiredis_present_test
+
+- name: Copy Phpiredis.ini
+  copy:
+    src=etc/php5/conf.d/phpiredis.ini
+    dest=/etc/php5/{{ item }}/
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - conf.d
+  - mods-available
+  notify:
+  - restart php-fpm
+
+- name: Stat /etc/php5/fpm/conf.d
+  stat: path=/etc/php5/fpm/conf.d
+  register: php5_fpm_conf_dir
+
+- name: Enable Phpiredis.ini if conf.d is a symlink directory
+  file:
+    src=../../mods-available/phpiredis.ini
+    dest=/etc/php5/fpm/conf.d/30-phpiredis.ini
+    owner=root
+    group=root
+    state=link
+    force=yes
+  when: php5_fpm_conf_dir.stat.islnk
+  notify: restart php-fpm

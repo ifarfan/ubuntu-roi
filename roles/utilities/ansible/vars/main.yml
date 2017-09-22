@@ -1,0 +1,10 @@
+ansible_apt_packages:
+- gcc
+- libgmp-dev
+- python-dev
+- python-setuptools
+
+ansible_pip_packages:
+- prettytable
+
+ansible_version_to_install: 1.9.2

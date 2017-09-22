@@ -1,0 +1,18 @@
+---
+- name: Configure HAProxy
+  copy:
+    src=etc/haproxy/haproxy.cfg
+    dest=/etc/haproxy/
+    owner=root
+    group=root
+    mode=644
+  notify: reload haproxy
+
+- name: Copy /etc/default/haproxy
+  copy:
+    src=etc/default/haproxy
+    dest=/etc/default/
+    owner=root
+    group=root
+    mode=644
+  notify: reload haproxy

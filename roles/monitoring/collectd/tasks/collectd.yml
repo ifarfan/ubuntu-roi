@@ -1,0 +1,17 @@
+---
+- name: Install collectd packages
+  apt:
+    pkg=collectd
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Create additional collectd folders
+  file:
+    path=/etc/collectd/{{ item }}
+    state=directory
+    owner=root
+    group=root
+  with_items:
+  - conf.d
+  - plugins

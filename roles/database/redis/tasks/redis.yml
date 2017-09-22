@@ -1,0 +1,19 @@
+---
+- name: Add Redis PPA
+  apt_repository:
+    repo='ppa:chris-lea/redis-server'
+    state=present
+
+- name: Install Redis
+  apt:
+    pkg=redis-server
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+
+- name: Ensure Redis folder exists
+  file:
+    path=/etc/redis
+    state=directory
+    owner=root
+    group=root

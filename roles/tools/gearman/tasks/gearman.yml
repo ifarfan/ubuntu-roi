@@ -1,0 +1,25 @@
+---
+#
+#  Gearman in U14.04 is managed via upstart, hence there's no need to
+#  automate startup during install and the primary config is located
+#  under /etc/init/gearman-job-server.conf
+#
+- name: Install packages
+  apt:
+    pkg={{ item }}
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+  with_items: gearman_apt_packages
+
+- name: Set gearman config files
+  copy:
+    src=etc/{{ item }}
+    dest=/etc/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - default/gearman-job-server
+  - init/gearman-job-server.conf
+  notify: reload gearman

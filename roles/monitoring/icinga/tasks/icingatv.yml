@@ -1,0 +1,36 @@
+---
+- name: Copy IcingaTV folder
+  unarchive:
+    src=tmp/icingatv.tar.gz
+    dest=/etc/
+    copy=yes
+  notify: reload apache
+
+- name: Set icingatv configs
+  template:
+    src=etc/icingatv/{{ item }}.j2
+    dest=/etc/icingatv/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - config.js
+  - config.php
+  notify: reload icinga
+
+- name: Symlink IcingaTV Apache conf
+  file:
+    src=/etc/icingatv/apache2.conf
+    dest=/etc/apache2/sites-enabled/icingatv.conf
+    owner=root
+    group=root
+    state=link
+  notify: reload apache
+
+- name: Create MySQL icingatv user and grant usage rights
+  mysql_user:
+    host=localhost
+    name={{ icingatv_usr }}
+    password={{ icingatv_pwd }}
+    priv=icinga.*:SELECT
+    state=present

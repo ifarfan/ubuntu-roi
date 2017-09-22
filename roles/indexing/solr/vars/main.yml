@@ -1,0 +1,6 @@
+---
+solr_version: '5.1.0'
+solr_url: http://archive.apache.org/dist/lucene/solr/{{ solr_version }}
+solr_file: solr-{{ solr_version }}.tgz
+
+solr_core: 'mycore'

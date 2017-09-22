@@ -1,0 +1,260 @@
+#===============================================================================
+#
+#  F W . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       fw-daemon-checks
+    alias                   FW Daemon Checks
+}
+
+
+    #=============================================
+    #  Service: HAPROXY
+    #=============================================
+    define service {
+        service_description     Daemon: HAPROXY
+        servicegroups           fw-daemon-checks, daemon-checks
+        hostgroup_name          fw
+        check_command           check_nrpe!check_haproxy_stats!'-s /var/run/haproxy/haproxy.sock'
+        _graphiteprefix         icinga.haproxy
+        _graphitepostfix        haproxy
+        _jnag_image             images/haproxy.png
+        contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+        notes                   Checking local HAPROXY daemon
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: HAPROXY ping
+        servicegroups           fw-daemon-checks
+        hostgroup_name          fw
+        check_command           check_haproxy_ping
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.haproxy
+        _graphitepostfix        haproxy_ping
+        _jnag_image             images/haproxy.png
+        notes                   Checking HAPROXY ping by HTTP hit to "www.refinery29.com/ping" and expecting text "PONG"
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_haproxy_ping
+        command_line            $USER1$/check_http -I '$HOSTADDRESS$' -H 'www.refinery29.com' -S -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    }
+    define service {
+        service_description     Daemon: HAPROXY ssl expire cert [30 days]
+        servicegroups           fw-daemon-checks
+        hostgroup_name          fw
+        check_command           check_haproxy_ssl_cert
+        check_interval          720                                            ; Check every 12 hours
+        notification_interval   720                                            ; Match to check_interval
+        _graphiteprefix         icinga.haproxy
+        _graphitepostfix        haproxy_ssl_cert
+        _jnag_image             images/haproxy.png
+        notes                   Checking HAPROXY SSL cert with flags "-ssl -p 443 -C 30 -w 5 -c 10 -t 30"
+        use                     default-service
+    }
+    define command {
+        command_name            check_haproxy_ssl_cert
+        command_line            $USER1$/check_http -I '$HOSTADDRESS$' -ssl -p 443 -C 30 -w 5 -c 10 -t 30
+    }
+
+
+
+    # #=============================================
+    # #  Service: POUND
+    # #=============================================
+    # # define service {
+    # #     service_description     Daemon: POUND
+    # #     servicegroups           fw-daemon-checks, daemon-checks
+    # #     hostgroup_name          fw
+    # #     check_command           check_nrpe!check_pound_stat!''
+    # #     _graphiteprefix         icinga.pound
+    # #     _graphitepostfix        pound
+    # #     _jnag_image             images/pound.png
+    # #     contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+    # #     notes                   Checking local POUND daemon
+    # #     use                     default-service
+    # # }
+    # define service {
+    #     service_description     Daemon: POUND ping
+    #     servicegroups           fw-daemon-checks
+    #     hostgroup_name          fw
+    #     check_command           check_pound_ping
+    #     check_interval          1                                               ; Check every minute
+    #     _graphiteprefix         icinga.pound
+    #     _graphitepostfix        pound_ping
+    #     _jnag_image             images/pound.png
+    #     notes                   Checking POUND ping by HTTP hit to "www.refinery29.com/ping" and expecting text "PONG"
+    #     use                     default-service-with-graph
+    # }
+    # define command {
+    #     command_name            check_pound_ping
+    #     command_line            $USER1$/check_http -I '$HOSTADDRESS$' -H 'www.refinery29.com' -S -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    # }
+    # define service {
+    #     service_description     Daemon: POUND ssl expire cert [30 days]
+    #     servicegroups           fw-daemon-checks
+    #     hostgroup_name          fw
+    #     check_command           check_pound_ssl_cert
+    #     check_interval          720                                             ; Check every 12 hours
+    #     notification_interval   720                                             ; Match to check_interval
+    #     _graphiteprefix         icinga.pound
+    #     _graphitepostfix        pound_ssl_cert
+    #     _jnag_image             images/pound.png
+    #     notes                   Checking POUND SSL cert with flags "-ssl -p 443 -C 30 -w 5 -c 10 -t 30"
+    #     use                     default-service-with-graph
+    # }
+    # define command {
+    #     command_name            check_pound_ssl_cert
+    #     command_line            $USER1$/check_http -I '$HOSTADDRESS$' -ssl -p 443 -C 30 -w 5 -c 10 -t 30
+    # }
+
+
+
+    #=============================================
+    #  Service: VARNISH  (Graph)
+    #=============================================
+    define service {
+        service_description     Daemon: VARNISH
+        servicegroups           fw-daemon-checks, daemon-checks
+        hostgroup_name          fw
+        check_command           check_nrpe!check_varnish!'-d all'
+        check_interval          2                                              ; Check every minute
+        _graphiteprefix         icinga.varnish
+        _graphitepostfix        varnish
+        _jnag_image             images/varnish.png
+        contacts                pagerduty-service-waking-critical, pagerduty-service-sleeping-critical
+        notes                   Checking local VARNISH daemon
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: VARNISH backends
+        servicegroups           fw-daemon-checks
+        hostgroup_name          fw
+        check_command           check_nrpe!check_varnish_backends!''
+        check_interval          2                                              ; Check every minute
+        _graphiteprefix         icinga.varnish
+        _graphitepostfix        varnish_backends
+        _jnag_image             images/varnish.png
+        contacts                pagerduty-service-waking-critical
+        notes                   Checking VARNISH backends health status
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     Daemon: VARNISH ping
+        servicegroups           fw-daemon-checks
+        hostgroup_name          fw
+        check_command           check_varnish_ping
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.varnish
+        _graphitepostfix        varnish_ping
+        _jnag_image             images/varnish.png
+        notes                   Checking VARNISH ping by HTTP hit to "www.refinery29.com/ping" and expecting text "PONG"
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_varnish_ping
+        command_line            $USER1$/check_http -I '$HOSTADDRESS$' -H 'www.refinery29.com' -p 80 -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    }
+
+
+    #=============================================
+    #  Service: Edgecast Ping  (Graph)
+    #=============================================
+    define service {
+        service_description     EDGECAST origin ping [www-origin-edge]
+        servicegroups           fw-daemon-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_ping0
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_ping0
+        contacts                pagerduty-service-waking-critical
+        notes                   Checking EDGECAST ping by HTTP hit to "www-origin-edge.refinery29.com/ping" and expecting text "PONG"
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_ping0
+        command_line            $USER1$/check_http -H 'www-origin-edge.refinery29.com' -p 80 -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    }
+    define service {
+        service_description     EDGECAST origin ping [www-origin-edge-01]
+        servicegroups           fw-daemon-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_ping1
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_ping1
+        notes                   Checking EDGECAST ping by HTTP hit to "www-origin-edge-01.refinery29.com/ping" and expecting text "PONG"
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_ping1
+        command_line            $USER1$/check_http -H 'www-origin-edge-01.refinery29.com' -p 80 -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    }
+    define service {
+        service_description     EDGECAST origin ping [www-origin-edge-02]
+        servicegroups           fw-daemon-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_ping2
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_ping2
+        notes                   Checking EDGECAST ping by HTTP hit to "www-origin-edge-02.refinery29.com/ping" and expecting text "PONG"
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_ping2
+        command_line            $USER1$/check_http -H 'www-origin-edge-02.refinery29.com' -p 80 -u '/ping' -s 'PONG' -w 5 -c 10 -t 30
+    }
+
+
+    #=============================================
+    #  Service: Edgecast URL  (Graph)
+    #=============================================
+    define service {
+        service_description     URL: EDGECAST origin [www-origin-edge]
+        servicegroups           fw-daemon-checks, url-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_url0
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_url0
+        contacts                pagerduty-service-waking-critical
+        notes                   Check the R29 homepage (www.refinery29.com) thru Edgecast Origin and look for "Connect with R29" to consider the page succesfully rendered
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_url0
+        command_line            $USER1$/check_http -I 'www-origin-edge.refinery29.com' -H 'www.refinery29.com' -p 80 -u '/' -s 'Connect with R29' -w 5 -c 10 -t 30
+    }
+    define service {
+        service_description     URL: EDGECAST origin [www-origin-edge-01]
+        servicegroups           fw-daemon-checks, url-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_url1
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_url1
+        notes                   Check the R29 homepage (www.refinery29.com) thru Edgecast Origin and look for "Connect with R29" to consider the page succesfully rendered
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_url1
+        command_line            $USER1$/check_http -I 'www-origin-edge-01.refinery29.com' -H 'www.refinery29.com' -p 80 -u '/' -s 'Connect with R29' -w 5 -c 10 -t 30
+    }
+    define service {
+        service_description     URL: EDGECAST origin [www-origin-edge-02]
+        servicegroups           fw-daemon-checks, url-checks
+        hostgroup_name          edgecast
+        check_command           check_edgecast_url2
+        check_interval          1                                              ; Check every minute
+        _graphiteprefix         icinga.edgecast
+        _graphitepostfix        edgecast_url2
+        notes                   Check the R29 homepage (www.refinery29.com) thru Edgecast Origin and look for "Connect with R29" to consider the page succesfully rendered
+        use                     default-service-with-graph
+    }
+    define command {
+        command_name            check_edgecast_url2
+        command_line            $USER1$/check_http -I 'www-origin-edge-02.refinery29.com' -H 'www.refinery29.com' -p 80 -u '/' -s 'Connect with R29' -w 5 -c 10 -t 30
+    }

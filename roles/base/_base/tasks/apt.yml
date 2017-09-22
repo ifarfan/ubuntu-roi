@@ -4,7 +4,7 @@
     pkg={{ item }}
     state=absent
     purge=yes
-  with_items: apt_packages_to_remove
+  with_items: "{{ apt_packages_to_remove }}"
 
 - name: Remove files for uninstalled packages
   file:
@@ -32,7 +32,7 @@
   apt:
     pkg={{ item }}
     state=present
-  with_items: apt_packages_to_install
+  with_items: "{{ apt_packages_to_install }}"
   notify:
   - stop and disable rsync
   - stop and disable sysstat
@@ -46,7 +46,7 @@
   apt:
     pkg={{ item }}
     state=present
-  with_items: apt_packages_optional
+  with_items: "{{ apt_packages_optional }}"
   when: apt_install_optional == True
 
 - name: Force notify to run now

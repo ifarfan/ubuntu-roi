@@ -1,0 +1,6 @@
+---
+- name: Uninstall compilers
+  apt:
+    pkg={{ item }}
+    state=absent
+  with_items: compiler_packages

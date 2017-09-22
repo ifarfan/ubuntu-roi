@@ -1,0 +1,105 @@
+#===============================================================================
+#
+#  D I S K S . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       disk-checks
+    alias                   Disk Space Checks
+}
+
+
+    #=============================================
+    #  Service: Check Disk Space on /  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_disk!'-w20% -c10% -p/'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_root
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/" with flags "-w20% -c10% -p/"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Check Disk Space on /boot  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /boot
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_disk!'-w20% -c10% -p/boot'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_boot
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/boot" with flags "-w20% -c10% -p/boot"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Check Disk Space on /srv/cache  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /srv/cache
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          fw
+        check_command           check_nrpe!check_disk!'-w9% -c5% -p/srv/cache'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_cache
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/srv/cache" with flags "-w9% -c5% -p/srv/cache"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Check Disk Space on /srv/assets  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /srv/assets
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          nfs
+        check_command           check_nrpe!check_disk!'-w20% -c10% -p/srv/assets'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_assets
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/srv/assets" with flags "-w20% -c10% -p/srv/assets"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Check Disk Space on /srv/mysql  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /srv/mysql
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          sql
+        check_command           check_nrpe!check_disk!'-w20% -c10% -p/srv/mysql'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_mysql
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/srv/mysql" with flags "-w20% -c10% -p/srv/mysql"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Check Disk Space on /opt  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Disk /opt
+        servicegroups           disk-checks, hw-checks
+        hostgroup_name          mgm
+        check_command           check_nrpe!check_disk!'-w20% -c10% -p/opt'
+        _graphiteprefix         icinga.general
+        _graphitepostfix        disk_opt
+        _jnag_image             images/disk.png
+        notes                   Checking Disk "/opt" with flags "-w20% -c10% -p/opt"
+        use                     default-service-with-graph
+    }

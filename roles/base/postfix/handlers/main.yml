@@ -4,7 +4,6 @@
     name=postfix
     state=restarted
     enabled=yes
-  notify: reload monit
 
 - name: rebuild aliases.db
   command: newaliases

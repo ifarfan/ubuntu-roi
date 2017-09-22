@@ -1,0 +1,5 @@
+---
+gearman_apt_packages:
+- gearman-job-server
+- gearman-tools
+- mod-gearman-tools

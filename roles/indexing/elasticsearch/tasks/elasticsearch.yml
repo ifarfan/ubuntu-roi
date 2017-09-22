@@ -1,0 +1,38 @@
+---
+- name: Create Elasticsearch group
+  group:
+    name=elasticsearch
+    state=present
+
+- name: Create Elasticsearch user
+  user:
+    name=elasticsearch
+    group=elasticsearch
+    system=yes
+    state=present
+#    createhome=no
+
+- name: Check for existing installation
+  stat: path=/usr/share/elasticsearch/lib/elasticsearch-{{ elasticsearch_version }}.jar
+  register: elasticsearch_jar
+
+- name: Download Elasticsearch deb
+  get_url:
+    url={{ elasticsearch_url }}/{{ elasticsearch_file }}
+    dest=/tmp/{{ elasticsearch_file }}
+    mode=0440
+  when: not elasticsearch_jar.stat.exists
+
+- name: Install Elasticsearch deb
+  shell: >
+    dpkg -i /tmp/{{ elasticsearch_file }}
+    creates="/usr/share/elasticsearch/lib/elasticsearch-{{ elasticsearch_version }}.jar"
+
+- name: Create Elasticsearch folders
+  file:
+    path={{ item }}
+    state=directory
+    owner=elasticsearch
+    group=elasticsearch
+    recurse=yes
+  with_items: elasticsearch_folders

@@ -1,0 +1,39 @@
+---
+- include: icinga.yml
+  tags: [icinga]
+
+- include: pnp4nagios.yml
+  tags: [icinga, pnp4nagios]
+
+- include: mklivestatus.yml
+  tags: [icinga, mklivestatus]
+
+- include: icinga_configs.yml
+  tags: [icinga, icinga-configs]
+
+- include: icinga_checks.yml
+  tags: [icinga, icinga-checks]
+
+- include: slack.yml
+  tags: [icinga, slack]
+
+- include: hipchat.yml
+  tags: [icinga, hipchat]
+
+- include: pagerduty.yml
+  tags: [icinga, pagerduty]
+
+- include: nagios-api.yml
+  tags: [icinga, nagios-api]
+
+- include: graphios.yml
+  tags: [icinga, graphios]
+
+- include: icingatv.yml
+  tags: [icinga, icingatv]
+
+- include: icinga_dashboard.yml
+  tags: [icinga, icinga-dashboard]
+
+- include: sanity_check.yml
+  tags: [icinga, icinga-configs, icinga-checks]

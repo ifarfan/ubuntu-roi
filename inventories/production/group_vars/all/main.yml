@@ -1,0 +1,5 @@
+---
+environment_name: production
+subdomain_name: prd
+
+apt_install_optional: false

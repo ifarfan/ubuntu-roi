@@ -1,0 +1,37 @@
+---
+- name: Install Redis Faina
+  git:
+    repo=https://github.com/facebookarchive/redis-faina.git
+    dest=/opt/redis-faina
+    version=master
+    update=no
+  tags: redis-faina
+
+# - name: Install redis-py
+#   pip:
+#     name={{ item }}
+#     state=present
+#   with_items:
+#   - pyopenssl
+#   - ndg-httpsclient
+#   - pyasn1
+#   - redis-py
+#   tags: redis-py
+
+# #
+# #  INFO: https://github.com/steelThread/redmon
+# #
+# - name: Install ruby-dev
+#   apt:
+#     pkg={{ item }}
+#     state=present
+#   with_items:
+#   - g++
+#   - ruby1.9.1-dev
+#   tags: redmon
+
+# - name: Install Redmon to monitor Redis via web
+#   gem:
+#     name=redmon
+#     state=present
+#   tags: redmon

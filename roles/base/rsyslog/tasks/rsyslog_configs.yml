@@ -14,9 +14,8 @@
       owner=root
       group=root
       mode=0644
-
+    notify: reload rsyslog
   when: '"rsyslog" in group_names'
-  notify: reload rsyslog
 
 - name: Rsyslog client config
   template:

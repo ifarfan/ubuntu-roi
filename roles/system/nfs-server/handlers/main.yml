@@ -1,0 +1,15 @@
+---
+#===============================================================================
+#
+#  H A N D L E R S / M A I N . Y M L
+#
+#===============================================================================
+- name: reload nfs-server
+  service:
+    name=nfs-kernel-server
+    state=started
+    enabled=yes
+
+- name: export nfs shares
+  command: >
+    exportfs -a

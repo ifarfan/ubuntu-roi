@@ -1,0 +1,30 @@
+---
+- name: Copy Graphios folder
+  unarchive:
+    src=tmp/graphios.tar.gz
+    dest=/opt/
+    copy=yes
+    owner=nagios
+    group=nagios
+  notify: reload graphios
+
+- name: Copy Graphios init.d script
+  copy:
+    src=etc/init.d/graphios
+    dest=/etc/init.d/
+    owner=root
+    group=root
+    mode=0755
+  notify:
+  - register init.d graphios
+  - reload graphios
+
+- name: Copy and enable graphios monit check
+  copy:
+    src=etc/monit/conf.d/graphios.conf
+    dest=/etc/monit/conf.d/
+    owner=root
+    group=root
+    mode=0644
+  notify: reload monit
+  tags: monit

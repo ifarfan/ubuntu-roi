@@ -1,0 +1,18 @@
+---
+php_base_packages:
+- php5
+- php5-cli
+- php5-common
+
+
+#  Extended packages
+php_extended_packages:
+- php5-curl
+- php5-dev
+- php5-gd
+- php5-geoip
+- php5-json
+- php5-mcrypt
+- php5-mysql
+
+has_extended_packages: False

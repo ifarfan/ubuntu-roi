@@ -1,0 +1,23 @@
+---
+- name: Set automatic debconf selections
+  debconf:
+    name='oracle-java8-installer'
+    question='shared/accepted-oracle-license-v1-1'
+    vtype='select'
+    value='true'
+
+- name: Add Java 8 repo
+  apt_repository:
+    repo='ppa:webupd8team/java'
+    state=present
+
+- name: Install Java 8
+  apt:
+    pkg={{ item }}
+    state=present
+    update_cache=yes
+    cache_valid_time={{ apt_cache_time }}
+  with_items:
+  - ca-certificates
+  - oracle-java8-installer
+  - oracle-java8-set-default

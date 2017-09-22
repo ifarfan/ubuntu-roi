@@ -1,0 +1,100 @@
+---
+- name: Create R29 Folders
+  file:
+    path=/etc/icinga/{{ item }}
+    state=directory
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+  - r29
+  - r29/contacts
+  - r29/hosts
+  - r29/services
+  notify: reload icinga
+
+- name: Copy R29 template files
+  copy:
+    src=etc/icinga/r29/{{ item }}
+    dest=/etc/icinga/r29/
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - graphios.cfg
+  - templates.cfg
+  - timeperiods.cfg
+  notify: reload icinga
+
+- name: Set icinga "admin" contacts
+  template:
+    src=etc/icinga/r29/contacts/admins.cfg.j2
+    dest=/etc/icinga/r29/contacts/admins.cfg
+    owner=root
+    group=root
+    mode=0644
+  notify: reload icinga
+
+- name: Icinga "Hosts" definitions per Environment
+  template:
+    src=etc/icinga/r29/hosts/{{ item }}.cfg.j2
+    dest=/etc/icinga/r29/hosts/{{ item }}.cfg
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - hosts
+  - other
+  notify: reload icinga
+
+- name: Set icinga "service" definitions
+  template:
+    src=etc/icinga/r29/services/{{ item }}.j2
+    dest=/etc/icinga/r29/services/{{ item }}
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - atlas.cfg
+  - clusters.cfg
+  - daemons.cfg
+  - disks.cfg
+  - domains.cfg
+  - fw.cfg
+  - hardware.cfg
+  - hardware_other.cfg
+  - icinga.cfg
+  - monorail.cfg
+  - mongodb.cfg
+  - mysql.cfg
+  - nfs.cfg
+  - os.cfg
+  - os_procs.cfg
+  - queue.cfg
+  - redis.cfg
+  - rocketship.cfg
+  - solr.cfg
+  - url.cfg
+  - url_addtl.cfg
+  - url_other.cfg
+  - webdaemons.cfg
+  notify: reload icinga
+
+- name: Copy icinga "Nagios-Plugins" commands
+  copy:
+    src=etc/nagios-plugins/config/{{ item }}
+    dest=/etc/nagios-plugins/config/
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+  - check_nrpe.cfg
+  notify: reload icinga
+
+- name: Sudoers file for Nagios user
+  template:
+    src=etc/sudoers.d/30-nagios.j2
+    dest=/etc/sudoers.d/30-nagios
+    owner=root
+    group=root
+    mode=0440

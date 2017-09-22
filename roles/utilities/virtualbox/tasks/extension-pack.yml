@@ -1,0 +1,22 @@
+---
+- name: Check Extension Pack previous installation
+  stat: path="{{ extensionpack_install_folder }}"
+  register: extpack_install_folder
+
+- name: Download Extension Pack
+  get_url:
+    url={{ extensionpack_url }}/{{ extensionpack_file }}
+    dest=/tmp/{{ extensionpack_file }}
+  register: extpack_download
+  when: not extpack_install_folder.stat.exists
+
+- name: Install Extension Pack
+  shell: >
+    VBoxManage extpack install /tmp/{{ extensionpack_file }}
+    executable=/bin/bash
+  when: not extpack_install_folder.stat.exists and extpack_download|success
+
+- name: Remove Extension Pack file
+  file:
+    path=/tmp/{{ extensionpack_file }}
+    state=absent

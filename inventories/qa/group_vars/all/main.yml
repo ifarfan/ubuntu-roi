@@ -1,0 +1,5 @@
+---
+environment_name: qa
+subdomain_name: qa
+
+apt_install_optional: false

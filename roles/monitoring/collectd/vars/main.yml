@@ -1,0 +1,9 @@
+---
+collectd_default_configs:
+- collectd.conf
+- collection.conf
+- collectd.conf.d/filters.conf
+- collectd.conf.d/thresholds.conf
+
+collectd_other_configs:
+- statsd.conf

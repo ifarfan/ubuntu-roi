@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Israel Farfan
+  description: Install HAProxy
+  company: IXF
+  license: GPLv3
+  min_ansible_version: 1.9.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  categories:
+  - system
+  - web
+
+dependencies: []

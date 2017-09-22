@@ -1,0 +1,34 @@
+#===============================================================================
+#
+#  D O M A I N S . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name       domain-checks
+    alias                   Domain Expiration Checks
+}
+
+
+        #=============================================
+        #  DOMAINS
+        #=============================================
+{% for item in domain_list %}
+        define service {
+            service_description     Domain: {{ item.url }} Expiration
+            servicegroups           domain-checks
+            hostgroup_name          r29sites
+            check_command           check_domain_expiration!'{{ item.url }}'
+            check_interval          4320                                       ; Check every 3 days
+            notification_interval   1440                                       ; Wait one day
+            _graphiteprefix         icinga.domain
+            _graphitepostfix        domain_expiration
+            _jnag_image             images/web.png
+            notes                   Checking domain expiration date via whois for {{ item.url }}
+            use                     default-service-with-graph
+        }
+{% endfor %}
+
+        define command {
+            command_name            check_domain_expiration
+            command_line            $USER1$/check_domain.sh -d $ARG1$
+        }

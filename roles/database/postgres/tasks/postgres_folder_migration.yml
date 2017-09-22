@@ -1,0 +1,36 @@
+---
+- name: Stop Postgres
+  service:
+    name=postgresql
+    state=stopped
+
+- name: Wait for Postgres to completely stop
+  wait_for:
+    port=5432
+    delay=10
+    state=stopped
+
+- name: Move Postgres to new location
+  command: >
+    mv /var/lib/postgresql {{ postgres_folder }}
+    creates="{{ postgres_folder }}"
+
+- name: Create Postgres folder symlink
+  file:
+    src={{ postgres_folder }}
+    dest=/var/lib/postgresql
+    owner=postgres
+    group=postgres
+    state=link
+
+- name: Ensure ownership of new paths
+  command: >
+    chown {{ item.flag }} postgres:postgres {{ item.path }}
+  with_items:
+  - [flag: "-h", path: "/var/lib/postgresql"]
+#  - [flag: "-R", path: "{{ postgres_folder }}"]
+
+- name: Restart Postgres
+  service:
+    name=postgresql
+    state=started

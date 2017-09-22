@@ -1,0 +1,28 @@
+---
+- name: Create Packer folder
+  file:
+    path="{{ packer_folder }}"
+    state=directory
+    owner=root
+    group=root
+  register: packer_folder_created
+
+- name: Download Packer
+  get_url:
+    url={{ packer_url }}/{{ packer_file }}
+    dest=/tmp/{{ packer_file }}
+    validate_certs=no
+  register: packer_download
+  when: packer_folder_created|changed
+
+- name: Install Packer
+  unarchive:
+    src=/tmp/{{ packer_file }}
+    dest="{{ packer_folder }}"
+    copy=no
+  when: packer_folder_created|changed and packer_download|success
+
+- name: Remove Packer zip file
+  file:
+    path=/tmp/{{ packer_file }}
+    state=absent

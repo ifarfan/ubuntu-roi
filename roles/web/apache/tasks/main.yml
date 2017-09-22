@@ -1,0 +1,15 @@
+---
+- include: apache.yml
+  tags: [apache]
+
+- include: apache_configs.yml
+  tags: [apache, apache-configs]
+
+- include: apache_mods.yml
+  tags: [apache, apache-mods]
+
+- include: apache_sites.yml
+  tags: [apache, apache-sites]
+
+- include: logrotate.yml
+  tags: [apache, apache-logrotate, logrotate]

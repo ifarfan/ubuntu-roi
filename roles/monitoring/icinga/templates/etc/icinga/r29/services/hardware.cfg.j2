@@ -1,0 +1,72 @@
+#===============================================================================
+#
+#  H A R D W A R E . C F G
+#
+#===============================================================================
+define servicegroup{
+    servicegroup_name           hw-checks
+    alias                       Hardware Checks
+}
+
+
+    #=============================================
+    #  Service: Memory
+    #=============================================
+    define service {
+        service_description     HW: CPU
+        servicegroups           hw-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_linux_procstat!'-w 80 -c 90 -f'
+        check_interval          3                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        cpu
+        _jnag_image             images/cpu.png
+        notes                   Checking CPU usage with flags "-w 80 -c 90 -f"
+        use                     default-service
+    }
+
+
+    #=============================================
+    #  Service: Memory  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Memory
+        servicegroups           hw-checks
+        hostgroup_name          *, !null, !fw
+        check_command           check_nrpe!check_mem!'-u -w80 -c90 -C'
+        check_interval          3                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        memory
+        _jnag_image             images/memory.png
+        notes                   Checking Memory with flags "-u -w80 -c90 -C"
+        use                     default-service-with-graph
+    }
+    define service {
+        service_description     HW: Memory FW
+        servicegroups           hw-checks
+        hostgroup_name          fw
+        check_command           check_nrpe!check_mem!'-u -w90 -c95 -C'
+        check_interval          3                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        memory
+        _jnag_image             images/memory.png
+        notes                   Checking Memory with flags "-u -w90 -c95 -C"
+        use                     default-service-with-graph
+    }
+
+
+    #=============================================
+    #  Service: Swap  (Graph)
+    #=============================================
+    define service {
+        service_description     HW: Swap
+        servicegroups           hw-checks
+        hostgroup_name          *, !null
+        check_command           check_nrpe!check_swap2!'-w 50% -c 20%'
+        check_interval          3                                               ; Check more often
+        _graphiteprefix         icinga.general
+        _graphitepostfix        swap
+        _jnag_image             images/memory.png
+        notes                   Checking Swap with flags "-w 50% -c 20%"
+        use                     default-service-with-graph
+    }
