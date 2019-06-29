@@ -1,0 +1,52 @@
+---
+#
+#  OpenJDK
+#
+- name: Install OpenJDK Java
+  block:
+
+  - name: Install OpenJDK Java
+    apt:
+      pkg: "{{ java_openjdk_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Set to default java version
+    alternatives:
+      name: java
+      path: "{{ java_openjdk_exec }}"
+
+  when: not oracle_version
+
+#
+#  Oracle
+#
+- name: Install Oracle Java
+  block:
+
+  - name: Set automatic debconf selections
+    debconf:
+      name: 'oracle-java8-installer'
+      question: 'shared/accepted-oracle-license-v1-1'
+      value: 'true'
+      vtype: select
+
+  - name: Add Java 8 repo
+    apt_repository:
+      repo: 'ppa:webupd8team/java'
+      state: present
+
+  - name: Install Oracle Java 8
+    apt:
+      pkg: "{{ java_oracle_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Set to default java version
+    alternatives:
+      name: java
+      path: "{{ java_oracle_exec }}"
+
+  when: oracle_version | bool

@@ -1,0 +1,6 @@
+---
+- import_tasks: install.yml
+  tags: [java, java_8, java_8_install]
+
+- import_tasks: set_home.yml
+  tags: [java, java_8, java_8_set_home]
