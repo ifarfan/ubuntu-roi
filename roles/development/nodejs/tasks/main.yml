@@ -1,0 +1,30 @@
+---
+- name: Install NodeJS
+  block:
+
+  - name: Add NodeJS key
+    apt_key:
+      url: "{{ node_gpg_url }}"
+      state: present
+
+  - name: Add NodeJS repo
+    apt_repository:
+      repo: "deb {{ node_deb_url }}/node_{{ nodejs_version }} {{ ansible_distribution_release }} main"
+      state: present
+
+  - name: Add NodeJS repo preferences
+    copy:
+      src: deb_nodesource_com_node.pref
+      dest: /etc/apt/preferences.d/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Install NodeJS
+    apt:
+      pkg: nodejs
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [nodejs]

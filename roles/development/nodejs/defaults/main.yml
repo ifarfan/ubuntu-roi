@@ -1,0 +1,4 @@
+---
+nodejs_version: '10.x'
+node_deb_url: https://deb.nodesource.com
+node_gpg_url: "{{ node_deb_url }}/gpgkey/nodesource.gpg.key"

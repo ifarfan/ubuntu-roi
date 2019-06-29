@@ -1,0 +1,65 @@
+---
+- name: Install PM2
+  block:
+
+  - name: Ensure NodeJS is installed
+    import_role:
+      name: development/nodejs
+
+  - name: Create PM2 user
+    user:
+      name: "{{ pm2_user }}"
+      groups: www-data
+      comment: PM2 user
+      create_home: yes
+      home: "{{ pm2_home }}"
+      system: yes
+      shell: /usr/sbin/nologin
+      append: no
+
+  - name: Remove default /home files
+    file:
+      path: "{{ pm2_home }}/{{ item }}"
+      state: absent
+    loop:
+    - .bash_logout
+    - .bashrc
+    - .profile
+
+  - name: Create .pm2 folder
+    file:
+      path: "{{ pm2_home }}/.pm2"
+      state: directory
+      owner: "{{ pm2_user }}"
+      group: "{{ pm2_user }}"
+      mode: 0700
+
+  - name: Set global PM2_HOME variable
+    copy:
+      content: |
+        #
+        #  Global PM2 home
+        #
+        export PM2_HOME='{{ pm2_home }}'
+      dest: /etc/profile.d/10-pm2-home.sh
+      mode: 0644
+
+  - name: Install PM2
+    npm:
+      name: pm2
+      global: yes
+      version: latest
+
+  - name: Set systemd startup daemon
+    command:
+      pm2 startup -u {{ pm2_user }} --hp {{ pm2_home }}
+    args:
+      creates: "/etc/systemd/system/pm2-{{ pm2_user }}.service"
+
+  - name: Ensure PM2 daemon runs
+    systemd:
+      name: "pm2-{{ pm2_user }}"
+      state: started
+      enabled: yes
+
+  tags: [pm2]
