@@ -1,0 +1,20 @@
+---
+- name: Install GraphicsMagick
+  block:
+
+  - name: Install GraphicsMagick pre-requisites
+    apt:
+      pkg: "{{ item }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+    loop: "{{ graphicsmagick_required_pkgs }}"
+
+  - name: Install GraphicsMagick
+    apt:
+      pkg: graphicsmagick
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [graphicsmagick]

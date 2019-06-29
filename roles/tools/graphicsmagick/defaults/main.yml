@@ -1,0 +1,5 @@
+---
+graphicsmagick_required_pkgs:
+- libpng-tools
+- libjpeg9
+- zlib1g
