@@ -1,0 +1,8 @@
+---
+flywaydb_metadata_url: http://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/maven-metadata.xml
+flywaydb_metadata_file: /tmp/flyway_latest.xml
+flywaydb_metadata_latest: //metadata/versioning/latest
+
+flywaydb_download_url: http://repo1.maven.org/maven2/org/flywaydb/flyway-commandline
+
+flywaydb_home_directory: /opt/flywaydb

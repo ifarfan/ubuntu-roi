@@ -1,0 +1,10 @@
+---
+- name: Ensure XML tools are installed
+  import_role:
+    name: tools/xml_libs
+
+- import_tasks: install.yml
+  tags: [flywaydb, flywaydb-install]
+
+- import_tasks: path.yml
+  tags: [flywaydb, flywaydb-path]

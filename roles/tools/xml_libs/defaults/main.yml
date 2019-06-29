@@ -1,0 +1,5 @@
+---
+xml_lib_pkgs:
+- libxml2
+- libxml2-utils
+- python3-lxml

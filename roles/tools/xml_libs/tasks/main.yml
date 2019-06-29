@@ -1,0 +1,12 @@
+---
+- name: Install XML libraries
+  block:
+
+  - name: Install XML libraries
+    apt:
+      pkg: "{{ xml_lib_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [xml_libs]

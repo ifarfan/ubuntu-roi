@@ -1,0 +1,58 @@
+---
+- name: Check for current FlywayDB
+  stat:
+    path: "{{ flywaydb_home_directory }}/current"
+  register: flywaydb_directory
+
+- name: Install if flywadb directory NOT found
+  block:
+
+  - name: Create FlywayDB home directory
+    file:
+      path: "{{ flywaydb_home_directory }}"
+      state: directory
+      mode: 0755
+
+  - name: Download FlywayDB metadata
+    get_url:
+      url: "{{ flywaydb_metadata_url }}"
+      dest: "{{ flywaydb_metadata_file }}"
+      mode: 0600
+
+  - name: Extract FlywayDB latest release number
+    xml:
+      path: "{{ flywaydb_metadata_file }}"
+      xpath: "{{ flywaydb_metadata_latest }}"
+      content: text
+    register: flywaydb_latest_raw
+
+  - name: Extract FlywayDB latest release number
+    set_fact:
+      flywaydb_latest_version: "{{ flywaydb_latest_raw.matches[0].latest }}"
+
+  - name: Remove metadata file
+    file:
+      path: "{{ flywaydb_metadata_file }}"
+      state: absent
+
+  - name: Download + extract FlywayDB
+    unarchive:
+      # yamllint disable-line rule:line-length
+      src: "{{ flywaydb_download_url }}/{{ flywaydb_latest_version }}/flyway-commandline-{{ flywaydb_latest_version }}-linux-x64.tar.gz"
+      dest: "{{ flywaydb_home_directory }}"
+      remote_src: yes
+
+  - name: Symlink to folder
+    file:
+      src: "{{ flywaydb_home_directory }}/flyway-{{ flywaydb_latest_version }}"
+      dest: "{{ flywaydb_home_directory }}/current"
+      owner: root
+      group: root
+      state: link
+
+  when: not flywaydb_directory.stat.exists
+
+- name: Ensure Flyway is executable by ALL users
+  file:
+    path: "{{ flywaydb_home_directory }}/current/flyway"
+    mode: 0755
