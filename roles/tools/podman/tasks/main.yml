@@ -1,0 +1,24 @@
+---
+- name: Install Podman
+  block:
+
+  - name: Install Podman pre-requisites
+    apt:
+      pkg: "{{ podman_required_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Add Podman repo
+    apt_repository:
+      repo: "{{ podman_repo }}"
+      state: present
+
+  - name: Install Podman
+    apt:
+      pkg: podman
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [podman]
