@@ -1,0 +1,16 @@
+---
+- import_tasks: install.yml
+  tags: [postgres, postgres-install]
+
+- import_tasks: config.yml
+  tags: [postgres, postgres-config]
+
+- import_tasks: backup.yml
+  tags: [postgres, postgres-backup]
+
+- import_tasks: logrotate.yml
+  tags: [postgres, postgres-logrotate, logrotate]
+
+- import_tasks: utils.yml
+  when: environment_name in ['local', 'development']
+  tags: [postgres, postgres-utils]

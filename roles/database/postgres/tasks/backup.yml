@@ -1,0 +1,38 @@
+---
+- name: Create backup folders
+  file:
+    path: "{{ postgres_backup_folder }}"
+    state: directory
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+
+- name: Install Postgres Backup
+  apt:
+    pkg: autopostgresqlbackup
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Postgres backup config
+  template:
+    src: autopostgresqlbackup.j2
+    dest: /etc/default/autopostgresqlbackup
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Remove original cron job
+  file:
+    path: /etc/cron.daily/autopostgresqlbackup
+    state: absent
+
+- name: Enable backup thru global /etc/cron.d
+  cron:
+    name: postgres backup
+    cron_file: postgres_backup
+    state: present
+    user: root
+    hour: '4'
+    minute: "{{ 55 | random(step=5) }}"
+    job: "/usr/sbin/autopostgresqlbackup 2>&1 | /usr/bin/logger -t postgres_backup"
+  changed_when: false

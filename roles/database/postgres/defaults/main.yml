@@ -1,0 +1,22 @@
+---
+postgres_version: 11
+postgres_user: postgres
+postgres_group: postgres
+
+postgres_pkgs:
+- "postgresql-{{ postgres_version }}"
+- "postgresql-client-{{ postgres_version }}"
+- postgresql-client-common
+
+postgres_configs:
+-
+  file: pg_hba.conf
+  mode: 0640
+-
+  file: pg_ident.conf
+  mode: 0640
+-
+  file: postgresql.conf
+  mode: 0644
+
+postgres_backup_folder: /opt/backups/postgres

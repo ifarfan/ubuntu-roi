@@ -1,0 +1,8 @@
+---
+- name: Copy Postgres logrotate config
+  copy:
+    src: logrotate.d/postgresql-common
+    dest: /etc/logrotate.d/
+    owner: root
+    group: root
+    mode: 0644

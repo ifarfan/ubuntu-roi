@@ -1,0 +1,23 @@
+---
+- name: Copy Postgres configs
+  copy:
+    src: "postgresql/{{ item.file }}"
+    dest: "/etc/postgresql/{{ postgres_version }}/main/"
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: "{{ item.mode }}"
+    backup: yes
+  loop: "{{ postgres_configs }}"
+  notify: reload postgres
+
+- name: Copy default dot files to postgres home folder
+  copy:
+    remote_src: yes
+    src: "/etc/skel/{{ item }}"
+    dest: /var/lib/postgresql/
+    owner: "{{ postgres_user }}"
+    group: "{{ postgres_group }}"
+    mode: 0644
+  loop:
+  - .bashrc
+  - .profile
