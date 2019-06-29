@@ -1,0 +1,10 @@
+---
+- import_tasks: install.yml
+  tags: [memcached]
+
+- import_tasks: logrotate.yml
+  tags: [memcached, logrotate]
+
+- import_tasks: utils.yml
+  when: environment_name in ['local', 'development']
+  tags: [memcached, memcached-utils]

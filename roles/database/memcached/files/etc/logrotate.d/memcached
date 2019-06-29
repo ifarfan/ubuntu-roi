@@ -1,0 +1,12 @@
+#
+#  M E M C A C H E D
+#
+/var/log/memcached.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

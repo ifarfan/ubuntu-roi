@@ -1,0 +1,17 @@
+---
+- name: List memcached utils
+  command:
+    ls -1 "{{ role_path }}/files/usr/local/bin/"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  register: memcached_utils
+
+- name: Copy memcached utils
+  copy:
+    src: "usr/local/bin/{{ item }}"
+    dest: /usr/local/bin
+    owner: root
+    group: root
+    mode: 0755
+  loop: "{{ memcached_utils.stdout_lines }}"

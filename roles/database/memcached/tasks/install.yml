@@ -1,0 +1,24 @@
+---
+- name: Install memcached
+  apt:
+    pkg: memcached
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Copy memcached config
+  copy:
+    src: etc/memcached.conf
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload memcached
+
+- name: Copy default /etc config
+  copy:
+    src: etc/default/memcached
+    dest: /etc/default/
+    owner: root
+    group: root
+    mode: 0644

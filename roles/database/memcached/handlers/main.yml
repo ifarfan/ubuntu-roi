@@ -1,0 +1,6 @@
+---
+- name: reload memcached
+  systemd:
+    name: memcached
+    state: restarted
+    enabled: yes
