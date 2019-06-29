@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Wait for automatic apt updates to complete, if any
+    shell:
+      "while sudo fuser {{ item }} >/dev/null 2>&1; do sleep 1; done;"
+    args:
+      executable: /bin/bash
+    loop:
+    - /var/lib/apt/lists/lock
+    - /var/lib/apt/daily_lock
+    - /var/lib/dpkg/lock
+    failed_when: false
+    changed_when: false

@@ -1,18 +1,26 @@
 ---
-- block:
+#
+#  SSHD Hardening
+#  - https://linux-audit.com/audit-and-harden-your-ssh-configuration/
+#
+- name: Configure SSH
+  block:
+
   - name: Install latest SSH
     apt:
-      pkg=openssh-server
-      state=latest
-      update_cache=yes
-      cache_valid_time={{ apt_cache_time }}
+      pkg: openssh-server
+      state: latest
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
 
-  - name: Copy global sshd_config
+  - name: Copy secure, global sshd_config
     copy:
-      src=etc/ssh/sshd_config
-      dest=/etc/ssh/
-      owner=root
-      group=root
-      mode=0444
+      src: etc/ssh/sshd_config
+      dest: /etc/ssh/
+      owner: root
+      group: root
+      mode: 0444
+    when: environment_name not in ['local', 'development']
     notify: reload ssh
+
   tags: [ssh]

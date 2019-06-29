@@ -1,6 +1,0 @@
----
-- include: varnish.yml
-  tags: [varnish]
-
-- include: varnish_configs.yml
-  tags: [varnish, varnish-configs]

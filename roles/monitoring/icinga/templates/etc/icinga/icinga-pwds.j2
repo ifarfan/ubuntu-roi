@@ -1,6 +1,0 @@
-{% for item in administrators %}
-{% if item.htpasswd %}
-{{ item.name }}:{{ item.htpasswd }}
-{% endif %}
-{% endfor %}
-{{ icinga_http_hash }}

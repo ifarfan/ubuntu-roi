@@ -1,0 +1,48 @@
+---
+- name: Copy lanscape config
+  copy:
+    src: etc/landscape/client.conf
+    dest: /etc/landscape/
+    owner: landscape
+    group: root
+    mode: 0600
+
+- name: List of local custom MOTD files
+  command:
+    ls -1 "{{ role_path }}/files/etc/update-motd.d/"
+  delegate_to: localhost
+  become: false
+  changed_when: false
+  register: managed_files
+
+- name: List of remote unmanaged MOTD files
+  command: ls -1 /etc/update-motd.d/
+  register: unmanaged_files
+  changed_when: false
+
+- name: Remove remote unmanaged MOTD files but leave managed files
+  file:
+    path: "/etc/update-motd.d/{{ item }}"
+    state: absent
+  loop: "{{ unmanaged_files.stdout_lines }}"
+  when: item not in managed_files.stdout_lines
+
+- name: Copy custom MOTD files
+  copy:
+    src: "etc/update-motd.d/{{ item }}"
+    dest: /etc/update-motd.d/
+    owner: root
+    group: root
+    mode: 0755
+  loop: "{{ managed_files.stdout_lines }}"
+
+- name: Copy /etc/issue files
+  copy:
+    src: "etc/{{ item }}"
+    dest: /etc
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+  - issue
+  - issue.net

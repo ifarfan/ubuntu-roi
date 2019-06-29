@@ -1,0 +1,43 @@
+---
+#
+#  L O C A L
+#
+#  * Note:
+#  * - Single host lines can skip the missing colon ":"
+#  * - Multiple host lines can't :(, so ensure they all end with a ":"
+#
+all:
+  #  Global hosts
+  hosts:
+    vagrant
+
+  #  Global variables
+  vars:
+    ansible_connection: ssh
+    ansible_ssh_user: ubuntu
+    ansible_ssh_port: 2222
+    ansible_ssh_host: localhost
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+  #  Host groups
+  children:
+    #  Local servers
+    local:
+      hosts:
+      # vagrant:
+      # jenkins:
+
+    #  Web servers
+    web:
+      hosts:
+      # vagrant
+
+    #  SQL servers
+    sql:
+      hosts:
+      # vagrant
+
+    #  Other servers
+    jenkins:
+      hosts:
+      # vagrant

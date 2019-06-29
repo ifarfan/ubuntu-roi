@@ -1,0 +1,21 @@
+---
+- name: Copy re-enable swap script
+  template:
+    src: enable_swap.sh.j2
+    dest: /opt/utils/enable_swap.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy systemd swap_on_boot.service
+  template:
+    src: swap_on_boot.service.j2
+    dest: /etc/systemd/system/swap_on_boot.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable systemd swap_on_boot.service
+  systemd:
+    name: swap_on_boot
+    enabled: yes

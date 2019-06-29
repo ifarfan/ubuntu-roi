@@ -1,0 +1,7 @@
+#
+#  2 5 - C O N S U L T A N T S
+#
+#  Grant sudo rights to consultants users on their local + dev boxes
+#
+User_Alias CONSULTANTS = {{ users_consultant | sort | join(', ', attribute='username') }}
+CONSULTANTS ALL=(ALL) NOPASSWD:ALL

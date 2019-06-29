@@ -3,39 +3,26 @@
 #  A D M I N   U S E R S
 #
 #  Admin users are installed on all servers
-#  and get 3 ssh keys
 #
-- block:
-  - name: Adding Admin User Accounts
-    action: user
-      name={{ item.username }}
-      shell='/bin/bash'
-      comment='{{ item.fullname }}'
+- name: Adding Admin users accounts
+  user:
+    name: "{{ item.username }}"
+    shell: '/bin/bash'
+    comment: "{{ item.firstname }} {{ item.lastname }}"
+  loop: "{{ users_admin }}"
 
-  - name: Adding Admin User Key1
-    action: authorized_key
-      user={{ item.username }}
-      key='{{ item.userkey1 }}'
-    when: item.userkey1 != ''
-
-  - name: Adding Admin User Key2
-    action: authorized_key
-      user={{ item.username }}
-      key='{{ item.userkey2 }}'
-    when: item.userkey2 != ''
-
-  - name: Adding Admin User Key3
-    action: authorized_key
-      user={{ item.username }}
-      key='{{ item.userkey3 }}'
-    when: item.userkey3 != ''
-
-  with_items: admin_users_list
+- name: Adding Admin users ssh keys
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.ssh_keys | join('\n') }}"
+    exclusive: yes
+  loop: "{{ users_admin }}"
 
 - name: Sudoers file for Admin Users
   template:
-    src=etc/sudoers.d/10-admins.j2
-    dest=/etc/sudoers.d/10-admins
-    owner=root
-    group=root
-    mode=0440
+    src: etc/sudoers.d/10-admins.j2
+    dest: /etc/sudoers.d/10-admins
+    owner: root
+    group: root
+    mode: 0440
+  when: users_admin is defined

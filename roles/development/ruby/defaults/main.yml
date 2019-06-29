@@ -1,23 +1,0 @@
----
-ruby_default_packages:
-- ruby1.8
-- ruby1.8-dev
-- ruby1.9.3
-- ruby1.9.1-dev
-- ruby2.4
-- ruby2.4-dev
-- ruby-switch
-
-ruby_default_version: ruby2.4
-
-gems_1_8:
-- bundler 
-
-gems_1_9_3:
-- bundler 
-- json
-
-gems_2_4:
-- bundler 
-- json
-- httparty

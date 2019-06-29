@@ -1,9 +1,0 @@
----
-- name: Enable rabbitmq monit check
-  copy:
-    src=etc/monit/conf.d/rabbitmq.conf
-    dest=/etc/monit/conf.d/
-    owner=root
-    group=root
-    mode=0644
-  notify: reload monit

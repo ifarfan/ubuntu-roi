@@ -1,6 +1,0 @@
----
-- name: reload gearman
-  service:
-    name=gearman-job-server
-    state=restarted
-    enabled=yes

@@ -1,0 +1,6 @@
+---
+- import_tasks: install.yml
+  tags: [swap, swap-install]
+
+- import_tasks: systemd.yml
+  tags: [swap, swap-systemd]

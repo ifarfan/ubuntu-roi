@@ -1,6 +1,0 @@
----
-- include: kibana.yml
-  tags: [kibana]
-
-- include: kibana_configs.yml
-  tags: [kibana, kibana-configs]

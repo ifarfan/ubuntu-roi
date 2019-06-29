@@ -1,0 +1,31 @@
+---
+- name: Instal chrony
+  block:
+
+  - name: Install chrony
+    apt:
+      pkg: chrony
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Use AWS free time sync server
+    lineinfile:
+      dest: /etc/chrony/chrony.conf
+      regexp: '^pool ntp.ubuntu.com'
+      insertbefore: 'pool ntp.ubuntu.com'
+      line: 'pool 169.254.169.123 iburst'
+    when:
+    - is_vm   == true
+    - vm_type == 'aws'
+    notify: restart chrony
+
+  - name: Ensure systemd restarts chrony
+    lineinfile:
+      dest: /lib/systemd/system/chrony.service
+      regexp: '^Restart'
+      insertafter: '\[Service\]'
+      line: 'Restart=always'
+    notify: restart chrony
+
+  tags: [chrony]

@@ -1,6 +1,0 @@
----
-- include: memcached.yml
-  tags: [memcached]
-
-- include: logrotate.yml
-  tags: [memcached, logrotate]

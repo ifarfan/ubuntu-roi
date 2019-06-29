@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Fetch packages installed count
+    shell: |
+      set -o pipefail
+      dpkg --list | grep '^ii' | wc -l
+    args:
+      executable: /bin/bash
+    register: pkgs_installed
+    failed_when: false
+    changed_when: false
+
+  - name: Show packages installed count
+    debug:
+      msg: "Total packages installed = {{ pkgs_installed.stdout }}"
+
+  - name: Fetch file system
+    command:
+      df -h
+    register: final_fs
+    failed_when: false
+    changed_when: false
+
+  - name: Show file system
+    debug:
+      msg: "output for 'df -h':\n{{ final_fs.stdout }}"

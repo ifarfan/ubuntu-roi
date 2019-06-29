@@ -1,6 +1,20 @@
 ---
-- include: awscli.yml
-  tags: [aws, awscli]
 
-- include: s3cmd.yml
-  tags: [aws, s3cmd]
+- name: Ensure pip is installed
+  import_role:
+    name: base/pip
+
+- name: Ensure VM is sniffed
+  import_role:
+    name: base/vm_sniffer
+
+- name: Install AWS-related utilities
+  import_tasks: packages.yml
+  tags: [aws, aws-utils]
+
+- name: EBS formatting + mounting
+  import_tasks: ebs.yml
+  when:
+  - is_vm   == true
+  - vm_type == 'aws'
+  tags: [aws, aws-ebs, provision]

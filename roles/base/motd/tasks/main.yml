@@ -1,9 +1,9 @@
 ---
-- include: motd.yml
+- import_tasks: install.yml
   tags: [motd]
 
-- include: motd-configs.yml
+- import_tasks: configs.yml
   tags: [motd, motd-configs]
 
-- include: logrotate.yml
+- import_tasks: logrotate.yml
   tags: [motd, motd-logrotate, logrotate]

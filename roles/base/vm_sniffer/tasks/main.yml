@@ -1,0 +1,67 @@
+---
+- name: Sniff for server type
+  block:
+  #
+  #  * Assume box is 'Bare metal' by default
+  #
+  - name: Set vm to bare metal
+    set_fact:
+      is_vm: false
+      vm_type: 'none'
+
+  #
+  #  * Vagrant / VirtualBox
+  #
+  - name: Check if server is running virtualbox
+    shell: >
+      dmidecode -s system-product-name | grep -q -i 'virtualbox'
+    args:
+      executable: /bin/bash
+    register: vagrant_vm
+    failed_when: false
+    changed_when: false
+
+  - name: Set vm to Vagrant
+    set_fact:
+      is_vm: true
+      vm_type: 'vagrant'
+    when:
+    - vagrant_vm is success
+    - vagrant_vm.rc == 0
+
+  #
+  #  * AWS EC2
+  #
+  - name: Check if server is an ec2 instance
+    shell: >
+      [ -f /sys/hypervisor/uuid ] && [ `head -c 3 /sys/hypervisor/uuid` == "ec2" ]
+    args:
+      executable: /bin/bash
+    register: aws_vm
+    failed_when: false
+    changed_when: false
+
+  - name: Set vm to EC2
+    set_fact:
+      is_vm: true
+      vm_type: 'aws'
+    when:
+    - aws_vm is success
+    - aws_vm.rc == 0
+
+  #
+  #  Show results
+  #
+  # - name: Show Vagrant
+  #   debug:
+  #     var: vagrant_vm
+
+  # - name: Show AWS
+  #   debug:
+  #     var: aws_vm
+
+  - name: Show VM sniffing
+    debug:
+      msg: "Is_VM = {{ is_vm }}, VM_Type = {{ vm_type }}"
+
+  tags: [vm_sniffer, provision]

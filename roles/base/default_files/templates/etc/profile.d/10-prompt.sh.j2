@@ -1,0 +1,17 @@
+#
+#  Colored prompt based on environment
+#
+
+{% if subdomain_name == 'prd' %}
+#  Production -- RED
+export PS1='\[\033[0;34m\]\u\[\033[0m\]@\[\033[1;31m\]\H\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+{% elif subdomain_name == 'stg' %}
+#  Staging -- YELLOW
+export PS1='\[\033[0;34m\]\u\[\033[0m\]@\[\033[1;33m\]\H\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+{% elif subdomain_name == 'sls' %}
+#  Development -- GREEN
+export PS1='\[\033[1;30m\]\u\[\033[0m\]@\[\033[1;32m\]\H\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+{% else %}
+#  Global Bash Prompt -- GRAY
+export PS1='\[\033[1;32m\]\u\[\033[0m\]@\[\033[1;30m\]\H\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ '
+{% endif %}

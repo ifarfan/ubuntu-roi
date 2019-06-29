@@ -1,0 +1,8 @@
+---
+- name: stop and disable daemons
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop: "{{ services_2_disable }}"
+  ignore_errors: yes

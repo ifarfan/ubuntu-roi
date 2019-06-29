@@ -1,3 +1,0 @@
----
-postgres_folder: /opt/postgres
-postgres_backup_folder: /opt/backups/postgres

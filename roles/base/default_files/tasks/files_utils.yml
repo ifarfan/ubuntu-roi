@@ -1,0 +1,21 @@
+---
+- name: Copy utilities folder
+  copy:
+    src: opt/utils
+    dest: /opt
+    owner: root
+    group: root
+
+- name: List utilities folder files
+  command:
+    ls -1 /opt/utils
+  register: script_files
+  changed_when: false
+
+- name: Set files to be executable
+  file:
+    path: /opt/utils/{{ item }}
+    owner: root
+    group: root
+    mode: 0755
+  loop: "{{ script_files.stdout_lines }}"

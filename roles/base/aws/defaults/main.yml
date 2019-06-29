@@ -1,0 +1,9 @@
+---
+aws_apt_pkgs:
+- s3cmd
+
+aws_pip_pkgs:
+- awscli
+- saws
+- aws-shell
+- s4cmd

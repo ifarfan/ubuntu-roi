@@ -1,6 +1,0 @@
----
-- include: ruby.yml
-  tags: [ruby]
-
-- include: gems.yml
-  tags: [ruby, gems]

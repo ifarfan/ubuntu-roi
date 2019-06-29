@@ -1,0 +1,6 @@
+---
+- import_tasks: files_global.yml
+  tags: [default_files, default_files_global]
+
+- import_tasks: files_utils.yml
+  tags: [default_files, default_files_utils]

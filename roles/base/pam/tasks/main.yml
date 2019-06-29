@@ -1,18 +1,29 @@
 ---
-- block:
+- name: Configure PAM
+  block:
+
   - name: List of pam.d configs
-    local_action: command ls -1 {{ role_path }}/files/etc/pam.d/
+    command:
+      ls -1 "{{ role_path }}/files/etc/pam.d/"
+    delegate_to: localhost
     changed_when: false
     become: false
     register: pamd_files
 
   - name: Copy pam.d configs
     copy:
-      src=etc/pam.d/{{ item }}
-      dest=/etc/pam.d/
-      owner=root
-      group=root
-      mode=0644
-    with_items: "{{ pamd_files.stdout_lines }}"
+      src: "etc/pam.d/{{ item }}"
+      dest: /etc/pam.d/
+      owner: root
+      group: root
+      mode: 0644
+    loop: "{{ pamd_files.stdout_lines }}"
+
+  - name: Install password strength checker
+    apt:
+      pkg: passwdqc
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
 
   tags: [pam]

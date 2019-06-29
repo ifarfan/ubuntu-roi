@@ -1,0 +1,7 @@
+#
+#  1 0 - A D M I N S
+#
+#  Grant sudo rights to admin users
+#
+User_Alias ADMINS = {{ users_admin | sort | join(', ', attribute='username') }}
+ADMINS ALL=(ALL) NOPASSWD:ALL

@@ -1,0 +1,17 @@
+---
+- name: Install pip
+  block:
+
+  - name: Install pip
+    apt:
+      name: "{{ pip_apt_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Install pip default user packages
+    pip:
+      name: "{{ pip_default_pkgs }}"
+      state: present
+
+  tags: [pip]

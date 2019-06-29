@@ -1,0 +1,65 @@
+---
+#
+#  Build a fully provisioned server
+#
+- name: Initialize server
+  import_role:
+    name: base/core
+
+- name: Configure apt
+  import_role:
+    name: base/apt
+
+- name: Install pip
+  import_role:
+    name: base/pip
+
+- name: Configure AWS
+  import_role:
+    name: base/aws
+
+- name: Configure vagrant
+  import_role:
+    name: base/vagrant
+
+- name: Configure rsyslog
+  import_role:
+    name: base/rsyslog
+  vars:
+    is_rsyslog_master: true
+
+- name: Configure logrotate
+  import_role:
+    name: base/logrotate
+
+- name: Configure ssh
+  import_role:
+    name: base/ssh
+
+- name: Update sysctl settings
+  import_role:
+    name: base/sysctl
+
+- name: Configure pam
+  import_role:
+    name: base/pam
+
+- name: Configure cron
+  import_role:
+    name: base/cron
+
+- name: Configure chrony
+  import_role:
+    name: base/chrony
+
+- name: Configure motd
+  import_role:
+    name: base/motd
+
+- name: Configure postfix
+  import_role:
+    name: base/postfix
+
+- name: Manage users
+  import_role:
+    name: base/users

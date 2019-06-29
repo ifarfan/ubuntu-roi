@@ -1,5 +1,0 @@
----
-dependencies:
-- role: apache
-- role: mysql-percona
-- role: memcached

@@ -2,10 +2,12 @@
 #
 #  Global site variables
 #
-timezone: 'Etc/UTC'
-company_name: 'cubitus'
+company_name: 'my-cool-co'
 domain_name: '{{ company_name }}.io'
 sys_email: sys@{{ domain_name }}
+
+aws_default_region: us-east-1
+aws_default_output: json
 
 apt_install_optional: false
 apt_cache_time: 1800

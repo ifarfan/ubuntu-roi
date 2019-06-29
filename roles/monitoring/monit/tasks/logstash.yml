@@ -1,9 +1,0 @@
----
-- name: Copy and enable Logstash check on monit
-  copy:
-    src=etc/monit/conf.d/logstash.conf
-    dest=/etc/monit/conf.d/
-    owner=root
-    group=root
-    mode=0644
-  notify: reload monit

@@ -1,5 +1,0 @@
----
-- name: Check that all Icinga configs are valid and halt on any errors
-  shell: >
-    icinga -v /etc/icinga/icinga.cfg
-  changed_when: False

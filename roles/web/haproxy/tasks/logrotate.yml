@@ -1,8 +1,0 @@
----
-- name: Copy HAProxy logrotate config
-  copy:
-    src=etc/logrotate.d/haproxy
-    dest=/etc/logrotate.d/
-    owner=root
-    group=root
-    mode=0644

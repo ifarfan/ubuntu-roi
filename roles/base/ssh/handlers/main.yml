@@ -1,5 +1,6 @@
 ---
 - name: reload ssh
-  service:
-    name=ssh
-    state=restarted
+  systemd:
+    name: ssh
+    state: reloaded
+    enabled: yes

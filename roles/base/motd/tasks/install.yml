@@ -1,0 +1,16 @@
+---
+- name: Install MOTD pkg
+  apt:
+    pkg: landscape-client
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Disable related systemd services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+  - motd-news
+  - landscape-client

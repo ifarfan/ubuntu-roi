@@ -2,36 +2,29 @@
 #
 #  D E V   U S E R S
 #
-#  Dev users are only enabled on 'dev'
-#  and 'local' and get 2 ssh keys.
-#  Must have at least 1 key to be created
+#  Devs are only allowed on 'dev' and 'local'
 #
-- block:
-  - name: Adding Dev User Accounts
-    action: user
-      name={{ item.username }}
-      shell='/bin/bash'
-      comment='{{ item.fullname }}'
+- name: Adding Dev users accounts
+  user:
+    name: "{{ item.username }}"
+    shell: '/bin/bash'
+    comment: "{{ item.firstname }} {{ item.lastname }}"
+  loop: "{{ users_dev }}"
+  when: environment_name in ['local', 'development']
 
-  - name: Adding Dev User Key1
-    action: authorized_key
-      user={{ item.username }}
-      key='{{ item.userkey1 }}'
-
-  - name: Adding Dev User Key2
-    action: authorized_key
-      user={{ item.username }}
-      key='{{ item.userkey2 }}'
-    when: item.userkey2 != ''
-
-  when: environment_name in ['local', 'dev'] and item.userkey1 != ''
-  with_items: dev_users_list
+- name: Adding Dev users ssh keys
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.ssh_keys | join('\n') }}"
+    exclusive: yes
+  loop: "{{ users_dev }}"
+  when: environment_name in ['local', 'development']
 
 - name: Sudoers file for Dev Users, but not on MGM servers
   template:
-    src=etc/sudoers.d/20-devs.j2
-    dest=/etc/sudoers.d/20-devs
-    owner=root
-    group=root
-    mode=0440
-  when: environment_name in ['local', 'dev'] and 'mgm' not in group_names
+    src: etc/sudoers.d/20-devs.j2
+    dest: /etc/sudoers.d/20-devs
+    owner: root
+    group: root
+    mode: 0440
+  when: environment_name in ['local', 'development'] and 'mgm' not in group_names and users_dev

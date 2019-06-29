@@ -1,24 +1,16 @@
 ---
 #
-#  R E M O V E   U S E R S  +  K E Y S
+#  R E M O V E   U S E R S
 #
-- block:
-  - name: Removing User Accounts
-    user:
-      name={{ item }}
-      state=absent
-      remove=yes
+- name: Removing User Home Folders
+  file:
+    path: "/home/{{ item }}"
+    state: absent
+  loop: "{{ disabled_users }}"
 
-  - name: Removing User Home Folders
-    file:
-      path=/home/{{ item }}
-      state=absent
-
-  - name: Removing User Keys
-    authorized_key:
-      user={{ item.username }}
-      key='{{ item.userkey }}'
-      state=absent
-    ignore_errors: yes
-
-  with_items: deleted_keys_list
+- name: Removing User Accounts
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  loop: "{{ disabled_users }}"

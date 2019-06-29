@@ -1,0 +1,12 @@
+---
+- name: Run pre-installation tasks
+  import_playbook: playbooks/__pre_tasks.yml
+
+- hosts: all
+  gather_facts: true
+  become: true
+  roles:
+  - server/initialize
+
+- name: Run post-installation tasks
+  import_playbook: playbooks/__post_tasks.yml

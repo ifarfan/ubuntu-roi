@@ -1,0 +1,40 @@
+---
+- name: Configure master
+  block:
+
+  - name: Rsyslog server /opt/logs
+    file:
+      path: /opt/logs
+      state: directory
+      owner: root
+      group: root
+
+  - name: Rsyslog server config
+    template:
+      src: etc/rsyslog.server.conf.j2
+      dest: /etc/rsyslog.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload rsyslog
+
+  when: is_rsyslog_master | bool
+
+- name: Rsyslog client config
+  template:
+    src: etc/rsyslog.client.conf.j2
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: not is_rsyslog_master
+  notify: reload rsyslog
+
+- name: Additional Rsyslog config
+  copy:
+    src: etc/rsyslog.d/00-custom.conf
+    dest: /etc/rsyslog.d/
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload rsyslog

@@ -1,6 +1,0 @@
----
-- include: gearman.yml
-  tags: [gearman]
-
-- include: logrotate.yml
-  tags: [gearman, gearman-logrotate, logrotate]

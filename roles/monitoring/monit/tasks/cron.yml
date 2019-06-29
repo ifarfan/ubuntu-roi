@@ -1,9 +1,0 @@
----
-- name: Enable cron monit check
-  copy:
-    src=etc/monit/conf.d/cron.conf
-    dest=/etc/monit/conf.d/
-    owner=root
-    group=root
-    mode=0644
-  notify: reload monit

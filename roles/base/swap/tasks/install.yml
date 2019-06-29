@@ -1,0 +1,56 @@
+---
+- name: Ensure /mnt exists
+  file:
+    path: /mnt
+    state: directory
+    owner: root
+    group: root
+
+- name: Get half of the space left (in MBs) on /mnt
+  shell:
+    df --block-size=MB /mnt | grep / | awk '{printf("%.0f", $4/2)}'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: half_disk_free
+
+- name: Configure swap on first install
+  block:
+
+  - name: Init swapfile, either 1/2 available memory or 1/2 the space left on /mnt
+    command: >
+      dd
+      if=/dev/zero
+      of=/mnt/swap
+      bs=1M
+      count={{ half_disk_free.stdout if half_disk_free.stdout|int < swap_half_memory|int else swap_half_memory }}
+    args:
+      creates: /mnt/swap
+    register: cmd_fallocate
+
+  - name: Set swapfile permissions
+    file:
+      path: /mnt/swap
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: Create and enable swapfile
+    shell: |
+      mkswap /mnt/swap
+      swapon /mnt/swap
+    args:
+      executable: /bin/bash
+    when: cmd_fallocate is changed
+
+  when: ansible_swaptotal_mb == 0
+
+- name: Add swapfile to /etc/fstab
+  mount:
+    name: none
+    src: /mnt/swap
+    fstype: swap
+    opts: sw
+    passno: '0'
+    dump: '0'
+    state: present

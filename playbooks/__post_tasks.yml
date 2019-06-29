@@ -1,0 +1,15 @@
+---
+- name: Clean apt package cache
+  import_playbook: clean_pkg_cache.yml
+
+- name: Show final server stats
+  import_playbook: stats.yml
+
+- name: Flush cached memory
+  import_playbook: flush.yml
+
+- name: Run updatedb to reindex file index
+  import_playbook: updatedb.yml
+
+- name: Reboot box if needed
+  import_playbook: reboot_optional.yml

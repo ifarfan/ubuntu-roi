@@ -1,6 +1,0 @@
----
-- name: reload mysql
-  service:
-    name=mysql
-    state=restarted
-    enabled=yes

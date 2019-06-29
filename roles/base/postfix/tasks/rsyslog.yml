@@ -1,15 +1,15 @@
 ---
 - name: Remove default rsyslog Postix file
   file:
-    path=/etc/rsyslog.d/postfix.conf
-    state=absent
+    path: /etc/rsyslog.d/postfix.conf
+    state: absent
   notify: reload rsyslog
 
 - name: Copy Postfix rsyslog rules
   copy:
-    src=etc/rsyslog.d/50-postfix.conf
-    dest=/etc/rsyslog.d/
-    owner=root
-    group=root
-    mode=0644
+    src: etc/rsyslog.d/50-postfix.conf
+    dest: /etc/rsyslog.d/
+    owner: root
+    group: root
+    mode: 0644
   notify: reload rsyslog

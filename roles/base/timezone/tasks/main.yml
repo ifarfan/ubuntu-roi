@@ -1,0 +1,15 @@
+---
+- name: Configure Timezone
+  block:
+
+  - name: Ensure tzdata is installed
+    apt:
+      pkg: tzdata
+      state: present
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Set timezone
+    timezone:
+      name: "{{ time_zone }}"
+
+  tags: [timezone]

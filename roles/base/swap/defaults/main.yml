@@ -1,0 +1,2 @@
+---
+swap_half_memory: "{{ ansible_memtotal_mb // 2 }}"

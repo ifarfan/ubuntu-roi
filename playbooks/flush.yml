@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Flush cached-memory
+    command:
+      bash /opt/utils/flush_cache_memory.sh
+    ignore_errors: yes
+    async: 15
+    poll: 0
+    changed_when: false
+
+  - name: Flush swap
+    command:
+      bash /opt/utils/flush_swap.sh
+    ignore_errors: yes
+    async: 15
+    poll: 0
+    changed_when: false

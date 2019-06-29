@@ -1,0 +1,54 @@
+---
+- name: Configure apt
+  block:
+
+  - name: Uninstall Packages
+    apt:
+      pkg: "{{ apt_pkgs_to_remove }}"
+      state: absent
+      purge: yes
+
+  - name: Set apt settings
+    copy:
+      src: "{{ item }}"
+      dest: /etc/apt/apt.conf.d
+      owner: root
+      group: root
+      mode: 0644
+    loop:
+    - 20auto-upgrades
+    - 50unattended-upgrades
+    - 99no-recommends
+    - 99disable-translations
+
+  - name: Update apt caches
+    apt:
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+
+  - name: Install default packages
+    apt:
+      pkg: "{{ apt_pkgs_to_install }}"
+      state: present
+    notify:
+    - stop and disable daemons
+
+  - name: Install optional packages
+    apt:
+      pkg: "{{ apt_pkgs_optional }}"
+      state: present
+    when: apt_install_optional | bool
+
+  - name: Enable HTTPS transport for apt
+    apt:
+      pkg: apt-transport-https
+      state: present
+
+  - name: Force notify to run now
+    meta: flush_handlers
+
+  tags: [apt]

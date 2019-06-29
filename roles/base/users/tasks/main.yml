@@ -1,12 +1,12 @@
 ---
-- include: admins.yml
+- import_tasks: admins.yml
   tags: [users, admin-users]
 
-- include: devs.yml
+- import_tasks: devs.yml
   tags: [users, dev-users]
 
-- include: consultants.yml
+- import_tasks: consultants.yml
   tags: [users, consultant-users]
 
-- include: disabled.yml
+- import_tasks: disabled.yml
   tags: [users, disabled-users]

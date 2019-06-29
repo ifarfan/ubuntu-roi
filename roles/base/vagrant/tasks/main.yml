@@ -1,0 +1,38 @@
+---
+- block:
+  - name: Check if server is running virtualbox
+    shell:
+      dmidecode -s system-product-name | grep -q -i 'virtualbox'
+    args:
+      executable: /bin/bash
+    register: is_vagrant_vm
+    failed_when: false
+    changed_when: false
+
+  - block:
+    - name: Using Vagrant
+      debug:
+        msg: 'This is a Vagrant box'
+
+    - name: Set Google DNS for vagrant
+      lineinfile:
+        dest: /etc/systemd/resolved.conf
+        state: present
+        regexp: '(.*)DNS='
+        line: 'DNS=8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844'
+        insertafter: '^\[Resolve\]'
+      register: resolved
+
+    - name: Restart networking services
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+        daemon_reload: yes
+      loop:
+      - systemd-resolved
+      - systemd-networkd
+      when: resolved is changed
+
+    when: is_vagrant_vm.rc == 0
+
+  tags: [vagrant]

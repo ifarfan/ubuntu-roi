@@ -2,25 +2,29 @@
 #
 #  C O N S U L T A N T S
 #
-#  Consultants are only enabled on 'dev'
-#  and 'local' and get 1 ssh key
+#  Consultants are only allowed on 'dev' and 'local'
 #
-- block:
-  - name: Adding Consultant Accounts
-    action: user name={{ item.username }} shell='/bin/bash' comment='{{ item.fullname }}'
+- name: Adding Consultant users accounts
+  user:
+    name: "{{ item.username }}"
+    shell: '/bin/bash'
+    comment: "{{ item.firstname }} {{ item.lastname }}"
+  loop: "{{ users_consultant }}"
+  when: environment_name in ['local', 'development']
 
-  - name: Adding Consultant Key
-    action: authorized_key user={{ item.username }} key='{{ item.userkey }}'
-    with_items: consultant_users_list
+- name: Adding Consultant users ssh keys
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.ssh_keys | join('\n') }}"
+    exclusive: yes
+  loop: "{{ users_consultant }}"
+  when: environment_name in ['local', 'development']
 
-  with_items: consultant_users_list
-  when: environment_name in ['local', 'dev'] and item.userkey != ''
-
-- name: Sudoers file for Consultant Users
+- name: Sudoers file for Consultant Users, but not on MGM servers
   template:
-    src={{ files_dir }}/etc/sudoers.d/25-consultants.j2
-    dest=/etc/sudoers.d/25-consultants
-    owner=root
-    group=root
-    mode=0440
-  when: environment_name in ['local', 'dev'] and 'mgm' not in group_names
+    src: etc/sudoers.d/25-consultants.j2
+    dest: /etc/sudoers.d/25-consultants
+    owner: root
+    group: root
+    mode: 0440
+  when: environment_name in ['local', 'development'] and 'mgm' not in group_names and users_consultant

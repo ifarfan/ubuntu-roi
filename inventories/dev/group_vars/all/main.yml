@@ -1,0 +1,5 @@
+---
+environment_name: development
+subdomain_name: dev
+
+apt_install_optional: true

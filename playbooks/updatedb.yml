@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Run updatedb
+    command: updatedb
+    async: 15
+    poll: 0
+    changed_when: false

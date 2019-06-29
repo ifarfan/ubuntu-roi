@@ -1,0 +1,89 @@
+---
+apt_pkgs_to_remove:
+- bind9
+- bind9utils
+- chef
+- chef-zero
+- consolekit
+- dbus-x11
+- dosfstools
+- g++
+- g++-7
+- laptop-detect
+- open-vm-tools
+- ppp
+- popularity-contest
+- puppet
+- puppet-common
+- samba-common
+- usbutils
+- telnet
+- xauth
+- xkb-data
+
+apt_pkgs_to_install:
+- apt-file
+- apt-utils
+- aptitude
+- bc
+- dmidecode
+- dnsutils
+- colordiff
+- curl
+- git-core
+- grc
+- htop
+- iftop
+- iotop
+- iptraf
+- lnav
+- lsb-release
+- lsof
+- locate
+- multitail
+- nano
+- ncdu
+- nmap
+- nmon
+- nscd
+- peco
+- psmisc
+- pv
+- rsync
+- screen
+- software-properties-common
+- sysstat
+- tar
+- tree
+- unzip
+- wget
+- zip
+
+apt_install_optional: false
+
+apt_pkgs_optional:
+- cowsay
+- doxygen
+- mosh
+- tmux
+
+services_2_disable:
+- apparmor
+- docker
+- ebtables
+- lvm2-lvmetad
+- lvm2-lvmpolld
+- lvm2-monitor
+- lvm2
+- lxcfs
+- lxd
+- lxd-containers
+- mdadm
+- motd-news
+- rsync
+- snap.amazon-ssm-agent.amazon-ssm-agent
+- snap.kubelet-eks.daemon
+- snapd
+- snapd.seeded
+- sysstat
+- ubuntu-fan

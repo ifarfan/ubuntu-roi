@@ -1,6 +1,0 @@
----
-- include: collectd.yml
-  tags: [collectd]
-
-- include: collectd_configs.yml
-  tags: [collectd, collectd-configs]

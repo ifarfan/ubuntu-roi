@@ -1,8 +1,0 @@
----
-# Graphite MySQL user
-graphite_sql_db:
-graphite_sql_usr:
-graphite_sql_pwd:
-
-graphite_secret_key:
-graphite_timezone:

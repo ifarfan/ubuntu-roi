@@ -1,18 +1,23 @@
 ---
-- name: reload postfix
-  service:
-    name=postfix
-    state=restarted
-    enabled=yes
+- name: restart postfix
+  systemd:
+    name: postfix
+    state: restarted
+    enabled: yes
 
 - name: rebuild aliases.db
-  command: newaliases
-  notify: reload postfix
+  command: /usr/bin/newaliases
+  notify: restart postfix
 
 - name: rebuild canonical.db
-  command: postmap /etc/postfix/canonical
-  notify: reload postfix
+  command: /usr/sbin/postmap /etc/postfix/canonical
+  notify: restart postfix
 
 - name: rebuild sasl_passwd.db
-  command: postmap /etc/postfix/sasl_passwd
-  notify: reload postfix
+  command: /usr/sbin/postmap /etc/postfix/sasl_passwd
+  notify: restart postfix
+
+- name: reload rsyslog
+  systemd:
+    name: rsyslog
+    state: restarted

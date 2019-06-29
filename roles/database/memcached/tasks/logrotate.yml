@@ -1,8 +1,0 @@
----
-- name: Copy Memcached logrotate config
-  copy:
-    src=etc/logrotate.d/memcached
-    dest=/etc/logrotate.d/
-    owner=root
-    group=root
-    mode=0644

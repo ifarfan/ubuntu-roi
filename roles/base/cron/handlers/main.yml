@@ -1,6 +1,6 @@
 ---
-- name: reload cron
-  service:
-    name=cron
-    state=restarted
-    enabled=yes
+- name: restart cron
+  systemd:
+    name: cron
+    state: restarted
+    enabled: yes

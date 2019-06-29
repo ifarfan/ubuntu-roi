@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+#  renable swap, if disabled
+#
+
+#  Find out swap
+used_swap="$(free | grep 'Swap:' | awk '{print $3}')"
+
+#  No swap found, reset it
+if [[ $used_swap -eq 0 ]]; then
+
+    #  Reset swap file
+    dd if=/dev/zero of=/mnt/swap bs=1M count={{ half_disk_free.stdout if half_disk_free.stdout|int < swap_half_memory|int else swap_half_memory }}
+
+    #  Reset owner + perms
+    chown root:root /mnt/swap
+    chmod 0600 /mnt/swap
+
+    #  Go for it!
+    mkswap /mnt/swap
+    swapon /mnt/swap
+fi

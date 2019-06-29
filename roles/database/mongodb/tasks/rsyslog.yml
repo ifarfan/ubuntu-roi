@@ -1,9 +1,0 @@
----
-- name: Copy MongoDB rsyslog rules
-  copy:
-    src=etc/rsyslog.d/50-mongodb.conf
-    dest=/etc/rsyslog.d/
-    owner=root
-    group=root
-    mode=0644
-  notify: reload rsyslog

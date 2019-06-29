@@ -1,9 +1,9 @@
 ---
-- include: rsyslog.yml
+- import_tasks: install.yml
   tags: [rsyslog]
 
-- include: rsyslog_configs.yml
-  tags: [rsyslog, rsyslog-configs]
+- import_tasks: config.yml
+  tags: [rsyslog, rsyslog-config]
 
-- include: logrotate.yml
+- import_tasks: logrotate.yml
   tags: [rsyslog, rsyslog-logrotate, logrotate]

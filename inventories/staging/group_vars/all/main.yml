@@ -1,5 +1,0 @@
----
-environment_name: staging
-subdomain_name: stg
-
-apt_install_optional: false

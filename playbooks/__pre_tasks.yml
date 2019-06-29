@@ -1,0 +1,9 @@
+---
+- name: Install python on 1st connection
+  import_playbook: install_python.yml
+
+- name: Wait until apt/dpkg are unlocked
+  import_playbook: check_dpkg_lock.yml
+
+- name: Show initial server stats
+  import_playbook: stats.yml

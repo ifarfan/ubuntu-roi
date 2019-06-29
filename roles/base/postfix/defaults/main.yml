@@ -1,0 +1,12 @@
+---
+postfix_pks:
+- postfix
+- mailutils
+- ca-certificates
+- libsasl2-2
+- libsasl2-modules
+
+postfix_utils_pks:
+- libio-socket-ssl-perl
+- libnet-ssleay-perl
+- sendemail

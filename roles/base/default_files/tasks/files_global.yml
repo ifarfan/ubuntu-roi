@@ -1,0 +1,66 @@
+---
+#
+#  Default settings
+#
+- name: Copy default /etc files
+  copy:
+    src: "etc/{{ item }}"
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+  - updatedb.conf
+
+- name: Copy environment files
+  template:
+    src: "etc/profile.d/{{ item }}.j2"
+    dest: "/etc/profile.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+  loop:
+  - 10-environment.sh
+  - 10-prompt.sh
+
+- name: Create backups folder
+  file:
+    path: /opt/backups
+    state: directory
+    owner: root
+    group: root
+
+#
+#  bashrc
+#
+- name: Copy default .bashrc files
+  copy:
+    src: etc/skel/_bashrc
+    dest: "{{ item.path }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    mode: 0644
+  loop:
+  -
+    path: '/etc/skel/.bashrc'
+    user: 'root'
+  -
+    path: '/root/.bashrc'
+    user: 'root'
+  -
+    path: '/home/ubuntu/.bashrc'
+    user: 'ubuntu'
+
+- name: Check for /home/vagrant
+  stat:
+    path: /home/vagrant
+  register: vagrant_home
+
+- name: Copy default bashrc file for vagrant
+  copy:
+    src: etc/skel/_bashrc
+    dest: /home/vagrant/.bashrc
+    owner: vagrant
+    group: vagrant
+    mode: 0644
+  when: vagrant_home.stat.exists

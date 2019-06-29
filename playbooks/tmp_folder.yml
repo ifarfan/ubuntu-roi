@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+  - name: Set perms on tmp folder to prevent warning message
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+    loop:
+    - ~/.ansible/tmp
+    - /tmp/.ansible
+    changed_when: false

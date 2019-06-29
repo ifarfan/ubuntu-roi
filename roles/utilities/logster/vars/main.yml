@@ -1,8 +1,0 @@
----
-#===============================================================================
-#
-#  V A R S / M A I N . Y M L
-#
-#===============================================================================
-logster_folder: /opt/logster
-logster_parser_path: /usr/local/lib/python2.7/dist-packages/logster-0.0.1-py2.7.egg/logster/parsers/

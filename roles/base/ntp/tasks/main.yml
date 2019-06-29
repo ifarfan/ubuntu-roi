@@ -1,18 +1,28 @@
 ---
-- block:
+- name: Install NTPD
+  block:
+
   - name: Install ntpd
     apt:
-      pkg=ntp
-      state=present
-      update_cache=yes
-      cache_valid_time={{ apt_cache_time }}
+      pkg: ntp
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
 
   - name: Copy ntp config
     copy:
-      src=etc/ntp.conf
-      dest=/etc/
-      owner=root
-      group=root
-      mode=0644
+      src: etc/ntp.conf
+      dest: /etc/
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart ntp
+
+  - name: Ensure systemd restarts ntp
+    lineinfile:
+      dest: /lib/systemd/system/ntp.service
+      regexp: '^Restart'
+      insertafter: '\[Service\]'
+      line: 'Restart=always'
 
   tags: [ntp]

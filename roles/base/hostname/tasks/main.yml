@@ -1,0 +1,47 @@
+---
+- name: Configure hostname
+  block:
+
+  - name: Set hostname
+    hostname:
+      # name: "{{ inventory_hostname }}"
+      name: "{{ inventory_hostname }}.{{ subdomain_name }}.{{ domain_name }}"
+    register: hostname_update
+
+  - name: Cleanup localhost line in /etc/hosts
+    lineinfile:
+      path: /etc/hosts
+      regexp: '^127\.0\.0\.1\s+localhost(.*)'
+      line: '127.0.0.1 localhost'
+
+  - name: Set hostnames line (subdomain and root environment match)
+    set_fact:
+      host_line: "{{ inventory_hostname }}.{{ subdomain_name }}.{{ domain_name }} {{ inventory_hostname }}"
+
+  - name: Set hostnames in /etc/hosts
+    blockinfile:
+      path: /etc/hosts
+      insertbefore: BOF
+      marker: "#-- {mark} ANSIBLE MANAGED HOSTNAME --"
+      content: |
+        127.0.0.1 {{ host_line }}
+
+  - name: Refresh fact-gathering to get new hostname values
+    action: setup
+    when: hostname_update is changed
+
+  - name: Prevent cloud.init from overwriting hostname
+    copy:
+      dest: /etc/cloud/cloud.cfg.d/99_hostname.cfg
+      content: 'preserve_hostname: true'
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Prevent dhcp from overwriting hostname
+    replace:
+      path: /etc/dhcp/dhclient.conf
+      regexp: 'host-name,'
+      replace: ''
+
+  tags: [hostname, provision]

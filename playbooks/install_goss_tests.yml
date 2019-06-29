@@ -1,0 +1,29 @@
+---
+#
+#  Docs: https://github.com/aelsabbahy/goss/blob/master/docs/manual.md
+#  Latest: https://github.com/aelsabbahy/goss/releases
+#
+#  Examples:
+#  $> goss -g postgres.yml validate                       #  Run tests
+#  $> goss --gossfile /tmp/goss/tests_web.yml render      #  Compile single test from multiple ones
+#
+- hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    goss_tests_folder: /tmp/goss
+
+  tasks:
+  - name: Ensure Goss folder exists
+    file:
+      path: "{{ goss_tests_folder }}"
+      state: directory
+      mode: 0755
+
+  - name: Copy Goss tests
+    copy:
+      src: "../../goss/"
+      dest: "{{ goss_tests_folder }}"
+      owner: root
+      group: root

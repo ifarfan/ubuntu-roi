@@ -1,0 +1,59 @@
+---
+#
+#  TODO: Need a proper systemd config for postfix to get auto-restart:
+#  > [Service]
+#  > Restart=always
+#
+#  ? Model it after
+#  ? https://unix.stackexchange.com/questions/350633/postfix-service-enabled-but-wont-start-on-reboot
+#
+
+- name: Append sys email to aliases file
+  lineinfile:
+    dest: /etc/aliases
+    regexp: '^root'
+    line: "root: {{ sys_email }}"
+  notify: rebuild aliases.db
+
+- name: Copy canonical file
+  template:
+    src: etc/postfix/canonical.j2
+    dest: /etc/postfix/canonical
+    owner: root
+    group: root
+    mode: 0644
+  notify: rebuild canonical.db
+
+- name: Set mailname
+  template:
+    src: etc/mailname.j2
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart postfix
+
+- name: Postfix config file
+  template:
+    src: etc/postfix/main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart postfix
+
+#
+#  Hardening Postfix
+#  - https://linux-audit.com/postfix-hardening-guide-for-security-and-privacy/
+#
+- name: Disable VRFY (verify)
+  command: postconf -e disable_vrfy_command=yes
+  changed_when: false
+
+- name: Disable listening on ALL network interfaces
+  command: postconf -e inet_interfaces=loopback-only
+  changed_when: false
+
+- name: Enable HELO
+  command: postconf -e smtpd_helo_required=yes
+  changed_when: false

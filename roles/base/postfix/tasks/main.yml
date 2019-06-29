@@ -1,12 +1,12 @@
 ---
-- include: postfix.yml
+- import_tasks: install.yml
   tags: [postfix]
 
-- include: postfix-configs.yml
-  tags: [postfix, postfix-configs]
+- import_tasks: config.yml
+  tags: [postfix, postfix-config, provision]
 
-- include: postfix-utils.yml
+- import_tasks: utils.yml
   tags: [postfix, postfix-utils]
 
-- include: rsyslog.yml
+- import_tasks: rsyslog.yml
   tags: [postfix, postfix-rsyslog, rsyslog]

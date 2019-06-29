@@ -1,0 +1,7 @@
+.DS_Store
+*.retry
+**/.DS_Store
+cachedir/*
+my_*.yml
+logs/*
+!logs/.gitkeep

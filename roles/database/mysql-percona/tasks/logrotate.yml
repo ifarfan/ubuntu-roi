@@ -1,8 +1,0 @@
----
-- name: Copy Apache logrotate config
-  copy:
-    src=etc/logrotate.d/mysql
-    dest=/etc/logrotate.d/
-    owner=root
-    group=root
-    mode=0644

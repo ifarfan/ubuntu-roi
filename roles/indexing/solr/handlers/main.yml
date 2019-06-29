@@ -1,7 +1,0 @@
----
-- name: reload solr
-  service:
-    name=solr
-    state=restarted
-    enabled=yes
-    pattern=STOP.KEY

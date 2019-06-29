@@ -1,0 +1,8 @@
+---
+pip_apt_pkgs:
+- python3-pip
+- python3-setuptools
+
+pip_default_pkgs:
+- httpie
+- wheel

@@ -1,19 +1,13 @@
 ---
-- block:
+- name: Configure logrotate
+  block:
+
   - name: Copy logrotate config
     copy:
-      src=etc/logrotate.conf
-      dest=/etc/
-      owner=root
-      group=root
-      mode=0644
-
-  - name: Copy upstart logrotate config
-    copy:
-      src=etc/logrotate.d/upstart
-      dest=/etc/logrotate.d/
-      owner=root
-      group=root
-      mode=0644
+      src: etc/logrotate.conf
+      dest: /etc/
+      owner: root
+      group: root
+      mode: 0644
 
   tags: [logrotate]

@@ -1,0 +1,41 @@
+---
+- name: Configure DNS
+  block:
+
+  - name: Ensure VM is sniffed
+    import_role:
+      name: base/vm_sniffer
+
+  - name: Set Google DNS for vagrant
+    lineinfile:
+      dest: /etc/systemd/resolved.conf
+      state: present
+      regexp: '(.*)DNS='
+      line: 'DNS=8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844'
+      insertafter: '^\[Resolve\]'
+    when:
+    - vm_type == 'vagrant'
+    register: dns_vagrant_update
+
+  - name: Set search domains for AWS
+    lineinfile:
+      dest: /etc/systemd/resolved.conf
+      state: present
+      regexp: '(.*)Domains='
+      line: "Domains=ec2.internal {{ subdomain_name }}.{{ domain_name }}"
+      insertafter: '^\[Resolve\]'
+    when:
+    - vm_type == 'aws'
+    register: dns_aws_update
+
+  - name: Restart networking services
+    systemd:
+      name: "{{ item }}"
+      state: restarted
+      daemon_reload: yes
+    loop:
+    - systemd-resolved
+    - systemd-networkd
+    when: dns_vagrant_update is changed or dns_aws_update is changed
+
+  tags: [dns, provision]

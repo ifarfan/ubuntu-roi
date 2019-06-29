@@ -1,5 +1,4 @@
 ---
-#===============================================================================
 #
 #  TCP Tunning:
 #  - http://kaivanov.blogspot.com/2010/09/linux-tcp-tuning.html
@@ -8,13 +7,12 @@
 #  - http://www.streppone.it/cosimo/blog/2011/11/a-collection-of-useful-sysctl-snippets-packaged-as-a-puppet-module/
 #  - http://russ.garrett.co.uk/2009/01/01/linux-kernel-tuning/
 #
-#===============================================================================
 - name: Default sysctl values
   copy:
-    src=etc/sysctl.conf
-    dest=/etc/
-    owner=root
-    group=root
-    mode=0644
+    src: etc/sysctl.conf
+    dest: /etc/
+    owner: root
+    group: root
+    mode: 0644
   notify: run sysctl
   tags: [sysctl]

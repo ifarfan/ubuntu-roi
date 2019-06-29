@@ -1,7 +1,0 @@
----
-- name: reload gecko
-  systemd:
-    name=gecko
-    state=restarted
-    enabled=yes
-    daemon_reload=yes

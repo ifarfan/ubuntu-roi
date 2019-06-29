@@ -1,9 +1,0 @@
-#===============================================================================
-#
-#  G E A R M A N - J O B - S E R V E R
-#
-#  Gearman now runs via upstart and configured at /etc/init/gearman-job-server.conf
-#
-#===============================================================================
-# Examples ( from http://gearman.org/index.php?id=manual:job_server )
-#PARAMS="-q libsqlite3 --libsqlite3-db=/var/lib/gearman/queue.db --libsqlite3-table=gearman_queue"

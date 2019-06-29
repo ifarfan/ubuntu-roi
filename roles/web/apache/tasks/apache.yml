@@ -1,8 +1,0 @@
----
-- name: Install Apache
-  apt:
-    pkg={{ item }}
-    state=present
-    update_cache=yes
-    cache_valid_time={{ apt_cache_time }}
-  with_items: apache_apt_packages

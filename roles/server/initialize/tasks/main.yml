@@ -1,0 +1,77 @@
+---
+#
+#  Build a fully provisioned server
+#
+- name: Set hostname
+  import_role:
+    name: base/hostname
+
+- name: Configure apt
+  import_role:
+    name: base/apt
+
+- name: Set timezone
+  import_role:
+    name: base/timezone
+
+- name: Set locale
+  import_role:
+    name: base/locale
+
+- name: Set default files
+  import_role:
+    name: base/default_files
+
+- name: Set swap
+  import_role:
+    name: base/swap
+
+- name: Configure DNS
+  import_role:
+    name: base/dns
+
+- name: Configure AWS + utils
+  import_role:
+    name: base/aws
+
+- name: Configure rsyslog
+  import_role:
+    name: base/rsyslog
+  vars:
+    is_rsyslog_master: true
+
+- name: Configure logrotate
+  import_role:
+    name: base/logrotate
+
+- name: Configure ssh
+  import_role:
+    name: base/ssh
+
+- name: Update sysctl settings
+  import_role:
+    name: base/sysctl
+
+- name: Configure pam
+  import_role:
+    name: base/pam
+
+- name: Configure cron
+  import_role:
+    name: base/cron
+
+- name: Configure chrony
+  import_role:
+    name: base/chrony
+
+- name: Configure motd
+  import_role:
+    name: base/motd
+
+- name: Configure postfix
+  import_role:
+    name: base/postfix
+
+- name: Manage users
+  import_role:
+    name: base/users
