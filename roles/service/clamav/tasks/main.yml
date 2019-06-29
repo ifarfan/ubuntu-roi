@@ -1,0 +1,9 @@
+---
+- import_tasks: install.yml
+  tags: [clamav, clamav-install]
+
+- import_tasks: config.yml
+  tags: [clamav, clamav-config]
+
+- import_tasks: logrotate.yml
+  tags: [clamav, clamav-logrotate]

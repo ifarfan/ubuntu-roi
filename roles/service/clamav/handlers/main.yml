@@ -1,0 +1,12 @@
+---
+- name: restart clamav
+  systemd:
+    name: clamav-daemon
+    state: restarted
+    enabled: yes
+
+- name: restart freshclam
+  systemd:
+    name: clamav-freshclam
+    state: restarted
+    enabled: yes

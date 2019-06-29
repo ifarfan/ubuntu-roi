@@ -1,0 +1,12 @@
+---
+- name: ClamAV scan cron job
+  cron:
+    name: ClamAV Scan
+    special_time: daily
+    job: "sleep {{15|random(seed=inventory_hostname)}}m; {{ clamav_cmd }}"
+
+- name: FreshClam cron job
+  cron:
+    name: FreshClam
+    special_time: daily
+    job: "sleep {{45|random(seed=inventory_hostname)}}m; {{ freshclam_cmd }}"

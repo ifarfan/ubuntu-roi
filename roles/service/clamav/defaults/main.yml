@@ -1,0 +1,22 @@
+---
+clamav_pkgs:
+- clamav
+- clamav-base
+- clamav-daemon
+- clamav-freshclam
+
+#  clam scan command
+clamav_cmd_params:
+- --log=/var/log/clamav/scan.log
+- --infected
+- --suppress-ok-results
+- --quiet
+
+clamav_cmd: "/usr/bin/clamscan {{ clamav_cmd_params | join(' ') }} /"
+
+#  freshclam command
+freshclam_cmd_params:
+- --quiet
+- --no-warnings
+
+freshclam_cmd: "/usr/bin/freshclam {{ freshclam_cmd_params | join(' ') }}"

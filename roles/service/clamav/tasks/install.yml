@@ -1,0 +1,31 @@
+---
+- name: Install Clam AV packages
+  apt:
+    pkg: "{{ clamav_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+  register: clamav_install
+
+- name: After install steps
+  block:
+
+  - name: Stop freshclam to update thread database
+    systemd:
+      name: clamav-freshclam
+      state: stopped
+
+  - name: Run freshclam
+    command: freshclam
+    register: freshclam_result
+    failed_when:
+    - freshclam_result.rc != 0
+    - freshclam_result.stderr.find('locked by another process') != -1
+
+  - name: Restart freshclam
+    systemd:
+      name: clamav-freshclam
+      state: started
+      enabled: yes
+
+  when: clamav_install is changed

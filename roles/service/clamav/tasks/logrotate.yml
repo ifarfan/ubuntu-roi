@@ -1,0 +1,8 @@
+---
+- name: Copy ClamAV logrotate config
+  copy:
+    src: etc/logrotate.d/clamav
+    dest: /etc/logrotate.d/
+    owner: root
+    group: root
+    mode: 0644
