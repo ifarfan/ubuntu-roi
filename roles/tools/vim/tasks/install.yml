@@ -1,0 +1,26 @@
+---
+- name: Install Vim packages
+  apt:
+    pkg: "{{ vim_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Download spf13-vim script
+  get_url:
+    url: https://j.mp/spf13-vim3
+    dest: ~/spf13-vim.sh
+    mode: 0440
+
+- name: Disable problematic plugins
+  copy:
+    dest: ~/.vimrc.bundles.local
+    content: "UnBundle '{{ item }}'"
+    mode: 0644
+  loop: "{{ vim_disabled_plugins }}"
+
+- name: Install spf13-vim
+  shell: sh spf13-vim.sh
+  args:
+    chdir: ~/
+    creates: ~/.spf13-vim-3

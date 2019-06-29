@@ -1,0 +1,60 @@
+---
+- name: Check for spf13-vim folder
+  stat:
+    path: /root/.spf13-vim-3
+  register: vim_file
+
+- name: Folder found, proceed with install
+  block:
+
+  - name: Find list of /home user folders
+    find:
+      paths: /home
+      recurse: no
+      file_type: directory
+    register: vim_home_folders
+
+  - name: Copy .spf13 folder across all users
+    shell: |
+      cp -R .spf13-vim-3 {{ item.path }}/
+      chown -R {{ item.pw_name }}:{{ item.gr_name }} {{ item.path }}/.spf13-vim-3
+    args:
+      chdir: /root
+      creates: "{{ item.path }}/.spf13-vim-3"
+      executable: /bin/bash
+    loop: "{{ vim_home_folders.files }}"
+
+  - name: Copy .vim folder across all users
+    shell: |
+      cp -R .vim {{ item.path }}/
+      chown -R {{ item.pw_name }}:{{ item.gr_name }} {{ item.path }}/.vim
+    args:
+      chdir: /root
+      creates: "{{ item.path }}/.vim"
+      executable: /bin/bash
+    loop: "{{ vim_home_folders.files }}"
+
+  - name: Copy .vimX files across all users
+    copy:
+      src: "/root/{{ item[1].file }}"
+      dest: "{{ item[0].path }}/"
+      owner: "{{ item[0].pw_name }}"
+      group: "{{ item[0].gr_name }}"
+      mode: "{{ item[1].mode }}"
+      remote_src: yes
+    with_nested:
+    - "{{ vim_home_folders.files }}"
+    - "{{ vim_user_files }}"
+
+  - name: Symlink .vimX across all users
+    file:
+      src: "{{ item[0].path }}/.spf13-vim-3/{{ item[1] }}"
+      dest: "{{ item[0].path }}/{{ item[1] }}"
+      owner: "{{ item[0].pw_name }}"
+      group: "{{ item[0].gr_name }}"
+      state: link
+    with_nested:
+    - "{{ vim_home_folders.files }}"
+    - "{{ vim_user_symlinks }}"
+
+  when: vim_file.stat.exists

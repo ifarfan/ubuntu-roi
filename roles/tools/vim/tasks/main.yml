@@ -1,0 +1,6 @@
+---
+- import_tasks: install.yml
+  tags: [vim, vim-install]
+
+- import_tasks: users.yml
+  tags: [vim, vim-users]

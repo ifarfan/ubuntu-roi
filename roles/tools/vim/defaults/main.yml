@@ -1,0 +1,24 @@
+---
+vim_pkgs:
+- vim
+- vim-common
+- vim-runtime
+
+vim_user_files:
+-
+  file: .viminfo
+  mode: '0600'
+-
+  file: .vimrc.local
+  mode: '0644'
+-
+  file: .vimrc.bundles.local
+  mode: '0644'
+
+vim_user_symlinks:
+- .vimrc
+- .vimrc.before
+- .vimrc.bundles
+
+vim_disabled_plugins:
+- amirh/HTML-AutoCloseTag
