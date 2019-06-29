@@ -1,0 +1,42 @@
+---
+- name: Check for current SDK Tools
+  stat:
+    path: "{{ sdk_tools_home_directory }}/current"
+  register: sdk_tools_directory
+
+- name: Install if SDK Tools directory NOT found
+  block:
+
+  - name: Create SDK Tools home directory
+    file:
+      path: "{{ sdk_tools_home_directory }}"
+      state: directory
+      mode: 0755
+
+  - name: Download + extract SDK Tools
+    unarchive:
+      src: "{{ sdk_tools_download_url }}"
+      dest: "{{ sdk_tools_home_directory }}"
+      remote_src: yes
+
+  - name: Rename "tools" directory to SDK version
+    command:
+      mv {{ sdk_tools_home_directory }}/tools {{ sdk_tools_home_directory }}/{{ sdk_tools_version }}
+    args:
+      creates: "{{ sdk_tools_home_directory }}/{{ sdk_tools_version }}"
+      removes: "{{ sdk_tools_home_directory }}/tools"
+
+  - name: Symlink to folder
+    file:
+      src: "{{ sdk_tools_home_directory }}/{{ sdk_tools_version }}"
+      dest: "{{ sdk_tools_home_directory }}/current"
+      owner: root
+      group: root
+      state: link
+
+  when: not sdk_tools_directory.stat.exists
+
+- name: Ensure SDK Tools is executable by ALL users
+  file:
+    path: "{{ sdk_tools_home_directory }}/current/bin"
+    mode: 0755

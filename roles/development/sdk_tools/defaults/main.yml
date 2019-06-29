@@ -1,0 +1,4 @@
+---
+sdk_tools_version: 4333796
+sdk_tools_download_url: "https://dl.google.com/android/repository/sdk-tools-linux-{{ sdk_tools_version }}.zip"
+sdk_tools_home_directory: /opt/sdk-tools

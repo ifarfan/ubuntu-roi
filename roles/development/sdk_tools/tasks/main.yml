@@ -1,0 +1,10 @@
+---
+- name: Ensure Java is installed
+  import_role:
+    name: development/java_8
+
+- import_tasks: install.yml
+  tags: [sdk_tools, sdk_tools-install]
+
+- import_tasks: path.yml
+  tags: [sdk_tools, sdk_tools-path]

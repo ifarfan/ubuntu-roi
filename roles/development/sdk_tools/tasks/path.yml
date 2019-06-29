@@ -1,0 +1,18 @@
+---
+- name: Check for current SDK Tools
+  stat:
+    path: "{{ sdk_tools_home_directory }}/current"
+  register: sdk_tools_directory
+
+- name: Add SDK Tools to system-wide $PATH
+  copy:
+    dest: /etc/profile.d/20-sdk-tools.sh
+    content: |
+      #
+      #  SDK Tools environment variable
+      #
+      export PATH={{ sdk_tools_home_directory }}/current/bin:${PATH}
+    owner: root
+    group: root
+    mode: 0755
+  when: sdk_tools_directory.stat.exists
