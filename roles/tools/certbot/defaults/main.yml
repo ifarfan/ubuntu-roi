@@ -1,0 +1,12 @@
+---
+certbot_required_pkgs:
+- software-properties-common
+
+certbot_pkgs:
+- certbot
+
+certbot_apache_pkgs:
+- python3-certbot-apache
+
+certbot_nginx_pkgs:
+- python3-certbot-nginx

@@ -1,0 +1,63 @@
+---
+- name: Install Certbot
+  block:
+
+  - name: Add Certbot repo
+    apt_repository:
+      repo: 'ppa:certbot/certbot'
+      state: present
+
+  - name: Install Certbot pre-requisites
+    apt:
+      pkg: "{{ certbot_required_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Install Certbot
+    apt:
+      pkg: "{{ certbot_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Create Let's Encrypt folder
+    file:
+      path: /etc/letsencrypt
+      state: directory
+      owner: root
+      group: root
+
+  - name: Check if Apache is installed
+    shell: dpkg --status apache2 | grep 'install ok installed'
+    args:
+      executable: /bin/bash
+    register: apache_is_installed
+    failed_when: false
+    changed_when: false
+
+  - name: Install Apache pkgs
+    apt:
+      pkg: "{{ certbot_apache_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+    when: apache_is_installed.rc == 0
+
+  - name: Check if NGINX is installed
+    shell: dpkg --status nginx |grep 'install ok installed'
+    args:
+      executable: /bin/bash
+    register: nginx_is_installed
+    failed_when: false
+    changed_when: false
+
+  - name: Install NGINX pkgs
+    apt:
+      pkg: "{{ certbot_nginx_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+    when: nginx_is_installed.rc == 0
+
+  tags: [certbot]
