@@ -1,0 +1,18 @@
+---
+java_oracle_pkgs:
+- ca-certificates
+- oracle-java11-installer
+- oracle-java11-set-default
+
+java_oracle_path: /usr/lib/jvm/oracle-java11-amd64
+java_oracle_exec: "{{ java_oracle_path }}/bin/java"
+
+java_openjdk_pkgs:
+- ca-certificates-java
+- openjdk-11-jre-headless
+
+java_openjdk_path: /usr/lib/jvm/java-11-openjdk-amd64
+java_openjdk_exec: "{{ java_openjdk_path }}/bin/java"
+
+#  Use OpenJDK
+oracle_version: false

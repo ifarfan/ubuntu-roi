@@ -1,0 +1,37 @@
+---
+#
+#  OpenJDK
+#
+- name: Set OpenJDK JAVA_HOME
+  block:
+
+  - name: Set JAVA_HOME
+    lineinfile:
+      dest: /etc/environment
+      state: present
+      regexp: '^JAVA_HOME'
+      line: "JAVA_HOME=\"{{ java_openjdk_path }}\""
+
+  when: not oracle_version
+
+#
+#  Oracle
+#
+- name: Set Oracle JAVA_HOME
+  block:
+
+  - name: Set JAVA_HOME
+    lineinfile:
+      dest: /etc/environment
+      state: present
+      regexp: '^JAVA_HOME'
+      line: "JAVA_HOME=\"{{ java_oracle_path }}\""
+
+  when: oracle_version | bool
+
+- name: Enable JAVA_HOME
+  shell: >
+    source /etc/environment
+  args:
+    executable: /bin/bash
+  changed_when: false
