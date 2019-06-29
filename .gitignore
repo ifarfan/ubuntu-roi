@@ -2,6 +2,7 @@
 *.retry
 **/.DS_Store
 cachedir/*
+!cachedir/.gitkeep
 my_*.yml
 logs/*
 !logs/.gitkeep
