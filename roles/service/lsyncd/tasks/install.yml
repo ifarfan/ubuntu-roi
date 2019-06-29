@@ -1,0 +1,29 @@
+---
+- name: Install lsyncd
+  apt:
+    pkg: lsyncd
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Create lsyncd folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  loop: "{{ lsyncd_folders }}"
+
+- name: Copy lsyncd configs
+  copy:
+    src: "etc/lsyncd/{{ item }}"
+    dest: "/etc/lsyncd/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+  - lsyncd.conf.lua
+  - lsyncd-excludes.txt
+  - conf.d/00-default.conf.lua
+  notify: reload lsyncd

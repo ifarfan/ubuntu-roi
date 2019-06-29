@@ -1,0 +1,5 @@
+---
+lsyncd_folders:
+- /etc/lsyncd
+- /etc/lsyncd/conf.d
+- /var/log/lsyncd

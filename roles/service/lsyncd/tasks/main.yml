@@ -1,0 +1,6 @@
+---
+- import_tasks: install.yml
+  tags: [lsyncd, lsyncd-install]
+
+- import_tasks: logrotate.yml
+  tags: [lsyncd, lsyncd-logrotate]

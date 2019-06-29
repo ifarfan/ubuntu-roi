@@ -1,0 +1,8 @@
+---
+- name: Copy lsyncd logrotate config
+  copy:
+    src: etc/logrotate.d/lsyncd
+    dest: /etc/logrotate.d/
+    owner: root
+    group: root
+    mode: 0644

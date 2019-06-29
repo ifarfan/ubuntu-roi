@@ -1,0 +1,6 @@
+---
+- name: reload lsyncd
+  service:
+    name: lsyncd
+    state: restarted
+    enabled: yes
