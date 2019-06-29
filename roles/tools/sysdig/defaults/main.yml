@@ -1,0 +1,7 @@
+---
+sysdig_apt_key: https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public
+sysdig_pkg_list: https://s3.amazonaws.com/download.draios.com/stable/deb/draios.list
+
+sysdig_pkgs:
+- sysdig
+- sysdig-dkms

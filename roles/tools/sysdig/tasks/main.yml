@@ -1,0 +1,30 @@
+---
+- name: Install sysdig
+  block:
+
+  - name: Trust the Draios GPG key
+    apt_key:
+      url: "{{ sysdig_apt_key }}"
+      state: present
+
+  - name: Update package list
+    get_url:
+      url: "{{ sysdig_pkg_list }}"
+      dest: /etc/apt/sources.list.d/draios.list
+      mode: 0644
+
+  - name: Install kernel headers
+    apt:
+      name: "linux-headers-{{ ansible_kernel }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Install sysdig
+    apt:
+      name: "{{ sysdig_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [sysdig]
