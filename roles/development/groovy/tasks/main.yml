@@ -1,0 +1,16 @@
+---
+- name: Install Groovy
+  block:
+
+  - name: Ensure Java is installed
+    import_role:
+      name: development/java_8
+
+  - name: Install Groovy
+    apt:
+      pkg: groovy
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  tags: [groovy]
