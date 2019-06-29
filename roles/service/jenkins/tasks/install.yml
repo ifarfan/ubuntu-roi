@@ -1,0 +1,27 @@
+---
+- name: Add Jenkins signing key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repo
+  apt_repository:
+    repo: 'deb http://pkg.jenkins.io/debian-stable binary/'
+    state: present
+
+- name: Install Jenkins
+  apt:
+    pkg: jenkins
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Wait up to 5 mins for Jenkins to come up
+  uri:
+    url: http://127.0.0.1:8080/login
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 10
+  changed_when: false

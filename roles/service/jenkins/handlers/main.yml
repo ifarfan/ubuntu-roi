@@ -1,0 +1,13 @@
+---
+- name: restart jenkins
+  systemd:
+    name: jenkins
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: restart apache
+  systemd:
+    name: apache2
+    state: restarted
+    daemon_reload: yes

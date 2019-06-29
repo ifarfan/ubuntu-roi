@@ -1,0 +1,40 @@
+---
+- name: Ensure Java is installed
+  import_role:
+    name: development/java_8
+
+- name: Ensure Groovy is installed
+  import_role:
+    name: development/groovy
+
+- name: Ensure Apache is installed
+  import_role:
+    name: web/apache
+
+- name: Ensure XML tools are installed
+  import_role:
+    name: tools/xml_libs
+
+- import_tasks: install.yml
+  tags: [jenkins, jenkins-install]
+
+- import_tasks: utils.yml
+  tags: [jenkins, jenkins-utils]
+
+- import_tasks: apache.yml
+  tags: [jenkins, jenkins-apache]
+
+- import_tasks: plugins.yml
+  tags: [jenkins, jenkins-plugins]
+
+- import_tasks: config.yml
+  tags: [jenkins, jenkins-config]
+
+- import_tasks: users.yml
+  tags: [jenkins, jenkins-users]
+
+- import_tasks: users-configs.yml
+  tags: [jenkins, jenkins-users, jenkins-users-configs]
+
+- import_tasks: casc.yml
+  tags: [jenkins, jenkins-casc]

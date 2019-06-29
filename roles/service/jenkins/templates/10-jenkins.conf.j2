@@ -1,0 +1,18 @@
+#
+#  J E N K I N S .C O N F
+#
+<VirtualHost *:80>
+    ServerAlias jenkins.{{ domain_name }} jenkins.{{ subdomain_name }}.{{ domain_name }} jnk01.{{ subdomain_name }}.{{ domain_name }} jenkins localhost
+
+    # Errors to Syslog
+    ErrorLog syslog:local7
+
+    # Reverse Proxy to Jenkins
+    ProxyPass / {{ jenkins_external_url }}
+    ProxyPassReverse / {{ jenkins_external_url }}
+    ProxyPreserveHost On
+    <Location />
+        Order Allow,Deny
+        Allow from all
+    </Location>
+</VirtualHost>

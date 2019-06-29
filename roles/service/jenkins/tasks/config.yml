@@ -1,0 +1,78 @@
+---
+#
+#  Jenkins initial config
+#
+- name: Wait for Jenkins config
+  wait_for:
+    path: "{{ jenkins_home }}/config.xml"
+    delay: 5
+    sleep: 10
+    timeout: 60
+    state: present
+
+- name: Extract Jenkins install state
+  xml:
+    path: "{{ jenkins_home }}/config.xml"
+    xpath: //hudson/installStateName
+    content: text
+  register: jenkins_install_state
+
+- name: On new installs, copy NEW config
+  block:
+
+  - name: Extract Jenkins version number
+    xml:
+      path: "{{ jenkins_home }}/config.xml"
+      xpath: //hudson/version
+      content: text
+    register: jenkins_version
+
+  - name: Disable setup wizard
+    copy:
+      dest: "{{ jenkins_home }}/{{ item }}"
+      content: "{{ jenkins_version.matches[0].version }}"
+      owner: jenkins
+      group: jenkins
+      mode: 0644
+    loop:
+    - jenkins.install.InstallUtil.lastExecVersion
+    - jenkins.install.UpgradeWizard.state
+
+  - name: Copy our Jenkins config
+    template:
+      src: config.xml.j2
+      dest: "{{ jenkins_home }}/config.xml"
+      owner: jenkins
+      group: jenkins
+      mode: 0644
+
+  when: jenkins_install_state.matches[0].installStateName == 'NEW'
+
+#
+#  Jenkins URL
+#
+- name: Check for Jenkins url config
+  stat:
+    path: "{{ jenkins_home }}/jenkins.model.JenkinsLocationConfiguration.xml"
+  register: jenkins_url_file
+
+- name: Copy our Jenkins url config
+  template:
+    src: jenkins.model.JenkinsLocationConfiguration.xml.j2
+    dest: "{{ jenkins_home }}/jenkins.model.JenkinsLocationConfiguration.xml"
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  when: not jenkins_url_file.stat.exists
+  notify: restart jenkins
+
+#
+#  Jenkins Users folder
+#
+- name: Ensure Jenkins /users folder exists
+  file:
+    path: "{{ jenkins_home }}/users"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0755

@@ -1,0 +1,26 @@
+---
+- name: Create configuration-as-code folder
+  file:
+    path: "{{ jenkins_casc_home }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Set configuration-as-code environment variable
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    regexp: '^CASC_JENKINS_CONFIG'
+    line: "CASC_JENKINS_CONFIG=\"{{ jenkins_casc_home }}\""
+  notify: restart jenkins
+
+- name: Copy JCasC configs
+  template:
+    src: "casc/{{ item }}.j2"
+    dest: "{{ jenkins_casc_home }}/{{ item }}"
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  loop:
+  - jenkins.yml
+  notify: restart jenkins

@@ -1,0 +1,51 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+
+  systemMessage: |
+    Welcome to our "Kickass" Jenkins build server.
+
+    - This Jenkins is 100% configured and managed via 'code'
+    - Configs are handled by the 'Jenkins Configuration as Code' (JCasC) and 'Job DSL' (job-dsl) plugins
+    - JCasC configs can be found in the *.yml files under the '$JENKINS_HOME/csac_configs/' folder
+  numExecutors: 4
+  scmCheckoutRetryCount: 2
+  mode: NORMAL
+
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  downloadSettings:
+    useBrowser: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: "systemAuthorizationStrategy"
+  sSHD:
+    port: -1
+
+unclassified:
+  location:
+    adminAddress: "Jenkins <{{ sys_email }}>"
+    url: "http://localhost:8080/"
+  mailer:
+    adminAddress: "Jenkins <{{ sys_email }}>"
+    charset: "UTF-8"
+    useSsl: false
+
+  simple-theme-plugin:
+    elements:
+    - cssUrl:
+        url: "https://tobix.github.io/jenkins-neo2-theme/dist/neo-light.css"
+
+tool:
+  git:
+    installations:
+    -
+      name: git
+      home: /usr/bin/git

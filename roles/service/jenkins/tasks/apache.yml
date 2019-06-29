@@ -1,0 +1,16 @@
+---
+- name: Copy Jenkins Apache site
+  template:
+    src: 10-jenkins.conf.j2
+    dest: /etc/apache2/sites-available/10-jenkins.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart apache
+  tags: [provision]
+
+- name: Enable Apache vhost
+  command: a2ensite 10-jenkins.conf
+  args:
+    creates: /etc/apache2/sites-enabled/10-jenkins.conf
+  notify: restart apache

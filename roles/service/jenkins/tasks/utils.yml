@@ -1,0 +1,12 @@
+---
+- name: Install XML + XSLT libraries
+  apt:
+    pkg: "{{ jenkins_xml_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Install Python Jenkins API + lxml
+  pip:
+    name: "{{ jenkins_pip_pkgs }}"
+    state: present

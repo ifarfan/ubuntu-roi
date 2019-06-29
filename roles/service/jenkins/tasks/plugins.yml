@@ -1,0 +1,34 @@
+---
+- name: Fetch Jenkins admin password file
+  slurp:
+    src: "{{ jenkins_home }}/secrets/initialAdminPassword"
+  register: jenkins_admin_file
+
+- name: Set Jenkins admin password
+  set_fact:
+    jenkins_admin_pwd: "{{ jenkins_admin_file['content'] | b64decode | regex_replace('\n') }}"
+
+- name: Refresh Jenkins update-center
+  jenkins_script:
+    script: |
+      #!groovy
+      import hudson.model.UpdateCenter
+      Jenkins.instance.pluginManager.doCheckUpdatesServer()
+    user: admin
+    password: "{{ jenkins_admin_pwd }}"
+    validate_certs: no
+    timeout: 120
+
+- name: Install Jenkins plugins
+  jenkins_plugin:
+    name: "{{ item }}"
+    url_username: admin
+    url_password: "{{ jenkins_admin_pwd }}"
+    use_proxy: no
+    validate_certs: no
+    state: present
+    timeout: 120
+  loop: "{{ jenkins_plugins }}"
+  retries: 3
+  delay: 3
+  notify: restart jenkins

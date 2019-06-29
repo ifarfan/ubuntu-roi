@@ -1,0 +1,68 @@
+---
+- name: Determine X of users
+  xml:
+    file: "{{ jenkins_home }}/users/users.xml"
+    xpath: /hudson.model.UserIdMapper/idToDirectoryNameMap[@class="concurrent-hash-map"]/entry
+    count: yes
+  register: jenkins_users_nodes
+
+- name: Fetch raw xml nodes
+  xml:
+    file: "{{ jenkins_home }}/users/users.xml"
+    xpath: /hudson.model.UserIdMapper/idToDirectoryNameMap[@class="concurrent-hash-map"]/entry/string
+    content: text
+  register: jenkins_users_data
+
+- name: Set users variables
+  set_fact:
+    users_count: "{{ jenkins_users_nodes.count * 2 }}"
+    users_nodes_raw: "{{ jenkins_users_data.matches | map(attribute='string') | list }}"
+    users_names: []
+    users_directories: []
+    user_dict: []
+    users_all: "{{ users_admin | union(users_dev) | union(users_consultant) }}"
+
+- name: List of users
+  set_fact:
+    users_names: "{{ users_names + [users_nodes_raw[item]] }}"
+  loop: "{{ range(0, users_count|int, 2) | list }}"
+
+- name: List of users home folders
+  set_fact:
+    users_directories: "{{ users_directories + [users_nodes_raw[item]] }}"
+  loop: "{{ range(1, users_count|int, 2) | list }}"
+
+- name: Create user dict
+  set_fact:
+    user_dict: "{{ user_dict | default([]) + [dict(username=item[0], directory=item[1])] }}"
+  loop: "{{ users_names | zip(users_directories) | list }}"
+
+- name: Set user email
+  xml:
+    path: "{{ jenkins_home }}/users/{{ item.directory }}/config.xml"
+    xpath: /user/properties/hudson.tasks.Mailer_-UserProperty[@plugin="mailer@1.23"]/emailAddress
+    value: "{{ users_all | selectattr('username', 'equalto', item.username) | map(attribute='email') | join('') }}"
+  loop: "{{ user_dict }}"
+
+- name: Set user full name
+  xml:
+    path: "{{ jenkins_home }}/users/{{ item.directory }}/config.xml"
+    xpath: /user/fullName
+    # yamllint disable-line rule:line-length
+    value: "{{ users_all | selectattr('username', 'equalto', item.username) | map(attribute='firstname') | join('') }} {{ users_admin | selectattr('username', 'equalto', item.username) | map(attribute='lastname') | join('') }}"   # noqa 204
+  loop: "{{ user_dict }}"
+
+- name: Set user description
+  xml:
+    path: "{{ jenkins_home }}/users/{{ item.directory }}/config.xml"
+    xpath: /user/description
+    value: "{{ users_all | selectattr('username', 'equalto', item.username) | map(attribute='slogan') | join('') }}"
+  loop: "{{ user_dict }}"
+
+- name: Set user ssh keys
+  xml:
+    path: "{{ jenkins_home }}/users/{{ item.directory }}/config.xml"
+    xpath: /user/properties/org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl/authorizedKeys
+    # yamllint disable-line rule:line-length
+    value: "{{ users_all | selectattr('username', 'equalto', item.username) | map(attribute='ssh_keys') | flatten | join('\n') }}"
+  loop: "{{ user_dict }}"

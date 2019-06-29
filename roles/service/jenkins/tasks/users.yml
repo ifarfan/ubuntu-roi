@@ -1,0 +1,125 @@
+---
+#
+#  Fetch shared values
+#
+- name: Fetch Jenkins admin password file
+  slurp:
+    src: "{{ jenkins_home }}/secrets/initialAdminPassword"
+  register: jenkins_admin_file
+
+- name: Set Jenkins admin password
+  set_fact:
+    jenkins_admin_pwd: "{{ jenkins_admin_file['content'] | b64decode | regex_replace('\n') }}"
+
+- name: List of Jenkins user directories
+  shell: |
+    set -o pipefail
+    ls -d1 */ | cut -f1 -d'_'
+  args:
+    chdir: "{{ jenkins_home }}/users/"
+    executable: /bin/bash
+  changed_when: false
+  register: jenkins_users
+
+#
+#  Add Users
+#  Note: Due to "when:" condition, we need to loop thru each "users_xxx" list separately
+#        Hence, why we can't do merge lists and run thru single "loop:"
+#
+- name: Create Jenkins admin users
+  jenkins_script:
+    script: |
+      #!groovy
+      jenkins.model.Jenkins.instance.securityRealm.createAccount("{{ item.username }}", "{{ item.email }}")
+    user: admin
+    password: "{{ jenkins_admin_pwd }}"
+    timeout: 20
+    validate_certs: no
+  loop: "{{ users_admin | sort(attribute='username') }}"
+  when: item.username not in jenkins_users.stdout_lines
+  notify: restart jenkins
+
+- name: Create Jenkins dev users
+  jenkins_script:
+    script: |
+      #!groovy
+      jenkins.model.Jenkins.instance.securityRealm.createAccount("{{ item.username }}", "{{ item.email }}")
+    user: admin
+    password: "{{ jenkins_admin_pwd }}"
+    timeout: 20
+    validate_certs: no
+  loop: "{{ users_dev | sort(attribute='username') }}"
+  when: item.username not in jenkins_users.stdout_lines
+  notify: restart jenkins
+
+- name: Create Jenkins consultants
+  jenkins_script:
+    script: |
+      #!groovy
+      jenkins.model.Jenkins.instance.securityRealm.createAccount("{{ item.username }}", "{{ item.email }}")
+    user: admin
+    password: "{{ jenkins_admin_pwd }}"
+    timeout: 20
+    validate_certs: no
+  loop: "{{ users_consultant | sort(attribute='username') }}"
+  when: item.username not in jenkins_users.stdout_lines
+  notify: restart jenkins
+
+#
+#  Reset users on config.xml
+#
+- name: Set Jenkins default admin user rights
+  xml:
+    file: "{{ jenkins_home }}/config.xml"
+    xpath: /hudson/authorizationStrategy[@class="hudson.security.GlobalMatrixAuthorizationStrategy"]
+    set_children:
+    - permission: hudson.model.Hudson.Administer:admin
+  changed_when: false
+
+- name: Add Jenkins admin users rights
+  xml:
+    file: "{{ jenkins_home }}/config.xml"
+    xpath: /hudson/authorizationStrategy[@class="hudson.security.GlobalMatrixAuthorizationStrategy"]
+    state: present
+    add_children:
+    - permission: "{{ item.1 }}:{{ item.0.username }}"
+  loop: "{{ users_admin | product(jenkins_admin_rights) | list }}"
+  notify: restart jenkins
+
+- name: Add Jenkins dev users rights
+  xml:
+    file: "{{ jenkins_home }}/config.xml"
+    xpath: /hudson/authorizationStrategy[@class="hudson.security.GlobalMatrixAuthorizationStrategy"]
+    state: present
+    add_children:
+    - permission: "{{ item.1 }}:{{ item.0.username }}"
+  loop: "{{ users_dev | product(jenkins_dev_rights) | list }}"
+  notify: restart jenkins
+
+- name: Add Jenkins consultants rights
+  xml:
+    file: "{{ jenkins_home }}/config.xml"
+    xpath: /hudson/authorizationStrategy[@class="hudson.security.GlobalMatrixAuthorizationStrategy"]
+    state: present
+    add_children:
+    - permission: "{{ item.1 }}:{{ item.0.username }}"
+  loop: "{{ users_consultant | product(jenkins_consultant_rights) | list }}"
+  notify: restart jenkins
+
+#
+#  Remove Users
+#
+- name: Delete Jenkins users
+  jenkins_script:
+    script: |
+      #!groovy
+      import hudson.model.User
+      User u = User.get("{{ item }}")
+      u.delete()
+    user: admin
+    password: "{{ jenkins_admin_pwd }}"
+    timeout: 20
+    validate_certs: no
+  loop: "{{ disabled_users | sort }}"
+  when: item in jenkins_users.stdout_lines
+  notify: restart jenkins

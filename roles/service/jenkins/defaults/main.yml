@@ -1,0 +1,142 @@
+---
+jenkins_plugins:
+- configuration-as-code
+- simple-theme-plugin
+- authorize-project
+- greenballs
+- timestamper
+- tmpcleaner
+- email-ext
+- persona
+- chucknorris
+- slack
+- ansicolor
+- custom-view-tabs
+- cloudbees-folder
+- build-timeout
+- groovy
+- copyartifact
+- s3
+- statusmonitor
+- disk-usage
+- job-dsl
+- view-job-filters
+- credentials
+- jobConfigHistory
+- matrix-auth
+- ssh-credentials
+- ssh-slaves
+# Git plugins
+- git
+- git-client
+- git-server
+# Pipeline Plugins
+- pipeline-build-step
+- pipeline-graph-analysis
+- pipeline-input-step
+- pipeline-milestone-step
+- pipeline-model-api
+- pipeline-model-declarative-agent
+- pipeline-model-definition
+- pipeline-model-extensions
+- pipeline-rest-api
+- pipeline-stage-step
+- pipeline-stage-tags-metadata
+- pipeline-stage-view
+- blueocean
+- bitbucket-push-and-pull-request
+
+jenkins_user_plugins: []
+# - role-strategy
+# - jenkins-jira-issue-updater
+# - github
+# - github-api
+
+jenkins_xml_pkgs:
+- libxml2-dev
+- libxslt1-dev
+
+jenkins_pip_pkgs:
+- autojenkins
+- jenkinsapi
+# - lxml
+
+jenkins_internal_url: 'http://localhost:8080/'
+jenkins_external_url: 'http://localhost:8080/'
+jenkins_home: /var/lib/jenkins
+
+jenkins_casc_home: "{{ jenkins_home }}/casc_configs"
+
+jenkins_admin_rights:
+- com.cloudbees.plugins.credentials.CredentialsProvider.Create
+- com.cloudbees.plugins.credentials.CredentialsProvider.Delete
+- com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains
+- com.cloudbees.plugins.credentials.CredentialsProvider.Update
+- com.cloudbees.plugins.credentials.CredentialsProvider.View
+- hudson.model.Computer.Build
+- hudson.model.Computer.Configure
+- hudson.model.Computer.Connect
+- hudson.model.Computer.Create
+- hudson.model.Computer.Delete
+- hudson.model.Computer.Disconnect
+- hudson.model.Hudson.Administer
+- hudson.model.Hudson.Read
+- hudson.model.Item.Build
+- hudson.model.Item.Cancel
+- hudson.model.Item.Configure
+- hudson.model.Item.Create
+- hudson.model.Item.Delete
+- hudson.model.Item.Discover
+- hudson.model.Item.Move
+- hudson.model.Item.Read
+- hudson.model.Item.Workspace
+- hudson.model.Run.Delete
+- hudson.model.Run.Replay
+- hudson.model.Run.Update
+- hudson.model.View.Configure
+- hudson.model.View.Create
+- hudson.model.View.Delete
+- hudson.model.View.Read
+- hudson.scm.SCM.Tag
+
+jenkins_dev_rights:
+- hudson.model.Computer.Build
+- hudson.model.Computer.Configure
+- hudson.model.Computer.Connect
+- hudson.model.Computer.Create
+- hudson.model.Computer.Disconnect
+- hudson.model.Hudson.Read
+- hudson.model.Item.Build
+- hudson.model.Item.Cancel
+- hudson.model.Item.Configure
+- hudson.model.Item.Create
+- hudson.model.Item.Discover
+- hudson.model.Item.Move
+- hudson.model.Item.Read
+- hudson.model.Item.Workspace
+- hudson.model.Run.Replay
+- hudson.model.Run.Update
+- hudson.model.View.Configure
+- hudson.model.View.Create
+- hudson.model.View.Read
+
+jenkins_consultant_rights:
+- hudson.model.Computer.Build
+- hudson.model.Computer.Configure
+- hudson.model.Computer.Connect
+- hudson.model.Computer.Create
+- hudson.model.Computer.Disconnect
+- hudson.model.Hudson.Read
+- hudson.model.Item.Build
+- hudson.model.Item.Cancel
+- hudson.model.Item.Configure
+- hudson.model.Item.Create
+- hudson.model.Item.Discover
+- hudson.model.Item.Move
+- hudson.model.Item.Read
+- hudson.model.Item.Workspace
+- hudson.model.Run.Replay
+- hudson.model.Run.Update
+- hudson.model.View.Configure
+- hudson.model.View.Create
+- hudson.model.View.Read
