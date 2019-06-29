@@ -1,0 +1,9 @@
+---
+- name: Set sysctl flags for Wireguard
+  copy:
+    src: 10-wireguard.conf
+    dest: /etc/sysctl.d/
+    owner: root
+    group: root
+    mode: 0644
+  notify: run sysctl

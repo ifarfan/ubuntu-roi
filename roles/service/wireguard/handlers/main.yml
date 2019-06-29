@@ -1,0 +1,9 @@
+---
+- name: run sysctl
+  command: sysctl --system
+
+- name: reload wireguard
+  systemd:
+    name: wg-quick@wg0
+    state: started
+    enabled: yes

@@ -1,0 +1,28 @@
+---
+- name: Create WireGuard folder
+  file:
+    path: "{{ wireguard_home }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Generate WireGuard private + public keys
+  shell: >
+    umask 077 && wg genkey | tee {{ wireguard_home }}/privatekey | wg pubkey > {{ wireguard_home }}/publickey
+  args:
+    creates: "{{ wireguard_home }}/privatekey"
+    executable: /bin/bash
+
+- name: Register WireGuard private key as a variable
+  slurp:
+    src: "{{ wireguard_home }}/privatekey"
+  register: wireguard_privatekey
+
+- name: Generate WireGuard config file
+  template:
+    src: wireguard.conf.j2
+    dest: "{{ wireguard_home }}/wg0.conf"
+    owner: root
+    group: root
+    mode: 0600
+  notify: reload wireguard

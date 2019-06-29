@@ -1,0 +1,9 @@
+---
+- import_tasks: install.yml
+  tags: [wireguard, wireguard-install]
+
+- import_tasks: config.yml
+  tags: [wireguard, wireguard-config]
+
+- import_tasks: sysctl.yml
+  tags: [wireguard, wireguard-sysctl, sysctl]
