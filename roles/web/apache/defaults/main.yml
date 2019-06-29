@@ -1,0 +1,95 @@
+---
+apache_pkgs:
+- apache2
+- apache2-utils
+- apachetop
+
+#
+#  Configs
+#
+#  If "is_template" == "false", file will be copied over from "files" folder
+#  If "is_template" == "true", file will be parsed over from "templates" folder
+#  This allows for using "copy" and "template" actions and to enable/disable
+#  all *.conf files as a single group
+#
+apache_enabled_confs:
+-
+  name: deflate.conf
+  is_template: false
+-
+  name: expires.conf
+  is_template: false
+-
+  name: other.conf
+  is_template: false
+-
+  name: security.conf
+  is_template: false
+-
+  name: servername.conf
+  is_template: true
+
+apache_disabled_confs:
+- charset.conf
+- localized-error-pages.conf
+- other-vhosts-access-log.conf
+- serve-cgi-bin.conf
+
+#
+#  Mods
+#
+apache_enabled_mods:
+- authn_core
+- authn_file
+- authz_core
+- authz_host
+- authz_user
+- access_compat
+- alias
+- auth_basic
+- deflate
+- dir
+- env
+- expires
+- filter
+- headers
+- mime
+- mime_magic
+- mpm_event
+- negotiation
+- proxy
+- proxy_http
+- reqtimeout
+- rewrite
+- setenvif
+- status
+- vhost_alias
+
+apache_disabled_mods:
+- autoindex
+- include
+
+#
+#  Sites
+#
+apache_enabled_sites:
+- 00-status.conf
+
+apache_disabled_sites:
+- default.conf
+- 000-default.conf
+- default-ssl.conf
+
+#
+#  Security
+#
+apache_security_enabled: false
+
+apache_security_pkgs:
+- libapache2-mod-security2
+- libapache2-mod-evasive
+
+apache_security_mods:
+- evasive
+- security2
+- remoteip

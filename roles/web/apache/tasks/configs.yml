@@ -1,0 +1,48 @@
+---
+- name: Copy master Apache config
+  copy:
+    src: etc/apache2/apache2.conf
+    dest: /etc/apache2/
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload apache
+
+- name: Copy static Apache configs
+  copy:
+    src: "etc/apache2/conf-available/{{ item.name }}"
+    dest: /etc/apache2/conf-available/
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ apache_enabled_confs }}"
+  when: not item.is_template
+  notify: reload apache
+
+- name: Copy dynamic Apache configs
+  template:
+    src: "etc/apache2/conf-available/{{ item.name }}.j2"
+    dest: "/etc/apache2/conf-available/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ apache_enabled_confs }}"
+  when: item.is_template
+  notify: reload apache
+  tags: [provision]
+
+- name: Enable newly copied Apache configs
+  command: "/usr/sbin/a2enconf {{ item.name }}"
+  args:
+    chdir: /etc/apache2/conf-available
+    creates: "/etc/apache2/conf-enabled/{{ item.name }}"
+  loop: "{{ apache_enabled_confs }}"
+  notify: reload apache
+
+- name: Disable default Apache configs
+  command: "/usr/sbin/a2disconf {{ item }}"
+  args:
+    chdir: /etc/apache2/conf-available
+    removes: /etc/apache2/conf-enabled/{{ item }}
+  loop: "{{ apache_disabled_confs }}"
+  notify: reload apache

@@ -1,0 +1,19 @@
+---
+- import_tasks: install.yml
+  tags: [apache, apache-install]
+
+- import_tasks: configs.yml
+  tags: [apache, apache-configs]
+
+- import_tasks: mods.yml
+  tags: [apache, apache-mods]
+
+- import_tasks: security.yml
+  tags: [apache, apache-security]
+  when: apache_security_enabled | bool
+
+- import_tasks: sites.yml
+  tags: [apache, apache-sites]
+
+- import_tasks: logrotate.yml
+  tags: [apache, apache-logrotate, logrotate]

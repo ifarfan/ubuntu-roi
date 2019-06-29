@@ -1,0 +1,16 @@
+---
+- name: Enable Apache mods
+  command:
+    "a2enmod {{ item }}"
+  args:
+    creates: "/etc/apache2/mods-enabled/{{ item }}.load"
+  loop: "{{ apache_enabled_mods }}"
+  notify: reload apache
+
+- name: Disable Apache mods
+  command:
+    "a2dismod -f {{ item }}"
+  args:
+    removes: "/etc/apache2/mods-enabled/{{ item }}.load"
+  loop: "{{ apache_disabled_mods }}"
+  notify: reload apache

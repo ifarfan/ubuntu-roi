@@ -1,0 +1,26 @@
+---
+- name: Copy enabled sites configs
+  copy:
+    src: "etc/apache2/sites-available/{{ item }}"
+    dest: /etc/apache2/sites-available/
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ apache_enabled_sites }}"
+  notify: reload apache
+
+- name: Activate enabled sites
+  command: "/usr/sbin/a2ensite {{ item }}"
+  args:
+    chdir: /etc/apache2/sites-available
+    creates: "/etc/apache2/sites-enabled/{{ item }}"
+  loop: "{{ apache_enabled_sites }}"
+  notify: reload apache
+
+- name: Deactivate disabled sites
+  command: "/usr/sbin/a2dissite {{ item }}"
+  args:
+    chdir: /etc/apache2/sites-available
+    removes: "/etc/apache2/sites-enabled/{{ item }}"
+  loop: "{{ apache_disabled_sites }}"
+  notify: reload apache

@@ -1,0 +1,49 @@
+---
+- name: Install security modules
+  apt:
+    pkg: "{{ apache_security_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Copy enabled security modules
+  copy:
+    src: "etc/apache2/mods-available/{{ item }}.conf"
+    dest: /etc/apache2/mods-available/
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ apache_security_mods }}"
+  notify: reload apache
+
+- name: Create mod_evasive log folder
+  file:
+    path: /var/log/mod_evasive
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Enable security modules
+  command: "a2enmod {{ item }}"
+  args:
+    creates: "/etc/apache2/mods-enabled/{{ item }}.load"
+  loop: "{{ apache_security_mods }}"
+  notify: reload apache
+
+#
+#  See: https://modsecurity.org/crs/
+#
+- name: Download OWASP ModSecurity CRS
+  git:
+    repo: https://github.com/SpiderLabs/owasp-modsecurity-crs.git
+    dest: /usr/share/modsecurity-crs
+    version: v3.2/dev
+    update: no
+
+- name: Link to CRS config
+  file:
+    src: /usr/share/modsecurity-crs/crs-setup.conf.example
+    dest: /usr/share/modsecurity-crs/crs-setup.conf
+    owner: root
+    group: root
+    state: link
