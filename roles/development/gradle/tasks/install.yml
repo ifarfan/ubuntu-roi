@@ -1,0 +1,35 @@
+---
+- name: Check for current Gradle
+  stat:
+    path: "{{ gradle_home_directory }}/current"
+  register: gradle_directory
+
+- name: Install if Gradle directory NOT found
+  block:
+
+  - name: Create Gradle home directory
+    file:
+      path: "{{ gradle_home_directory }}"
+      state: directory
+      mode: 0755
+
+  - name: Download + extract Gradle
+    unarchive:
+      src: "{{ gradle_download_url }}"
+      dest: "{{ gradle_home_directory }}"
+      remote_src: yes
+
+  - name: Symlink to folder
+    file:
+      src: "{{ gradle_home_directory }}/gradle-{{ gradle_version }}"
+      dest: "{{ gradle_home_directory }}/current"
+      owner: root
+      group: root
+      state: link
+
+  when: not gradle_directory.stat.exists
+
+- name: Ensure Gradle is executable by ALL users
+  file:
+    path: "{{ gradle_home_directory }}/current/bin/gradle"
+    mode: 0755

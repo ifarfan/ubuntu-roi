@@ -1,0 +1,19 @@
+---
+- name: Check for current Gradle
+  stat:
+    path: "{{ gradle_home_directory }}/current"
+  register: gradle_directory
+
+- name: Add Gradle to system-wide $PATH
+  copy:
+    dest: /etc/profile.d/20-gradle.sh
+    content: |
+      #
+      #  Gradle environment variable
+      #
+      export GRADLE_HOME={{ gradle_home_directory }}
+      export PATH={{ gradle_home_directory }}/current/bin:${PATH}
+    owner: root
+    group: root
+    mode: 0755
+  when: gradle_directory.stat.exists
