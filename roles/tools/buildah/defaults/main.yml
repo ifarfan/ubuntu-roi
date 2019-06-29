@@ -1,0 +1,6 @@
+---
+buildah_required_pkgs:
+- runc
+- software-properties-common
+
+buildah_repo: ppa:projectatomic/ppa
