@@ -1,0 +1,19 @@
+---
+- name: Add Percona repository
+  apt:
+    deb: "{{ percona_repo_deb }}"
+
+- name: Enable Percona repository
+  command:
+    /usr/bin/percona-release setup ps{{ percona_version }}
+  args:
+    creates: "{{ percona_sources_file }}"
+
+- name: Install Percona MySQL packages
+  apt:
+    pkg: "{{ percona_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+  environment:
+    DEBIAN_FRONTEND: noninteractive

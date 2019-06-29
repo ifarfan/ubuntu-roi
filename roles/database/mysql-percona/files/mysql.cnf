@@ -1,0 +1,54 @@
+#
+#  M Y S Q L . C N F
+#
+#  One can use all long options that the program supports.
+#  Run program with --help to get a list of available options and with
+#  --print-defaults to see which it would actually understand and use.
+#
+#  For explanations see
+#  http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+#
+[mysql]
+#  Enable color syntax and SQL prompt
+prompt = '\h:\u [\d] > '
+pager  = grcat /etc/mysql/grc.conf
+
+[isamchk]
+key-buffer = 16M
+
+[client]
+port   = 3306
+socket = /var/run/mysqld/mysqld.sock
+
+[mysqld]
+#
+#  Fine Tuning
+#
+max-connections    = 500
+key-buffer-size    = 16M
+max-allowed-packet = 16M
+# This replaces the startup script and checks MyISAM tables if needed the first time they are touched
+myisam-recover-options = BACKUP
+
+#
+#  Log slow queries
+#
+slow-query-log      = ON
+long-query-time     = 2
+slow-query-log-file = /var/log/mysql/mysql-slow.log
+log-queries-not-using-indexes = ON
+
+# Rotate bin logs sooner
+max-binlog-size = 100M
+
+#
+#  Inno DB
+#
+innodb-buffer-pool-size = 1536M
+tmp-table-size          = 512M
+max-heap-table-size     = 512M
+
+# Theses control the innodb log files size and can be changed only when MySQL is down and MySQL will not start if there are some innodb log files left in the datadir.
+# So, changing theses means removing the old innodb log files before start.
+innodb-log-file-size    = 256M
+innodb-log-buffer-size  = 16M

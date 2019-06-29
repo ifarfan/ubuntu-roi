@@ -1,0 +1,12 @@
+---
+percona_version: 80
+percona_repo_deb: "https://repo.percona.com/apt/percona-release_latest.{{ ansible_distribution_release }}_all.deb"
+percona_sources_file: "/etc/apt/sources.list.d/percona-ps-{{ percona_version }}-release.list"
+
+percona_pkgs:
+- percona-server-server
+- percona-toolkit
+- pmm-client
+- python3-mysqldb
+
+mysql_users: []

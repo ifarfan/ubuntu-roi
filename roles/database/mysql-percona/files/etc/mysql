@@ -1,0 +1,47 @@
+#
+#  M Y S Q L
+#
+#  https://www.percona.com/blog/2013/04/18/rotating-mysql-slow-logs-safely/
+#  https://www.percona.com/blog/2014/11/12/log-rotate-and-the-deleted-mysql-log-file-mystery/
+#  https://raw.githubusercontent.com/percona/debian-percona-server-5.6/master/debian/percona-server-server-5.6.logrotate
+#
+/var/log/mysql/log-slow-queries.log {       
+	daily
+	rotate 3
+	compress
+	missingok
+	create 600 mysql mysql
+	sharedscripts
+	postrotate
+		if test -x /usr/bin/mysqladmin && /usr/bin/mysqladmin ping &>/dev/null
+		then
+			env HOME=/root/ /usr/bin/mysql -e 'select @@global.long_query_time into @lqt_save; set global long_query_time=2000; set global slow_query_log = 0; select sleep(2); FLUSH LOGS; select sleep(2); set global long_query_time=@lqt_save; set global slow_query_log = 1;' > /var/log/mysqladmin.flush-logs 2>&1
+		fi
+	endscript
+}
+
+/var/log/mysql.log
+/var/log/mysql/mysql.log
+/var/log/mysql/mysql-slow.log {
+	daily
+	rotate 7
+	missingok
+	compress
+	create 640 mysql adm
+	sharedscripts
+	postrotate
+		test -x /usr/bin/mysqladmin || exit 0
+
+		# If this fails, check debian.conf!
+		MYADMIN="/usr/bin/mysqladmin --defaults-file=/etc/mysql/debian.cnf"
+		if [ -z "`$MYADMIN ping 2>/dev/null`" ]; then
+			# Really no mysqld or rather a missing debian-sys-maint user?
+			# If this occurs and is not a error please report a bug.
+			if ps cax | grep -q mysqld; then
+				exit 1
+			fi
+		else
+			$MYADMIN flush-logs
+		fi
+	endscript
+}

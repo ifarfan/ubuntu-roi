@@ -1,0 +1,22 @@
+---
+- name: Install MySQL Backup
+  apt:
+    pkg: automysqlbackup
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Create Backup folder
+  file:
+    path: /opt/backups/mysql
+    state: directory
+    owner: mysql
+    group: mysql
+
+- name: Copy default /etc config
+  copy:
+    src: automysqlbackup
+    dest: /etc/default/
+    owner: root
+    group: root
+    mode: 0644

@@ -1,0 +1,12 @@
+---
+- import_tasks: install.yml
+  tags: [mysql, mysql-install]
+
+- import_tasks: configs.yml
+  tags: [mysql, mysql-configs]
+
+- import_tasks: users.yml
+  tags: [mysql, mysql-users]
+
+- import_tasks: backup.yml
+  tags: [mysql, mysql-backup]

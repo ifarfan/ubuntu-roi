@@ -1,0 +1,17 @@
+---
+- name: Copy custom MySQL config
+  copy:
+    src: mysql.cnf
+    dest: /etc/mysql/conf.d/
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload mysql
+
+- name: Copy grc.config for mysql console color syntax
+  copy:
+    src: grc.config
+    dest: /etc/mysql/
+    owner: root
+    group: root
+    mode: 0644
