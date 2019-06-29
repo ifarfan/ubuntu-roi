@@ -1,0 +1,54 @@
+---
+#
+#  Redis Faina: https://github.com/facebookarchive/redis-faina.git
+#
+- name: Install Redis Faina
+  git:
+    repo: https://github.com/facebookarchive/redis-faina.git
+    dest: /opt/redis-faina
+    version: master
+    update: no
+  tags: redis-faina
+
+#
+# TODO: Determine if these tools add value
+#
+# #
+# #  RedisLive: https://github.com/nkrode/RedisLive
+# #
+# - name: Install RedisLive dependencies
+#   pip:
+#     name={{ item }}
+#     state=present
+#   loop:
+#   - tornado
+#   - redis
+#   - python-dateutil
+#   - argparse
+#   tags: redislive
+
+# - name: Install RedisLive
+#   git:
+#     repo: https://github.com/nkrode/RedisLive.git
+#     dest: /opt/redislive
+#     version: master
+#     update: no
+#   tags: redislive
+
+# #
+# #  Redis Mon: https://github.com/steelThread/redmon
+# #
+# - name: Install ruby-dev
+#   apt:
+#     pkg: "{{ item }}"
+#     state: present
+#   loop:
+#   - g++
+#   - ruby1.9.1-dev
+#   tags: redmon
+
+# - name: Install Redmon to monitor Redis via web
+#   gem:
+#     name: redmon
+#     state: present
+#   tags: redmon

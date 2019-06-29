@@ -1,0 +1,11 @@
+#
+#  R E D I S - S E R V E R
+#
+/var/log/redis/*.log {
+  daily
+  rotate 7
+  compress
+  missingok
+  notifempty
+  copytruncate
+}

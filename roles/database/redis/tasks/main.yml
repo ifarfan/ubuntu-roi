@@ -1,0 +1,16 @@
+---
+- import_tasks: install.yml
+  tags: [redis, redis-install]
+
+- import_tasks: config.yml
+  tags: [redis, redis-config]
+
+- import_tasks: sysctl.yml
+  tags: [redis, redis-sysctl, sysctl]
+
+- import_tasks: logrotate.yml
+  tags: [redis, redis-logrotate, logrotate]
+
+- import_tasks: utils.yml
+  when: environment_name in ['local', 'development']
+  tags: [redis, redis-utils]

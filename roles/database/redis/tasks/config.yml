@@ -1,0 +1,41 @@
+---
+- name: Ensure Redis folder exists
+  file:
+    path: /etc/redis
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy Redis configs
+  copy:
+    src: "etc/{{ item }}"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+  - redis/redis_master.conf
+  - redis/redis_slave.conf
+  - default/redis-server
+  notify: reload redis
+
+- name: Check for original Redis config
+  stat:
+    path: /etc/redis/redis.conf
+  register: redis_link
+
+- name: Backup original Redis config
+  command:
+    mv /etc/redis/redis.conf /etc/redis/redis.conf.original
+  when: redis_link.stat.exists and not redis_link.stat.islnk
+
+- name: Create Redis config symlink
+  file:
+    src: /etc/redis/redis_master.conf
+    dest: /etc/redis/redis.conf
+    owner: root
+    group: root
+    state: link
+    force: yes
+  when: redis_link.stat.exists and not redis_link.stat.islnk
+  notify: reload redis
