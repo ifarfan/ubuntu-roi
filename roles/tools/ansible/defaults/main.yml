@@ -1,0 +1,25 @@
+---
+ansible_version: 2.8.1
+ansible_folder: /etc/ansible
+
+ansible_subfolders:
+- cachedir
+- group_vars
+- inventories
+- playbooks
+- plugins
+- roles
+
+ansible_required_pkgs:
+- python3-pip
+- python3-setuptools
+- yamllint
+
+ansible_pip_pkgs:
+- ansible-bender
+- ansible-lint
+- prettytable
+
+#  Used to speed up Ansible runs: https://mitogen.networkgenomics.com/ansible_detailed.html
+mitogen_version: 0.2.7
+mitogen_url: "https://networkgenomics.com/try/mitogen-{{ mitogen_version }}.tar.gz"

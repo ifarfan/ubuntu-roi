@@ -1,0 +1,35 @@
+---
+- name: Check for current Mitogen
+  stat:
+    path: "{{ ansible_folder }}/plugins/mitogen-{{ mitogen_version }}"
+  register: mitogen_directory
+
+- name: Install Mitogen
+  block:
+
+  - name: Download Mitogen
+    get_url:
+      url: "{{ mitogen_url }}"
+      dest: /tmp/mitogen.tar.gz
+      mode: 0600
+    register: mitogen_download
+    until: mitogen_download is succeeded
+    retries: 5
+    delay: 5
+
+  - name: Unpack Mitogen
+    unarchive:
+      src: /tmp/mitogen.tar.gz
+      dest: "{{ ansible_folder }}/plugins"
+      owner: root
+      group: root
+      creates: "{{ ansible_folder }}/plugins/mitogen-{{ mitogen_version }}"
+      remote_src: yes
+    when: mitogen_download is succeeded
+
+  - name: Remove Mitogen downloads
+    file:
+      path: /tmp/mitogen.tar.gz
+      state: absent
+
+  when: not mitogen_directory.stat.exists

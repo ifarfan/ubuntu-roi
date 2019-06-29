@@ -1,0 +1,16 @@
+---
+- name: Install Ansible pre-requisites
+  apt:
+    pkg: "{{ ansible_required_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Install Ansible
+  pip:
+    name: ansible
+    version: "{{ ansible_version }}"
+
+- name: Install Ansible pip utilities
+  pip:
+    name: "{{ ansible_pip_pkgs }}"

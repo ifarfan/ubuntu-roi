@@ -1,0 +1,15 @@
+---
+- name: Create Ansible folder
+  file:
+    path: "{{ ansible_folder }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Create Ansible sub-folders
+  file:
+    path: "{{ ansible_folder }}/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  loop: "{{ ansible_subfolders }}"

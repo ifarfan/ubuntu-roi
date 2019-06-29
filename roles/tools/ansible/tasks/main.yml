@@ -1,0 +1,9 @@
+---
+- import_tasks: install.yml
+  tags: [ansible]
+
+- import_tasks: config.yml
+  tags: [ansible, ansible-config]
+
+- import_tasks: mitogen.yml
+  tags: [ansible, mitogen]
