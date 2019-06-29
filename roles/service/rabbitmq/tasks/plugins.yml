@@ -1,0 +1,23 @@
+---
+- name: Install RabbitMQ plugins
+  rabbitmq_plugin:
+    names: "{{ item }}"
+    state: enabled
+  changed_when: false
+  loop: "{{ rabbitmq_plugins }}"
+
+- name: Download RabbitMQ admin cmd-line tool
+  get_url:
+    url: http://localhost:15672/cli/rabbitmqadmin
+    dest: /usr/local/bin/rabbitmqadmin
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Source autocompletion of cmd-line tool
+  shell: >
+    /usr/local/bin/rabbitmqadmin --bash-completion > /etc/bash_completion.d/rabbitmqadmin
+  args:
+    executable: /bin/bash
+  ignore_errors: yes
+  changed_when: false

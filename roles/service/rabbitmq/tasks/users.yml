@@ -1,0 +1,16 @@
+---
+- name: Add new admin default user
+  rabbitmq_user:
+    user: "{{ rabbitmq_default_user }}"
+    password: "{{ rabbitmq_default_password }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+    tags: administrator
+
+- name: Remove default guest user
+  rabbitmq_user:
+    user: guest
+    state: absent

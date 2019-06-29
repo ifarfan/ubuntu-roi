@@ -1,0 +1,15 @@
+---
+- include: cookie.yml
+  tags: [rabbitmq, rabbitmq-cookie]
+
+- include: install.yml
+  tags: [rabbitmq, rabbitmq-install]
+
+- include: config.yml
+  tags: [rabbitmq, rabbitmq-config]
+
+- include: plugins.yml
+  tags: [rabbitmq, rabbitmq-plugins]
+
+- include: users.yml
+  tags: [rabbitmq, rabbitmq-users]

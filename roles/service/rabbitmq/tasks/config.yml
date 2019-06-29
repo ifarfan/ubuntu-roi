@@ -1,0 +1,38 @@
+---
+- name: Ensure HA policy on queues
+  rabbitmq_policy:
+    name: HA
+    pattern: .*
+  args:
+    tags:
+      ha-mode: all
+      ha-sync-mode: automatic
+
+- name: Copy RabbitMQ main config
+  template:
+    src: rabbitmq.conf.j2
+    dest: /etc/rabbitmq/rabbitmq.conf
+    owner: root
+    group: rabbitmq
+    mode: 0644
+  notify: reload rabbitmq
+
+- name: Copy RabbitMQ other configs
+  copy:
+    src: "etc/{{ item }}"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+  - default/rabbitmq-server
+  - logrotate.d/rabbitmq-server
+  notify: reload rabbitmq
+
+- name: Set local /etc/hosts entry for rabbitmq
+  lineinfile:
+    path: /etc/hosts
+    state: present
+    # yamllint disable-line rule:line-length
+    line: "127.0.0.1 rabbitmq.{{ subdomain_root }}.{{ domain_name }} rabbitmq.{{ subdomain_name }}.{{ domain_name }} rabbitmq"
+  tags: [provision]

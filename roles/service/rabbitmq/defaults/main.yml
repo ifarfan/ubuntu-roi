@@ -1,0 +1,26 @@
+---
+rabbitmq_channel_max: 128
+rabbitmq_default_user: local_admin
+# yamllint disable-line rule:line-length
+rabbitmq_default_password: "{{ lookup('password', '/tmp/passwordfile chars=ascii_letters,digits,hexdigits,punctuation') }}"
+rabbitmq_erlang_cookie: SYHMSKFMRUDCSHTEEQAJPHKWQBCDUWCXPFNXBSMCTVJHGCXV
+rabbitmq_mem_watermark: 0.4
+rabbitmq_log_level: info
+
+rabbitmq_plugins:
+- rabbitmq_management
+- rabbitmq_management_agent
+- rabbitmq_shovel
+- rabbitmq_shovel_management
+- rabbitmq_federation
+- rabbitmq_federation_management
+- rabbitmq_top
+
+rabbitmq_signing_key: https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+rabbitmq_repo:
+-
+  url: https://dl.bintray.com/rabbitmq-erlang/debian
+  component: erlang
+-
+  url: https://dl.bintray.com/rabbitmq/debian
+  component: main

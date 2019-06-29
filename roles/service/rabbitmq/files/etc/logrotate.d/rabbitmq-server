@@ -1,0 +1,10 @@
+#
+#  R A B B I T M Q
+#
+/var/log/rabbitmq/*.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    notifempty
+}

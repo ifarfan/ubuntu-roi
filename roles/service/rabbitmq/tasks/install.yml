@@ -1,0 +1,42 @@
+---
+#
+#  Using Bintray for latest supported version
+#
+#  https://www.rabbitmq.com/install-debian.html#apt
+#  https://www.rabbitmq.com/install-debian.html#installing-erlang-package
+#
+- name: Add RabbitMQ signing key
+  apt_key:
+    url: "{{ rabbitmq_signing_key }}"
+    state: present
+
+- name: Add RabbitMQ Repo(s)
+  apt_repository:
+    repo: "deb {{ item.url }} {{ ansible_distribution_release }} {{ item.component }}"
+    state: present
+  loop: "{{ rabbitmq_repo }}"
+
+- name: Pin Erlang updates ONLY to Bintray
+  copy:
+    content: |
+      Package: erlang*
+      Pin: release o=Bintray
+      Pin-Priority: 1000
+    dest: /etc/apt/preferences.d/erlang
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install Erlang
+  apt:
+    pkg: erlang-nox
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
+
+- name: Install RabbitMQ
+  apt:
+    pkg: rabbitmq-server
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"
