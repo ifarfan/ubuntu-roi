@@ -1,0 +1,10 @@
+---
+packer_home_directory: /usr/local/bin
+
+packer_version: 1.4.1
+# yamllint disable-line rule:line-length
+packer_download_url: "https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip"
+
+packer_goss_version: 0.3.0
+# yamllint disable-line rule:line-length
+packer_goss_download_url: https://github.com/YaleUniversity/packer-provisioner-goss/releases/download/v{{ packer_goss_version }}/packer-provisioner-goss-v{{ packer_goss_version }}-linux-amd64

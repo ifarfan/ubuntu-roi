@@ -1,0 +1,6 @@
+---
+- import_tasks: install.yml
+  tags: [packer, packer-install]
+
+- import_tasks: goss.yml
+  tags: [packer, packer-goss]

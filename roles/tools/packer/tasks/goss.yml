@@ -1,0 +1,12 @@
+---
+- name: Check for current Goss provisioner
+  stat:
+    path: "{{ packer_home_directory }}/packer-provisioner-goss"
+  register: packer_goss_exec
+
+- name: Download Goss provisioner
+  get_url:
+    url: "{{ packer_goss_download_url }}"
+    dest: "{{ packer_home_directory }}/packer-provisioner-goss"
+    mode: 0755
+  when: not packer_goss_exec.stat.exists

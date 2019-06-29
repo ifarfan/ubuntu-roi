@@ -1,0 +1,12 @@
+---
+- name: Check for current Packer
+  stat:
+    path: "{{ packer_home_directory }}/packer"
+  register: packer_exec
+
+- name: Download + extract Packer
+  unarchive:
+    src: "{{ packer_download_url }}"
+    dest: "{{ packer_home_directory }}"
+    remote_src: yes
+  when: not packer_exec.stat.exists
