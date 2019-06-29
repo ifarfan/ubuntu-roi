@@ -1,0 +1,27 @@
+---
+#
+#  rkhunter:
+#  - get initial baseline
+#    > rkhunter --propupd
+#  - check for changes
+#    > rkhunter --checkall
+#  - get report
+#    > cat /var/log/rkhunter.log | grep -i warning
+#
+#  chkrootkit:
+#  - run scan
+#    > chkrootkit | tee /var/log/chkrootkit/chkrootkit.log
+#  - get report
+#    > cat /var/log/chkrootkit/chkrootkit.log | grep -i warning
+#
+#  See also:
+#  - https://www.upcloud.com/support/scanning-ubuntu-14-04-server-for-malware/
+#  - https://www.csoonline.com/article/3238884/linux/linux-antivirus-and-anti-malware-8-top-tools.html#slide4
+#  - https://static.open-scap.org/ssg-guides/ssg-ubuntu1404-guide-anssi_np_nt28_average.html
+#
+- name: Install security packages
+  apt:
+    pkg: "{{ security_pkgs }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"

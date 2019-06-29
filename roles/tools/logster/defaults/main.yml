@@ -1,0 +1,10 @@
+---
+logster_required_pkgs:
+- logcheck
+
+logster_pip_pkgs:
+- pygtail
+
+logster_folder: /opt/logster
+logster_version: 1.0.1
+logster_url: https://github.com/etsy/logster.git

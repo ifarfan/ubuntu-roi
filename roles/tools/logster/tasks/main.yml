@@ -1,0 +1,29 @@
+---
+- name: Install Logster
+  block:
+
+  - name: Install Logster pre-requisites
+    apt:
+      pkg: "{{ logster_required_pkgs }}"
+      state: present
+      update_cache: yes
+      cache_valid_time: "{{ apt_cache_time }}"
+
+  - name: Install Logster pip dependencies
+    pip:
+      name: "{{ logster_pip_pkgs }}"
+
+  - name: Download logster
+    git:
+      repo: "{{ logster_url }}"
+      dest: "{{ logster_folder }}"
+      version: "{{ logster_version }}"
+      update: no
+
+  - name: Install Logster
+    command: python3 setup.py install
+    args:
+      chdir: "{{ logster_folder }}"
+      creates: /usr/local/bin/logster
+
+  tags: [logster]

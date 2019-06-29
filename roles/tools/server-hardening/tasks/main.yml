@@ -1,0 +1,6 @@
+---
+- import_tasks: lynis.yml
+  tags: [server-hardening]
+
+- import_tasks: tools.yml
+  tags: [server-hardening]

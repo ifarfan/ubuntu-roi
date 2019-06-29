@@ -1,0 +1,25 @@
+---
+#
+#  lynis:
+#  - https://github.com/CISOfy/lynis
+#  - https://packages.cisofy.com/community/#debian-ubuntu
+#
+#  > lynis audit system -Q
+#
+- name: Add CISOfy repository key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: C80E383C3DE9F082E01391A0366C67DE91CA5D5F
+    state: present
+
+- name: Add CISOfy repository
+  apt_repository:
+    repo: deb https://packages.cisofy.com/community/lynis/deb/ stable main
+    state: present
+
+- name: Install lynis
+  apt:
+    pkg: lynis
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_time }}"

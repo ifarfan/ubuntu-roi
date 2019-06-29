@@ -1,0 +1,9 @@
+---
+security_pkgs:
+- apt-listchanges
+- needrestart
+- debsecan
+- debsums
+- fail2ban
+- rkhunter
+- chkrootkit
