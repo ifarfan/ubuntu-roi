@@ -1,0 +1,13 @@
+---
+- name: Install Goss
+  block:
+
+  - name: Download + Install Goss
+    get_url:
+      url: "{{ goss_url }}"
+      dest: /usr/local/bin/goss
+      owner: root
+      mode: 0755
+      checksum: "{{ goss_checksum }}"
+
+  tags: [goss]
