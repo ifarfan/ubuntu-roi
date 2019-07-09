@@ -1,0 +1,34 @@
+---
+ruby_repo: ppa:brightbox/ruby-ng
+
+ruby_pre_pkgs:
+- build-essential
+
+ruby_pkgs:
+- ruby2.3
+- ruby2.3-dev
+- ruby2.4
+- ruby2.4-dev
+- ruby2.5
+- ruby2.5-dev
+- ruby2.6
+- ruby2.6-dev
+- ruby-switch
+
+ruby_default_version: ruby2.6
+
+gems_2_3:
+- bundler
+- json
+
+gems_2_4:
+- bundler
+- json
+
+gems_2_5:
+- bundler
+- json
+
+gems_2_6:
+- bundler
+- json

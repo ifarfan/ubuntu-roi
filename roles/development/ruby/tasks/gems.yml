@@ -1,0 +1,40 @@
+---
+#
+#  Gem versions:
+#  - gem2.3
+#  - gem2.4
+#  - gem2.5
+#  - gem2.6
+#
+- name: Install 2.3 gems
+  gem:
+    name: "{{ item }}"
+    user_install: no
+    executable: /usr/bin/gem2.3
+    state: present
+  loop: "{{ gems_2_3 }}"
+
+- name: Install 2.4 gems
+  gem:
+    name: "{{ item }}"
+    user_install: no
+    executable: /usr/bin/gem2.4
+    state: present
+  loop: "{{ gems_2_4 }}"
+
+- name: Install 2.5 gems
+  gem:
+    name: "{{ item }}"
+    user_install: no
+    executable: /usr/bin/gem2.5
+    state: present
+  loop: "{{ gems_2_5 }}"
+
+- name: Install 2.6 gems
+  gem:
+    name: "{{ item }}"
+    user_install: no
+    executable: /usr/bin/gem2.6
+    state: present
+  loop: "{{ gems_2_6 }}"
+

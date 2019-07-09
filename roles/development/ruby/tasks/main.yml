@@ -1,0 +1,6 @@
+---
+- include: install.yml
+  tags: [ruby, ruby-install]
+
+- include: gems.yml
+  tags: [ruby, ruby-gems]
